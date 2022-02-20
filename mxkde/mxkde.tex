@@ -102,9 +102,10 @@ Then with both eth1 and WiFi connections turned on in the panel, I go back into 
 \begin{itemize}
 \item   It needs to label the connections with something intelligable like {\em Intel 82579V Ethernet or eth1}
 \item It needs to deal with WiFi without depending on the Panel - it has {\em Connections} ( which seems to mean all connections) and {\em Bluetooth}  but no {\em WiFi}  appears in the listed connections until WiFi is turned on in the panel.
-\item It should offer the user some choice before diving into NetworkManager. If it had a preliminary screen which simply listed all the connection hardware and asked the user for some tips about what they wanted for each interface, then it might be able to setup NetworManager sensibly. Alternatilely, and less desirably, it might {\em direct} the user to the panel.
+\item It should offer the user some choice before diving into NetworkManager. If it had a preliminary screen which simply listed all the connection hardware and asked the user for some tips about what they wanted for each interface, then it might be able to setup NetworManager sensibly. Alternatively, and less desirably, it might {\em direct} the user to the existence of the panel.
 \item The MX Network Assistant goes some way towards this. It lists all the interfaces , properly labelled, but it does not offer to accept any user input and it does not link up to  the KDE Connections menu.
 \end{itemize}
+Networking seems to always be made more difficult than it should be. There is base information ( like what are the interfaces and what do you want to do with them) and there are prrocedures ( ways of configuring). Network GUI's seem to always mix these 2 things up and thereby confuse the user. All the user should need to be involves in is is the base info. The rest should be able to be logically automated.
 
 \subsection{Setting up OKI Postscript printer}
 This is a very simple printer to setup because it has inbuilt postscript and there are drivers present in just about every Linux version. So lets see if we can do it with the GUI.
@@ -320,6 +321,8 @@ Figure~\ref{fig:devuanxfce} shows the Devuan 4 Xfce 4  screen with Synaptic Pack
 \input{figdevuanxfce.tex}
 Devuan is similar to Debian, but the presentation is a bit more enhanced. It is hard to know whether this is Xfce against Gnome, or Devuan against Debian. They are both rather plain compared to Solus/Budgie or MX/KDE.
 
+I hope the screenshots show something of the look and feel of the various DTE's and hoe I came to score them as in Table!\ref{tab:scores}. It is not feasable to show everything and I am unable to illustrate workflow.
+
 
 \clearpage
 \section{What are these plasmoids and how can I use them?}
@@ -337,16 +340,19 @@ Hang on, what is this Conky thing? It seems to have something to do with managin
 \begin{verbatim}
 conky(1) - A system monitor for X originally based on the torsmo ...
 \end{verbatim}
-Read man page for conky(1). It seems to be about drawing things on the screen from C - like the X11 libraries?  No it is more about system stuff?
+Read man page for conky(1). It seems to be about drawing things on the screen from C - like the X11 libraries?  No it is more about system stuff?  I have to resort to Wikipedia to find out what it really is. Not directly relevant.
+
+I tried {\em Command Output}. Installed from the Download New Plasma Widgets window. It appears now in Add Widgets menu. Select and install. And yes, I can write a command output on a panel.
+
+That is enough. I will give Plasma Addons a pass.  THis is not the place for a full investigation. They are obviously useful for monitoring things that are changing with time.
+
+On the general idea of having plasmoids on the screen as well as in the panel, I can only acknowledge that it is new and unique to KDE. It is not all that radical a change but it is something, and it may be able to be tailored into something very special in particular cases.
 
 \section{Discussion}
+My overall reaction to KDE today? Well it is very difficult for a large development like KDE to escape from its past, and KDE has almost the longest history of all DTE's. I can remember in the 1990's deciding it was too big for my modest 486 running FreeBSD. It is much bigger now, but computers now have ample capacity and I have no problem with its size or speed in my setup.  Some of its features, however, reflect its original design - prefix everything with 'K' or rename it completely, put in multiple tools for the same job,  and end up with large pulldown menus of applications. Other things are new or changing - panel design, plamsmoid widgets, and the quqlit of applications has improved enormously. That 'pin' on the windows reminds me of Openlook and workspaces are, of course a modern development made possible by improvements in memory and graphics interfaces. The actual window manager is invisible, buried behind the DTE somewhere - it was once the only thing present. Modern DTE's do much more than manage windows.
+
+The KDE team have done really well to get it up to or slightly better than the other modern DTE's. Other newly written DTE's like Solus/Budgie have not been constrained by history and it shows in them being able to develop a unique and artistic style of presentation. That would always be much more difficult for KDE, but I would rate it a good second to Solus/Budgie in these matters.
+
+The important thing about KDE is that it is going somewhere. As long as its development is active it should remain one of the DTE's of choice for Linux users.  There will alwayts be niche requirements , like ultra-lite DTE's, which it cannot fill without extensive pruning, but for noremal and high end users wanting a GUI with lots of options, it fits well. 
  
-KDE   -  is improved on what I last saw
-      -  has reached about same standard as other modern DTE's like Gnome or Xfce.
-      -  finds it hard to escape its history, and this affects the style of the desktop layout  ( Xfce have this issue too) , Gnome3 has plunged into a new direction and is more of a clean break from its forbears.  Newly written DTE's like Solus/Budgie dont face this issue yet.
-
-
-\appendix
-\section{Appendix}
-
 \end{document}
