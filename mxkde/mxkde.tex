@@ -24,6 +24,7 @@ The approach taken was to pretend to be a new user of Linux, and to attempt to d
 I also attempted to make some comparative assessments with other Linux versions and DTE's which I have installed for my normal work.
 
 \section{Install}
+\label{sec:install}
 The MX21-KDE-x86.iso file was downloaded and installed to a 186Gb pre-prepared partition with an ext4 filesystem. There were existing swap spaces. The /home directory was left on the root filesystem. An existing grub2 was used to boot.
 
 The comptuter used  was a desktop with the following hardware and software
@@ -157,6 +158,7 @@ Then I remember, you have to either use {\em source .profile} or reboot to get {
 {\bf Recommends:} It would have been nice to warn the first time user that they had to reboot for it to take effect.
 
 \section{Usage using GUI tools}
+\label{sec:usage}
 
 \subsection{File Manager}
 I want to look at that fstab file I edited, so lets try out {\em Dolphin}. I move it to {\em /etc} then double click on {\em fstab} and great, it displays the contents of {\em fstab} in a {\em KWrite} window. I then try the same with {\em fstab.orig} and it says it cant determine the file type and brings up a popup of things I might want to open the file with. That is nonsense, it is a text file, almost identical to {\em fstab}.  Go away and think. Try again next day , and it is OK - ie Dolphin displays both files correctly. How can it change?
@@ -321,7 +323,7 @@ Figure~\ref{fig:devuanxfce} shows the Devuan 4 Xfce 4  screen with Synaptic Pack
 \input{figdevuanxfce.tex}
 Devuan is similar to Debian, but the presentation is a bit more enhanced. It is hard to know whether this is Xfce against Gnome, or Devuan against Debian. They are both rather plain compared to Solus/Budgie or MX/KDE.
 
-I hope the screenshots show something of the look and feel of the various DTE's and hoe I came to score them as in Table!\ref{tab:scores}. It is not feasable to show everything and I am unable to illustrate workflow.
+I hope the screenshots show something of the look and feel of the various DTE's and how I came to score them as in Table!\ref{tab:scores}. It is not feasable to show everything and I am unable to illustrate workflow.
 
 
 \clearpage
@@ -353,6 +355,8 @@ My overall reaction to KDE today? Well it is very difficult for a large developm
 
 The KDE team have done really well to get it up to or slightly better than the other modern DTE's. Other newly written DTE's like Solus/Budgie have not been constrained by history and it shows in them being able to develop a unique and artistic style of presentation. That would always be much more difficult for KDE, but I would rate it a good second to Solus/Budgie in these matters.
 
-The important thing about KDE is that it is going somewhere. As long as its development is active it should remain one of the DTE's of choice for Linux users.  There will alwayts be niche requirements , like ultra-lite DTE's, which it cannot fill without extensive pruning, but for noremal and high end users wanting a GUI with lots of options, it fits well. 
+The important thing about KDE is that it is going somewhere. As long as its development is active it should remain one of the DTE's of choice for Linux users.  There will always be niche requirements , like ultra-lite DTE's, which it cannot fill without extensive pruning, but for normal and high end users wanting a GUI with lots of options, it fits well. 
+
+The issues raised in Sections~\ref{sec:install} and ~\ref{sec:usage} would be likely to have trapped a novice user.  I was able to get around all except the issue with {\em vi} insert mode and mouse focus interacting. Most of the GUI issues could be improved with a bit of work and design care. There is room for improvement yet in KDE and in all DTE's.
  
 \end{document}
