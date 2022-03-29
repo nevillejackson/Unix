@@ -346,7 +346,7 @@ Read man page for conky(1). It seems to be about drawing things on the screen fr
 
 I tried {\em Command Output}. Installed from the Download New Plasma Widgets window. It appears now in Add Widgets menu. Select and install. And yes, I can write a command output on a panel.
 
-That is enough. I will give Plasma Addons a pass.  THis is not the place for a full investigation. They are obviously useful for monitoring things that are changing with time.
+That is enough. I will give Plasma Addons a pass.  This is not the place for a full investigation. They are obviously useful for monitoring things that are changing with time.
 
 On the general idea of having plasmoids on the screen as well as in the panel, I can only acknowledge that it is new and unique to KDE. It is not all that radical a change but it is something, and it may be able to be tailored into something very special in particular cases.
 
@@ -359,4 +359,359 @@ The important thing about KDE is that it is going somewhere. As long as its deve
 
 The issues raised in Sections~\ref{sec:install} and ~\ref{sec:usage} would be likely to have trapped a novice user.  I was able to get around all except the issue with {\em vi} insert mode and mouse focus interacting. Most of the GUI issues could be improved with a bit of work and design care. There is room for improvement yet in KDE and in all DTE's.
  
+\appendix
+\section{Appendix: KDE(5.23.0) with Void Linux}
+There was some concern that the MX installation used to look at KDE contained an older version of KDE(5.20.5).  The best way to get an uptodate version of KDE was to go to a {\em rolling release} Linux distribution. Arch was suggested, but I chose Void because I wanted to work in a familiar Linux distro while looking at an unfamiliar DTE like KDE. 
+
+Void does not come with KDE included in a .iso download. The only Void downloads available for x-86 are Void with Xfce or Void base with no DTE. So I had to start with Void base. Using my existing Void/Xfce installation was not a proposition, because Void does not support  multiple DTE's the way Fedora does.
+
+\subsection{Installing Void base}
+\begin{enumerate}
+\item Download the Void base live image with glibc called {\em void-live-x86\_64-20210930.iso}. (542Mb)
+\item  Copy it to a USB drive with {\em dd}.
+\item Use {\em Gparted} to make a new ext4 partition sdb12 for the install 
+\item Boot the USB drive, it comes up with \# prompt.
+\item {\em \#void-installer} ..... starts the install
+\item lots of trivial setups, including network on eno1 using DHCP
+\item dont install bootloader ... I already have grub2 configures under Debian
+\item dont make any partitions
+\item identify sdb12 and set its mount point to /
+\item install .... successful
+\item reboot and start Debian 11
+\item {\em update-grub2} in Debian 11  .... finds void on sdb12
+\item reboot and start void on sdb12 ... I get a login prompt on an alphanumeric screen
+\item login as root 
+\item {\em xbps-install} -Su ..... lots of updates downloaded
+\end{enumerate}
+ There is no X11 and no DTE, but it is ready to install KDE, I think ..
+
+\subsection{Installing KDE}
+\begin{enumerate}
+\item Find out what the KDE metapackage is called. 
+{\em xbps-query -Rs kde}
+gives kde5-5.23.0\_1
+\item {\em xbps-install kde5} .... 415Mb download and uses 1256Mb on disk  ... almost as large as Void-base
+\item Reboot  .... still shows the alphanumeric screen login  ... did not start the Display Manager or KDE
+\item login and search for a display manager ... find {\em sddm}  is installed but the daemon is not running. That's strange, normally when a daemon is installed the install package automatically starts the service?
+\item Try starting sddm from the command line. Get a message
+"/usr/bin/xauth not found".
+So it cant start , there is something missing
+\item {\em xbps-install xauth} .....   then the file /usr/bin/xauth is present
+\item Retry sddm from command line .... no messages and it runs
+\item Start {\em sddm} as a service ... this is {\em runit} we do it by making a link
+{\em ln -s /etc/sv/sddm /var/service}
+\item Check sddm is running
+\begin{verbatim}
+\# sv status /var/service/*
+.....
+run: /var/service/sddm: (pid 901) 3459s
+....
+\end{verbatim}
+\item Reboot .... still get an alphanumeric login screen
+login .... {\em sddm} is now running
+Must be something else missing
+Consult the Void Handbook ... when all else fails
+It says I need to also start {\em dbus}. So
+{\em ln -s /etc/sv/dbus /var/service}
+And check
+\begin{verbatim}
+\#sv status /var/service/*
+....
+run: /var/service/dbus: (pid 900) 3459s
+run: /var/service/dhcpcd: (pid 891) 3460s
+run: /var/service/sddm: (pid 901) 3459s
+....
+\end{verbatim}
+So now they are both running.
+\item Handbook also says I need to install xorg-minimal, so
+{\em xbps-install xorg-minimal}
+\item Reboot .... now I get a Display Manager screen, so {\em sddm} is running .
+The screen offers {\em Plasma Wayland or Plasma X11}..... choose X11 and login
+KDE comes up ... not much to see - weird orange and blue background, App button in lower panel, try that and it offers only a few apps ... system settings, emojii, system monitor,... Nothing useful. How do I get a terminal? Try search for {\em konsole} ... nothing there. Cant do anything? Logout ... comes back to sddm screen. Cant get back to the alphanumeric screen to get a command line? Gotcha
+\item I have to resort to booting Debian, mounting the Void filesystem and temporarily preventing the sddm daemon from starting by renaming it.  Then boot Void and I have the alhpanumeric login screen again.
+\item Now I have control back. Search around and read the Handbook again and decide that the package {\em kde-baseapps} which the handbook say is optional is actually necessary to get a {\em konsole} app. So
+{\em xbps-install kde5-baseapps}
+and it adds lots of usefult things like ...konsole, dolphin, kate, ....
+\item Put {\em sddm} daemon back so it will start
+\item Reboot .... sddm screen comes up. Login, get KDE, but still no apps in the  Applications Menu.
+So nothing appears in the Apps Menu automatically. 
+At least now I am able to search for konsole, and get a terminal window.  Now I might be able to start using KDE
+\item After poking around KDE for about half a day I could not learn how to add installed apps to the graphic pplication Launcher. Had to give up and consult the internet. Found out you right click on the App Launcher, go to Edit Applications, and it offers KDE Menu editor where you can select an app and save it to the App Launcher Menu. Right I can add Konsole and Dolphin.
+\item Installed {\em okular}, {\em firefox} , and {\em git}. Now {\em okular} and {\em firefox} appear automatically in the App Launcher, but not {\em got}. So what is it doing? Why did I have to add things at first and now it is automatic?
+\item There is an annoying message that comes up every time during boot, asking me to authorize mounting a filesystem that is not in {\em /etc/fstab} but was mounted once in Dolphin. After much searching of the System Settings, I find that under Removable Storage there is an automount set for attached devices, and my once used hard disk partition is ticked as an attached device and as well ist says "automount all known devices". I untick that and it fixed the problem. But why would I want it to automaount every hard disk partition that I ever used? Crazy. I think this might be useful for plugin drives, but surely not for hard disk partitions.
+\end{enumerate}
+t would seem KDE developers have tackled the problemn of "too many apps in the menu" by starting with an empty App Launcher and forcing the user to add each app. That is what Gnome does. It is better.
+Figure~\ref{fig:voidkde} shows the KDE screen running in Void, with the System Info window and the Applications Launcher.
+\input{figvoidkde.tex}
+The orange backgound is the default. Tjere is a lower panel with some widgets, and an empty upper panel.
+
+
+\subsection{Setups to complete Void Install }
+Here we repeat setting up exercises of Section~\ref{sec:install}
+\subsubsection{Setup my network}
+This is rather different in Void LInux.  Void does not use {\em NetworkManager} by default so it is not installed and the daemon is not running. There is no Panel network widget.  The primary network interface (eth0) is setup during install and is managed by the {\em dhcpcd} daemon.  The secondary interface (enp10s0) is the local network and uses a static IP address. It is setup the BSD way in {\em /etc/rc.local} as follows
+\begin{verbatim}
+# local static network
+ip link set dev enp10s0 up
+ip addr add 192.168.32.6/24 brd + dev enp10s0
+\end{verbatim}
+So there is no need to run {NetworkManager} unless  I wanted to use the wireless interface. 
+The graphic {\em System Settings - Connections} GUI does not function. This proves that it is only a front end for NetworkManager. It will not work with other methods of network configuration.
+
+{\bf Verdict:} Same as KDE 5.20.5, only Void exposes the narrowness of this Connections GUI. It assumes all network configuration will be done under NetworkManager. There are better ways, especially on a simple home desktop.
+
+{\bf Recommend} Nothing changed from older version of KDE. Connections GUI puts all its faith in NetworkManager and cuts the user off from simpler and more reliable ways of configuring a home desktop. And its approach mixes up "how to do it" with "asking the user what they want to do".
+
+\subsubsection{Setup OKI Postscript Printer}
+I cant find any Printer configuration menu under {\em System Settings}. Consult KDE Help Center. Nothing about Printers. Search the Void repository 
+\begin{verbatim}
+\# xbps-query -Rs printer
+....
+[-] system-config-printer-1.5.13_2      CUPS printer configuration tool and status applet
+[-] system-config-printer-udev-1.5.13_2 CUPS printer configuration tool (udev integration)
+\# 
+\end{verbatim}
+That does not look like a KDE app, but we will try it
+\begin{verbatim}
+xbps-install system-config-printer system-config-printer-udev
+...........
+ERROR: [trans] failed to download `libsecret-0.20.5_1' signature from `https://alpha.de.repo.voidlinux.org/current': Not Found
+\end{verbatim}
+Abandon that . Probably not part of KDE anyway.
+
+Just get CUPS and do it
+\begin{verbatim}
+xbps-install cups cups-filters cups-pdf
+\end{verbatim}
+Try the System Monitor - dont like the layout - prefer the Gnome layout with a running graph.
+Need to start the CUPS daemon
+\begin{verbatim}
+\# ln -s /etc/sv/cupsd /var/service
+\# sv status /var/service/*
+run: /var/service/acpid: (pid 891) 4719s
+run: /var/service/agetty-tty1: (pid 895) 4719s
+run: /var/service/agetty-tty2: (pid 898) 4719s
+run: /var/service/agetty-tty3: (pid 890) 4719s
+run: /var/service/agetty-tty4: (pid 899) 4719s
+run: /var/service/agetty-tty5: (pid 894) 4719s
+run: /var/service/agetty-tty6: (pid 892) 4719s
+run: /var/service/cupsd: (pid 2715) 13s
+run: /var/service/dbus: (pid 901) 4719s
+run: /var/service/dhcpcd: (pid 889) 4719s
+run: /var/service/sddm: (pid 900) 4719s
+run: /var/service/sshd: (pid 896) 4719s
+run: /var/service/udevd: (pid 893) 4719s
+run: /var/service/uuidd: (pid 897) 4719s
+\# 
+\end{verbatim}
+So {\em cupsd} is running, now try to start up the {\em localhos:631} page in Firefox. Success.
+Then I discover a widget called Manage Printing which has appeared in the Applications Launcher after CUPS was installed. Try that and it does exactly the same thing - brings up {\em localhost:631} in Firefox. 
+
+Configure the OKI postscript printer. No problems. Had to install foomatic and gutenprint.
+
+{\bf Verdict:} KDE have finally come to their senses and stopped providing a useless printer config GUI which does not work. The widget pointing to  CUPS browser page is fine. I wonder if this change is really KDE, or is it because we have KDE in Void Linux?
+
+\subsubsection{Setup Brother MFC Printer}
+This printer requires drivers from Brother. The drivers are .deb files. Void does not use Debian packages. I have to unpack the .deb files and do the install a step at a time by hand. The procedure is as follows.
+
+There are two driver files cupswrapperMFC210C-1.0.2-3.i386.deb and mfc210clpr-1.0.2-1.i386.deb. Each is an {\em ar} archive with two {\em tar} files  and some ordinary files inside it. To unpack the cupswrapper do
+\begin{verbatim}
+1.
+ ar -xv package.deb
+
+2.
+ mkdir instdir
+ tar zxvf data.tar.gz -C instdir
+instdir is a directory in current pwd
+
+3.
+ mkdir instdir/cupswrapperMFC210
+ tar zxvf control.tar.gz -C instdir/cupswrapperMFC210
+
+4. to inspect content
+tar ztvf data.tar.gz
+
+5. cd instdir/cupswrapperMFC210 && sudo ./postinst
+\end{verbatim}
+To unpack the mfc210 driver do a similar sequence
+\begin{verbatim}
+1.
+ ar -xv package.deb
+
+2.
+ mkdir instdir
+ tar zxvf data.tar.gz -C instdir
+instdir is a directory in current pwd
+
+3.
+ mkdir instdir/mfc210clpr
+ tar zxvf control.tar.gz -C instdir/mfc210clpr
+
+4. to inspect content
+tar ztvf data.tar.gz
+
+5. cd instdir/mfc210clpr && sudo ./postinst
+
+\end{verbatim}
+
+Then got thu the setup sequence
+\begin{verbatim}
+Setting up Brother MFC640CW in Void Linux
+
+1. Install the multilib repository first
+xbps-install void-repo-multilib
+
+2. Synchronize repository index files
+xbps-install -S
+
+3. Install missing 32-bit libraries
+In current/multilib
+libstdc++-32bit
+libstdc++-devel-32bit
+xbps-install libstdc++-32bit
+xbps-install libstdc++-devel-32bit
+
+4. Find a C shewll and install it
+xbps -Rs csh
+-> only tcsh available
+xbps-install tcsh
+
+5. These directories need to be present
+mkdir /var/spool/lpd
+/usr/lib/cups  exists
+/usr/llib/cups/filter  exists
+/usr/share/cups/model  exists
+
+6. extract files from the mfc210clpr-1.0.2-1.i386.deb package
+see file Note in ./debpackage/mfc210clpr
+
+7. Install the mfc driver
+Extracted files are in
+./debpackage/mfc210clpr/instdir
+Copy everything in ./debpackage/mfc210clpr/instdir/usr to /usr
+ie
+cd /usr/bin
+cp .../instdir/usr/bin/* .
+cd /usr/lib
+cp .../instdir/usr/lib/* .
+cd /usr/local
+cp -r .../instdir/usr/local/* .
+
+8. extract files from the cupswrapperMFC210C-1.0.2-3.i386.deb package
+see file Note in ./debpackage/cupswrapper
+
+9. Install the cupswrapper
+Extracted files are in 
+./debpackage/cupswrapper/instdir
+.../instdir/usr has 2 subdirectories local and share
+cd /usr/local/Brother
+cp -r .../instdir/usr/local/Brother/* .
+cd /usr/share/doc
+cp -r .../instdir/usr/share/doc/* .
+
+10. post install mfc stuff
+cd /usr/local/Brother/inf
+./setupPrintcapij MFC210C -i USB
+-> chown invalid user 'lp'
+group 'lp' exists but user 'lp' does not exist
+ignore
+
+links in postinst
+ln -s /usr/lib/libbrcompij2.so.1.0.2 /usr/lib/libbrcompij2.so.1.0
+ln -s /usr/lib/libbrcompij2.so.1.0.2 /usr/lib/libbrcompij2.so.1
+ln -s /usr/lib/libbrcompij2.so.1.0.2 /usr/lib/libbrcompij2.so
+
+Void has no lpd so cant restart it
+
+11. post install cups stuff
+tcsh /usr/local/Brother/cupswrapper/cupswrapperMFC210C-1.0.2 -i
+-> message
+rm -f /usr/lib/cups/filter/brlpdwrapperMFC210C
+ignore -- file is still there
+
+12. 32 bit libs
+cp /usr/lib/libbr* /usr/lib32/
+
+13. Do the CUPS setup for printer
+Discovered network printers
+o.  Brother MFC-640CW
+
+Name: MFC210C
+Description: Brother MFC-640CW
+Loc: Office
+Make: Brother
+Model: BrotherMFC210C CUPS V1.1(en)
+A4
+Set default options
+Connection set autoomatically to: socket://192.168.32.98 because was discovered
+
+14. Print a test page
+
+\end{verbatim}
+ Quite a challenge, but it works. 
+No way a GUI is going to help with this sort of thing.
+
+\subsubsection{Mounting filesystems}
+Same as before. There is no GUI for editing {\em /etc/fstab}
+
+\subsubsection{Adding a directory to the search path}
+There is no {\em System - Bash Config} menu in Void/KDE. I think that may have been an MX addition. I have to edit {\em .bashrc\_profile} at the command line.
+
+
+\subsection{Using GUI tools }
+\subsubsection{File Manager}
+Exactly the same as older version. Dolphin knows both the content-filetype and the filename-extension-filetype and it uses the latter to decide what to display the file with. I would prefer it use the former, or give the user a choice. 
+Also see discussion of this topic on itsFOSS forum.
+
+\subsubsection{\LaTeX install}
+ There is no GUI installer in Void. I have to do it at the command line
+\begin{verbatim}
+xbps-install texlive
+xbps-install texlive-latex-extra
+xbps-install okular
+\end{verbatim}
+Simple enough, but a null result for the KDE GUI.
+One of the best KDE products,  for me, is {\em okular}. It works much better with \LaTeX than the {\em evince} alternative.
+
+\subsubsection{R install}
+So lets try {\em Discover} again. That should be interesting combined with {\em xbps}.
+Well it is interesting. There {\em is} no {\em Discover} package. I guess {\em Discover} is .deb based and does not mesh with Void's {\em xbps} package system, so they just omitted it.
+
+Never mind R packages are easily installed at the command line with {\em xbps}. I did the following
+\begin{verbatim}
+xbps-install R
+\end{verbatim}
+We get R-4.1.2\_2 which is really up-to-date. Void is good at keeping R updated. 
+
+\subsubsection{Julia install}
+We do not have the MX package installer in Void. So using {\em xbps} at the command line  again we do
+\begin{verbatim}
+xbps-install julia
+\end{verbatim}
+We end up with a Julia icon in the App Launcher, and it does exactly the same as before - brings up a Konsole window in the home directory with the Julia REPL running.
+
+\subsubsection{Vi usage}
+The {\em vi} problems have disappeared. {\em View} does not clash with {\em Midnight Commander editor} because the latter is not installed. So this was an MX issue.
+
+The issue of {\em vi} coming out of insert mode if the mouse/cursor is moved out of the window does not exist. I believe this was a {\em vim} problem, so Void must have a later version of {\em vim} or it must configure its way out of the mess. Copy and paste in and out of {\em vi} work. {\em vi} is not setup to have cursor movement by the mouse.
+
+\subsection{Comparative assessments}
+The workflow is a little better because KDE have removed the clutter of apps from the launcher. They have gone to the other extreme and put almost no apps in the Launcher by default ( like Gnome). There was some confusion about whether apps go into the launcher when they are installed or whether the user had to manually insert them. My install started off manual, then mysteriously changed to automatic upon install.
+
+The look and feel are much the same. I dont see anything very pretty and I dont feel particularly excited when using it. 
+
+{\bf Verdict:} Might increase the workflow rating to be same as Gnome ( ie 7) . Rest stays same.
+
+\subsection{Plasmoids}
+ Much the same. The KDE Help Centre is low on details. When I add a widget to the screen it minimizes all my windows, for no apparent reason. There are no thumbnails in the Add Widgets menu - I assume something is not installed - but the text is there and they work. 
+
+\subsection{Has the conclusion changed?}
+There is progress.  They useless Printer Configuration GUI has disapeared (this may be Void rather than KDE), and they have tidied up the App Launcher although there is some confusion about its work rules. There is also an App Launcher Menu ( instead of the Gnome-like icon layout of the default launcher), so choices have been added. The new default of almost no apps appearing in the Launcher is preferable to the large number previously there by default. There are still some untidy bits - what do I want with IBus preferences when all it does is tell me the IBus daemon is not running?
+
+I think the biggest priority from the point of view of a novice user , would now be to revamp the Connections GUI. 
+
+KDE is still a large highly configurable desktop environment. That has not changed. There is improvement in the workability.  I do not have any problem using it, but it provides many more options than I need.  
+Wayland works, but its terminal window sizing is peculiar and it loses control of the mouse on the logout screen. I prefer X11 for now.
+
+KDE is not a very clean match with Void Linux.  Their philosophies differ. I did KDE with Void to get the latest KDE, but my choice of DTE for Void would be their default Xfce DTE.
 \end{document}

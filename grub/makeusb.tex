@@ -1,0 +1,152 @@
+%
+% Draft  document makeusb.tex
+% How to copy an installed Linux to a bootable usb drive
+%
+ 
+\documentclass{article}  % Latex2e
+\usepackage{graphicx,lscape,subfigure}
+ 
+
+\title{Move an installed Linux distribution, with its configuration and user space, from HDD tp a USB drive. Make thew USB drive bootable in either legacy mode or UEFI mode}
+\author{Neville Jackson}
+\date{30 Mar 2022} 
+
+\begin{document} 
+
+\maketitle      
+
+\section{Introduction} 
+Sometimes one needs to save an installed Linux, but keep it available for occasional viewing. A conventional backup of its partition(s) will do , but it is inconvenient to have to restore it to use it. A convenient solution is to copy it to a USB drive, and make the drive bootable. 
+
+There are two ways of transfering a running Linux to a USB drive. There is a good FOSS article ~\cite{foss:21} on this issue. One is to make an .iso file and image that to the USB drive and make it bootable. This results in what is commonly called a  {\em live filesystem}. It can be booted and used , but any changes are lost on shutdown. There are ways of adding {\em permanence} to a live filesystem, but they are complicated and limited, and do not allow kernel updates.
+
+The second way  is to do  the equivalent of a full linux install on the USB drive. This allows it  to operate just like a hard disk install with full permanence and updateability. This document looks at implementing this second option.
+
+\section{Steps to implement full Linux transfer to USB drive}
+We need to prepare partitions on the USB flash drive, transfer a copy of the required Linux from HDD, mount the new copy and fix the file /etc/fstab, install grub on the USB drive, boot grub to the {\em grub} command menu, boot the Linux copy on the USB drive from grub comand line, then use the booted Linux to configure grub.
+
+\subsection{Prepare partitions}
+Use an installed Linux that has {\em gparted} or a gparted DVD or USB drive. Wipe the UBB drive clean. Make at least 4 partitions
+\begin{enumerate}
+\item EFI\_System  partition, fat32, 512 Mb, boot,esp flags
+\item BIOS-boot partition, no fileasystem, 1Mb bios\_grub flag
+\item LinuxRoot partition, ext4 , at least 20Gb, mount point /
+\item Linux\_swap partition, swap, 4GB
+\item others as needed
+\end{enumerate}
+The EFI\_System  partition should be first. 
+
+\subsection{Copy Linux root partition from HDD to USB disk}
+There are various ways of copying and entire Linux root filesystem. I used {\em rsync} but {\em dd} is an option. There is no need to image the root filesystem, just copy it.
+
+\begin{enumerate}
+\item Boot any Linux, even the one to be copied
+\item Go to the filesystem root  --- cd  /
+\item Check the name of the USB drive partition to be copied to  --- lsblk
+\item mount /dev/sdc3 /mnt
+\item rsync -aAXvH --exclude={'dev/*','prof/*','sys/*','tmp/*','run/*','mnt/*' \\
+      ,'media/*','lost+found','common/*'} / /mnt
+\end{enumerate}
+The {\em --exclude} option on {\em rsync} avoids copying psuedo filesystems that are populated at boot time and any mounts, especially /mnt which is the USB drive partition copied to.
+
+\subsection{Patch the /etc/fstab file and remove grub configuration}
+There may be entries in {/\em etc/fstab} which will need to be changed. In particular UUID's will need to be set to the correct values for any USB drive partitions. 
+\begin{enumerate}
+\item Find the UUID numbers of the partitions on the USB drive. Use a disk utility or \\
+  ls -l /dev/disk/by-uuid
+\item Edit /etc/fstab on the root partition on the USB drive. . Carefully copy the UUID's into fstab. You will need at least one for the root filesystem, and one for the swap partition.
+\end{enumerate}
+ The resultant /etc/fstab should look as follows
+\begin{verbatim}
+# Pluggable devices are handled by uDev, they are not in fstab
+# / sdc3
+UUID=0beb5819-f2ba-4fa0-aa69-3e5ec16fb0bc  /   ext4   noatime   1 1 
+# swap sdc5
+UUID=ef94e2d5-c924-49b8-a944-486efd629340  swap  swap   noatime   1 2 
+
+# spare partition sdc4
+UUID=d4109c75-0428-4bb9-8d19-d0b63d09930a /home/nevj/spare ext4 0,users 2 0 
+
+# common partition - filesystem shared by several os's
+#/dev/sda4    /common      ext4      rw                0       2
+\end{verbatim}
+The only essentials are / and swap. I have an extra partition called spare, and I have commented out an HD partition called /common. There should be no HD partitions because the USB drive willl need to work in a self contained manner on any computer. I am not sure whether the / entry is needed.
+
+If the Linux copied to USB drive has had grub configured in the HD copy, it will be necesssary to remove the grub configuration in the USB copy. Mine did not have this. Just go to /mnt/boot (ie on the USB drive) and do 
+\begin{verbatim}
+rm -r grub
+rm -r efi
+\end{verbatim}
+
+\subsection{Install grub on USB drive}
+Consult the GNU Grub manual~\cite{gnu:21}.
+Login to any Linux on the HD.  Check the partition names of the USB drive using {\em lsblk}. Mount the root directory of the USB drive as follows
+\begin{verbatim}
+mount /dev/sdc3 /mnt
+\end{verbatim} 
+where sdc3 is the root directory. Then install grub as follows
+\begin{verbatim}
+grub-install --boot-directory=/mnt/boot \\
+             --recheck \\
+             --removable \\
+             --targer=i386-ps \\
+             /dev/sdc
+\end{verbatim}
+where sdc is the usb drive device name. 
+This installs grub for a {\em legacy mode} boot.
+
+\subsection{Use grub command line to boot Linux on USB drive}
+Reboot the computer and use the BIOS to boot from the USB drive. You should get the grub command prompt
+\begin{verbatim}
+grub>
+\end{verbatim}
+If you get anything else there is an error.
+There is no grub menue, because we have not configured grub yet on the USB disk.
+
+We can not use grub commands to boot the copy of Linux which is on the USB disk as follows
+\begin{verbatim}
+grub> linux /vmlinuz root=/dev/sdc3
+grub> initrd /initrd.img
+grub> boot
+\end{verbatim}
+and it should boot. Login
+
+\subsection{Use the booted USB drive Linux to configure grub on the USB drive}
+Now that we have the USB drive copy of Linux booted, we can use it to do its own grub configuration.
+That is easy
+\begin{verbatim}
+Edit /etc/default/grub, adding or modifying the line
+GRUB_DISABLE_OS_PROBER=true
+then simply
+update-grub
+\end{verbatim}
+The update-grub should find the Linux on the USB drive, but not find any other Linuxes on the HDD. That is what we want - we want the USB drive and its grub to be configured independently of the harddisk.
+
+While there you can test that the swap space is mounted
+\begin{verbatim}
+swapon --show
+\end{verbatim}
+Having its own swap space is part of making the USB drive independent
+
+Test any other mounts, as required.
+
+\subsection{Test boot}
+Reboot the computer and use BIOS agian to boot the USB drive. This time it should bring up a grub menu instead of a command line with just 3 entries - your copied Linux, your copied Linux again in Advanced mode, and maybe Memtest if it comes with your grub.
+Check out booting from the menu.
+
+Then the acid test. Shutdown, remove the USB drive, put it in another computer, and boot it there. Mine worked, I hope yours does too.
+
+
+\subsection{Booting in UEFI mode}
+Not implemented yet. There seems no reason why one can not do another grub-install  to the same USB drive only using the EFI-System parttion instead of the BIOS-grub partition. The drive would then be bootable in either mode. The two grubs would share a configuration, so one should not have to repeat the update-grub step.
+
+\begin{thebibliography}{99}
+
+\bibitem{foss:21}
+Emmanuel (2021) Persistent Live USB vs. Full Linux Install on a USB Drive. URL https://www.fosslinux.com/49280/persistent-live-usb-vs-full-linux-install-usb-drive.htm 
+
+\bibitem{gnu:21}
+Matzigjkeit, Okuji, Watson, and Bennett (2021) The GNU GRUB Manual URL https://www.gnu.org/software/grub/manual/grub/grub.html
+
+\end{thebibliography}
+\end{document}
