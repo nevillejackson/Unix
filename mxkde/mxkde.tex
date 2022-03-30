@@ -671,24 +671,36 @@ xbps-install texlive-latex-extra
 xbps-install okular
 \end{verbatim}
 Simple enough, but a null result for the KDE GUI.
-One of the best KDE products,  for me, is {\em okular}. It works much better with \LaTeX than the {\em evince} alternative.
+One of the best KDE products,  for me, is {\em okular}. It works much better with \LaTeX than the {\em evince} alternative. {\em Okular} has no File or Open facility ... it seems to be latched to the file that you invoke it with.   OK Open is in the extended menu ... surely it should be visible when you start up?
 
 \subsubsection{R install}
 So lets try {\em Discover} again. That should be interesting combined with {\em xbps}.
-Well it is interesting. There {\em is} no {\em Discover} package. I guess {\em Discover} is .deb based and does not mesh with Void's {\em xbps} package system, so they just omitted it.
+Well it is interesting. There {\em is} no {\em Discover} package. I guess {\em Discover} is .deb based and does not mesh with Void's {\em xbps} package system, so they just omitted it. Searched the package system ... there is no {\em Discover} package.
 
-Never mind R packages are easily installed at the command line with {\em xbps}. I did the following
+Never mind R  base packages are easily installed at the command line with {\em xbps}. I did the following
 \begin{verbatim}
 xbps-install R
 \end{verbatim}
-We get R-4.1.2\_2 which is really up-to-date. Void is good at keeping R updated. 
+We get R-4.1.3\_1 which is really up-to-date. Void is good at keeping R updated. 
+R is a 44Mb download and takes 96Mb of disk space.
+After install R does not appear in the App Launcher. That is better. Probably a Void credit. Go to an R workin directory and invoke it ... it works.
+\begin{verbatim}
+> sessionInfo()
+R version 4.1.3 (2022-03-10)
+Platform: x86_64-unknown-linux-gnu (64-bit)
+Running under: Void Linux
+
+Matrix products: default
+BLAS/LAPACK: /usr/lib/libopenblasp-r0.3.18.so
+\end{verbatim}
+So it gets best Matrix library. All OK
 
 \subsubsection{Julia install}
 We do not have the MX package installer in Void. So using {\em xbps} at the command line  again we do
 \begin{verbatim}
 xbps-install julia
 \end{verbatim}
-We end up with a Julia icon in the App Launcher, and it does exactly the same as before - brings up a Konsole window in the home directory with the Julia REPL running.
+We end up with a Julia icon in the App Launcher, and it does exactly the same as before - brings up a Konsole window in the home directory with the Julia REPL running. Another useless icon.
 
 \subsubsection{Vi usage}
 The {\em vi} problems have disappeared. {\em View} does not clash with {\em Midnight Commander editor} because the latter is not installed. So this was an MX issue.
@@ -705,13 +717,15 @@ The look and feel are much the same. I dont see anything very pretty and I dont 
 \subsection{Plasmoids}
  Much the same. The KDE Help Centre is low on details. When I add a widget to the screen it minimizes all my windows, for no apparent reason. There are no thumbnails in the Add Widgets menu - I assume something is not installed - but the text is there and they work. 
 
+The Plasmoids are more visible. When I use the System Monitor it brings up its displays of CPU and Network Rates, etc as separate desktop widgets instead of all inside the window. That is a good application of Plasmoids. Not sure if I like having it split up, they tend to get lost under windows.
+
 \subsection{Has the conclusion changed?}
-There is progress.  They useless Printer Configuration GUI has disapeared (this may be Void rather than KDE), and they have tidied up the App Launcher although there is some confusion about its work rules. There is also an App Launcher Menu ( instead of the Gnome-like icon layout of the default launcher), so choices have been added. The new default of almost no apps appearing in the Launcher is preferable to the large number previously there by default. There are still some untidy bits - what do I want with IBus preferences when all it does is tell me the IBus daemon is not running?
+There is progress.  The useless Printer Configuration GUI has disapeared (this may be Void rather than KDE), and they have tidied up the App Launcher although there is some confusion about its work rules. There is also an App Launcher Menu ( instead of the Gnome-like icon layout of the default launcher), so choices have been added. The new default of almost no apps appearing in the Launcher is preferable to the large number previously there by default. There are still some untidy bits - what do I want with IBus preferences when all it does is tell me the IBus daemon is not running?
 
 I think the biggest priority from the point of view of a novice user , would now be to revamp the Connections GUI. 
 
 KDE is still a large highly configurable desktop environment. That has not changed. There is improvement in the workability.  I do not have any problem using it, but it provides many more options than I need.  
 Wayland works, but its terminal window sizing is peculiar and it loses control of the mouse on the logout screen. I prefer X11 for now.
 
-KDE is not a very clean match with Void Linux.  Their philosophies differ. I did KDE with Void to get the latest KDE, but my choice of DTE for Void would be their default Xfce DTE.
+KDE is not a very clean match with Void Linux.  Their philosophies differ. I did KDE with Void to get the latest KDE, but my choice of DTE for Void would be their default Xfce.
 \end{document}
