@@ -9,7 +9,7 @@
 
 \title{Move an installed Linux distribution, with its configuration and user space, from HDD to a USB drive. Make the USB drive bootable in either legacy mode or UEFI mode}
 \author{Neville Jackson}
-\date{30 Mar 2022} 
+\date{2 Apr 2022} 
 
 \begin{document} 
 
@@ -40,12 +40,16 @@ The EFI\_System  partition should be first.
 There are various ways of copying and entire Linux root filesystem. I used {\em rsync} but {\em dd} is an option. There is no need to image the root filesystem, just copy it.
 
 \begin{enumerate}
-\item Boot any Linux, even the one to be copied
-\item Go to the filesystem root  --- cd  /
-\item Check the name of the USB drive partition to be copied to  --- lsblk
+\item Boot any Linux, preferably not  the one to be copied
+\item Mount the Linux filesystem to be copied -- in my case the mount is \\
+mount /dev/sdb12 /media/nevj/Linuxroothome
+\item Check the name of the USB drive partition to be copied to  \\
+ lsblk will list all disk partitions, mounted or not.  In my case it is /dev/sdc3
 \item mount /dev/sdc3 /mnt
-\item rsync -aAXvH --exclude={'dev/*','prof/*','sys/*','tmp/*','run/*','mnt/*' \\
-      ,'media/*','lost+found','common/*'} / /mnt
+\item rsync -aAXvH --exclude={'dev/*','proc/*','sys/*','tmp/*','run/*','mnt/*' \\
+      ,'media/*','lost+found','common/*'} /media/nevj/Linuxroothome/ /mnt  \\
+This will copy all directories except those excluded. \\
+In my case common is a data partition
 \end{enumerate}
 The {\em --exclude} option on {\em rsync} avoids copying psuedo filesystems that are populated at boot time and any mounts, especially /mnt which is the USB drive partition copied to.
 
