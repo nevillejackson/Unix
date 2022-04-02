@@ -49,7 +49,7 @@ mount /dev/sdb12 /media/nevj/Linuxroothome
 \item rsync -aAXvH --exclude={'dev/*','proc/*','sys/*','tmp/*','run/*','mnt/*' \\
       ,'media/*','lost+found','common/*'} /media/nevj/Linuxroothome/ /mnt  \\
 This will copy all directories except those excluded. \\
-In my case common is a data partition
+In my case common is a data partition, I want to exclude that.
 \end{enumerate}
 The {\em --exclude} option on {\em rsync} avoids copying psuedo filesystems that are populated at boot time and any mounts, especially /mnt which is the USB drive partition copied to.
 
