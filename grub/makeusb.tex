@@ -46,13 +46,46 @@ mount /dev/sdb12 /media/nevj/Linuxroothome
 \item Check the name of the USB drive partition to be copied to  \\
  lsblk will list all disk partitions, mounted or not.  In my case it is /dev/sdc3
 \item mount /dev/sdc3 /mnt
-\item rsync -aAXvH --exclude={'dev/*','proc/*','sys/*','tmp/*','run/*','mnt/*' \\
-      ,'media/*','lost+found','common/*'} /media/nevj/Linuxroothome/ /mnt  \\
+\item rsync -aAXvH --exclude=\{'dev/*','proc/*','sys/*','tmp/*','run/*','mnt/*' \\
+      ,'media/*','lost+found','common/*'\} /media/nevj/Linuxroothome/ /mnt  \\
 This will copy all directories except those excluded. \\
 In my case common is a data partition, I want to exclude that.
 \item do a {\em sync} before proceeding
 \end{enumerate}
 The {\em --exclude} option on {\em rsync} avoids copying psuedo filesystems that are populated at boot time and any mounts, especially /mnt which is the USB drive partition copied to.
+
+\subsubsection{Note on rsync}
+The {\em --exclude\{'dev/*',....\}} option on {\em rsync} used above used {\em brace expansion}. That only works if your shell is {\em bash} or {\em csh}. 
+
+You can test if it is going to work by doing
+\begin{verbatim}
+$ echo {a,b,c}
+a b c
+\end{verbatim}
+if it does not work you will get
+\begin{verbatim}
+$ echo {a,b,c}
+{a,b,c}
+\end{verbatim}
+If you get the latter, start {\em bash} before you run the {\em rsync} command.
+If you do not have {\em bash} download and install it.
+As a last resort you can modify the {\em rsync} command as follows.
+\begin{verbatim}
+rsync -aAXvH --exclude='dev/*' --exclude='proc/*' --exclude='sys/*' 
+  --exclude='tmp/*' --exclude='run/*' --exclude='mnt/*'
+   --exclude='media/*' --exclude='lost+found' --exclude='common/*' 
+   /media/nevj/Linuxroothome/ /mnt  
+\end{verbatim}
+That should work in any shell.
+It does not matter whether the quotes are single or double.
+
+\subsubsection{Copying from within an active Linux filesystem}
+This can be done. One should halt all user processes that are likely to write files first. The {\em rsync} command is slightly different in this case
+\begin{verbatim}
+rsync -aAXvH --exclude=\{'dev/*','proc/*','sys/*','tmp/*','run/*','mnt/*'
+      ,'media/*','lost+found','common/*'\} / /mnt 
+\end{verbatim}
+because one does not need to mount the root directory
 
 \subsection{Patch the /etc/fstab file and remove grub configuration}
 There may be entries in {/\em etc/fstab} which will need to be changed. In particular UUID's will need to be set to the correct values for any USB drive partitions. 
@@ -108,7 +141,7 @@ grub>
 If you get anything else there is an error.
 There is no grub menue, because we have not configured grub yet on the USB disk.
 
-We can not use grub commands to boot the copy of Linux which is on the USB disk as follows
+We can now use grub commands to boot the copy of Linux which is on the USB disk as follows
 \begin{verbatim}
 grub> linux /vmlinuz root=/dev/sdc3
 grub> initrd /initrd.img
