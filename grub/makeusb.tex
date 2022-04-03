@@ -124,10 +124,10 @@ mount /dev/sdc3 /mnt
 \end{verbatim} 
 where sdc3 is the root directory. Then install grub as follows
 \begin{verbatim}
-grub-install --boot-directory=/mnt/boot \\
-             --recheck \\
-             --removable \\
-             --targer=i386-ps \\
+grub-install --boot-directory=/mnt/boot 
+             --recheck 
+             --removable 
+             --targer=i386-pc 
              /dev/sdc
 \end{verbatim}
 where sdc is the usb drive device name. 
