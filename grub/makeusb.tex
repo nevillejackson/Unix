@@ -176,7 +176,27 @@ Then the acid test. Shutdown, remove the USB drive, put it in another computer, 
 
 
 \subsection{Booting in UEFI mode}
-Not implemented yet. There seems no reason why one can not do another grub-install  to the same USB drive only using the EFI-System parttion instead of the BIOS-grub partition. The drive would then be bootable in either mode. The two grubs would share a configuration, so one should not have to repeat the update-grub step.
+ There seems no reason why one can not do another grub-install  to the same USB drive only using the EFI-System parttion instead of the BIOS-grub partition. The drive would then be bootable in either mode. The two grubs would share a configuration, so one should not have to repeat the update-grub step.
+
+So lets do it. Mount the root directory of the USB drive as follows
+\begin{verbatim}
+mount /dev/sdc3 /mnt
+\end{verbatim}
+ where sdc3 is the root directory ( use {\em lsblk} to check, then install grub as follows
+\begin{verbatim}
+grub-install  --boot-directory=/mnt/boot
+              --recheck
+              --removable
+              --target=x86_64-efi
+              --efi-directory=/dev/sdc1
+\end{verbatim}
+ Notice that we dont specify a device , because the efi grub install does not write on the device, it writes in the EFI-System partiton.  This installs grub in UEFI mode.
+
+We dont need to repeat Section 2.5 or 2.6, because the grub configuration on the USB drive is already done using legacy grub. The two grubs share the same configuration files on te USB drive.
+
+\subsection{Test boot in UEFI mode}
+Reboot and set the BIOS to UEFI mode and choose the USB drive.  The grub menu belonging to the USB drive wil appear. Check out booting from this menu. 
+Then the acid test - boot the USB drive in another computerin UEFI mode. Mine works. I wish you luck.
 
 \subsection{Acknowledgment}
 Feedback from Edgar Hoffman is appreciated.
