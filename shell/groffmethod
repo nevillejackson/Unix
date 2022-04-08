@@ -1,0 +1,2 @@
+groff -m ms sh.nroff >junk.ps
+ps2pdf junk.ps bsdsh.pdf
