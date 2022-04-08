@@ -1,0 +1,198 @@
+An  Introduction  to  the UNIX Shell S. R. Bourne Murray Hill, NJ
+(Updated for 4.3BSD by Mark Seiden) The [4mshell‡[24m ‡ This  paper  de‐
+scribes  sh(1). If it’s the c shell (csh) you’re interested in, a
+good place to begin is William Joy’s paper  "An  Introduction  to
+the  C  shell"  (USD:4).   is a command programming language that
+provides an interface to the operating system.  Its features  in‐
+clude  control‐flow  primitives, parameter passing, variables and
+string substitution.  Constructs such as  [4mwhile,[24m  [4mif[24m  [4mthen[24m  [4melse,[0m
+[4mcase[24m  and  [4mfor[24m  are available.  Two‐way communication is possible
+between the [4mshell[24m and commands.  String‐valued parameters,  typi‐
+cally  file names or flags, may be passed to a command.  A return
+code is set by commands that may be used  to  determine  control‐
+flow, and the standard output from a command may be used as shell
+input.  The [4mshell[24m can modify the environment  in  which  commands
+run.   Input and output can be redirected to files, and processes
+that communicate through ‘pipes’ can be  invoked.   Commands  are
+found  by  searching directories in the file system in a sequence
+that can be defined by the user.  Commands  can  be  read  either
+from the terminal or from a file, which allows command procedures
+to be stored for later use.  1.0 Introduction The shell is both a
+command  language and a programming language that provides an in‐
+terface to the UNIX operating system.  This memorandum describes,
+with  examples, the UNIX shell.  The first section covers most of
+the everyday requirements of terminal  users.   Some  familiarity
+with UNIX is an advantage when reading this section; see, for ex‐
+ample, "UNIX for beginners".  unix beginn kernigh 1978 Section  2
+describes  those features of the shell primarily intended for use
+within shell procedures.  These include the  control‐flow  primi‐
+tives  and  string‐valued  variables  provided  by  the shell.  A
+knowledge of a programming language would be a help when  reading
+this  section.  The last section describes the more advanced fea‐
+tures of the shell.  References of the form "see [4mpipe[24m (2)" are to
+a  section  of  the  UNIX  manual.  seventh 1978 ritchie thompson
+1.1 Simple commands Simple commands consist of one or more  words
+separated  by  blanks.  The first word is the name of the command
+to be executed; any remaining words are passed  as  arguments  to
+the  command.   For example,         who is a command that prints
+the names of users logged in.  The command         ls −l prints a
+list of files in the current directory.  The argument [4m−l[24m tells [4mls[0m
+to print status information, size and the creation date for  each
+file.   1.2 Background commands  To  execute  a command the shell
+normally creates a new [4mprocess[24m and waits for  it  to  finish.   A
+command  may  be run without waiting for it to finish.  For exam‐
+ple,         cc pgm.c & calls the C compiler to compile the  file
+[4mpgm.c.[24m   The  trailing  [1m& [22mis an operator that instructs the shell
+not to wait for the command to finish.  To  help  keep  track  of
+such a process the shell reports its process number following its
+creation.  A list of currently active processes may  be  obtained
+using the [4mps[24m command.  1.3 Input output redirection Most commands
+produce output on the standard output that is initially connected
+to  the  terminal.  This output may be sent to a file by writing,
+for example,         ls −l >file The notation [4m>file[24m is interpret‐
+ed  by the shell and is not passed as an argument to [4mls.[24m  If [4mfile[0m
+does not exist then the shell creates it; otherwise the  original
+contents  of  [4mfile[24m  are replaced with the output from [4mls.[24m  Output
+may be appended to a file using the notation         ls  −l  file
+In  this  case [4mfile[24m is also created if it does not already exist.
+The standard input of a command may be taken from a file  instead
+of  the  terminal  by  writing, for example,         wc <file The
+command [4mwc[24m reads its standard input (in this case redirected from
+[4mfile[24m) and prints the number of characters, words and lines found.
+If only the number of lines is required then         wc −l  <file
+could  be used.  1.4 Pipelines and filters The standard output of
+one command may be connected to the standard input of another  by
+writing  the ‘pipe’ operator, indicated by , as in,         ls −l
+wc Two commands connected in this way constitute a  [4mpipeline[24m  and
+the  overall  effect is the same as         ls −l >file; wc <file
+except that no [4mfile[24m is used.  Instead the two processes are  con‐
+nected  by  a pipe (see [4mpipe[24m (2)) and are run in parallel.  Pipes
+are unidirectional and synchronization is achieved by halting  [4mwc[0m
+when  there  is  nothing  to read and halting [4mls[24m when the pipe is
+full.  A [4mfilter[24m is a  command  that  reads  its  standard  input,
+transforms  it in some way, and prints the result as output.  One
+such filter, [4mgrep,[24m selects from its input those lines  that  con‐
+tain  some  specified  string.  For example,         ls  grep old
+prints those lines, if any, of the output from  [4mls[24m  that  contain
+the  string  [4mold.[24m   Another  useful filter is [4msort[24m.  For example,
+        who  sort will print an  alphabetically  sorted  list  of
+logged  in  users.   A pipeline may consist of more than two com‐
+mands, for example,         ls  grep old  wc −l prints the number
+of file names in the current directory containing the string [4mold.[0m
+1.5 File name generation Many commands accept arguments which are
+file names.  For example,         ls −l main.c prints information
+relating to the file [4mmain.c[24m.  The shell provides a mechanism  for
+generating  a list of file names that match a pattern.  For exam‐
+ple,         ls −l *.c generates, as arguments to  [4mls,[24m  all  file
+names  in  the current directory that end in [4m.c.[24m  The character *
+is a pattern that  will  match  any  string  including  the  null
+string.   In  general [4mpatterns[24m are specified as follows.  Matches
+any string of characters including the null string.  Matches  any
+single character.  Matches any one of the characters enclosed.  A
+pair of characters separated by a minus will match any  character
+lexically  between the pair.  For example,         [a−z]* matches
+all names in the current directory beginning with one of the let‐
+ters [4ma[24m through [4mz.[24m          /usr/fred/test/?  matches all names in
+the directory [1m/usr/fred/test [22mthat consist of a single  character.
+If  no  file name is found that matches the pattern then the pat‐
+tern is passed, unchanged, as an  argument.   This  mechanism  is
+useful  both to save typing and to select names according to some
+pattern.  It may also  be  used  to  find  files.   For  example,
+        echo  /usr/fred/*/core  finds and prints the names of all
+[4mcore[24m files in sub‐directories of [1m/usr/fred.  [22m([4mecho[24m is a  standard
+UNIX  command  that  prints  its arguments, separated by blanks.)
+This last feature can be expensive, requiring a scan of all  sub‐
+directories  of [1m/usr/fred.  [22mThere is one exception to the general
+rules given for patterns.  The character ‘[1m.[22m’  at the start  of  a
+file name must be explicitly matched.          echo * will there‐
+fore echo all file names in the current directory  not  beginning
+with  ‘[1m.[22m’.           echo  [1m.[22m* will echo all those file names that
+begin with ‘[1m.[22m’.  This avoids inadvertent matching  of  the  names
+‘[1m.[22m’  and ‘[1m..[22m’  which mean ‘the current directory’ and ‘the parent
+directory’ respectively.  (Notice that [4mls[24m suppresses  information
+for  the files ‘[1m.[22m’ and ‘[1m..[22m’.)  1.6 Quoting Characters that have a
+special meaning to the shell, such as [1m< >  *  ?   &,  [22mare  called
+metacharacters.   A  complete  list of metacharacters is given in
+appendix B.  Any character preceded by a [1m\ [22mis  [4mquoted[24m  and  loses
+its   special   meaning,  if  any.   The  [1m\  [22mis  elided  so  that
+        echo \\?  will echo a single  [1m?,  [22mand          echo  \\\\
+will echo a single [1m\.  [22mTo allow long strings to be continued over
+more than one line the sequence [1m\newline [22mis ignored.  [1m\ [22mis conve‐
+nient  for quoting single characters.  When more than one charac‐
+ter needs quoting the above mechanism is clumsy and error  prone.
+A  string of characters may be quoted by enclosing the string be‐
+tween single quotes.  For example,         echo  xx´****´xx  will
+echo          xx****xx The quoted string may not contain a single
+quote but may contain newlines, which are preserved.  This  quot‐
+ing  mechanism  is  the most simple and is recommended for casual
+use.  A third quoting  mechanism  using  double  quotes  is  also
+available  that  prevents  interpretation  of  some  but  not all
+metacharacters.  Discussion of the details is deferred to section
+3.4.   1.7 Prompting  When  the  shell is used from a terminal it
+will issue a prompt before reading a command.   By  default  this
+prompt  is  ‘[1m$ [22m’.   It  may  be  changed  by saying, for example,
+        PS1=yesdear that sets the prompt to be  the  string  [4myes‐[0m
+[4mdear.[24m  If a newline is typed and further input is needed then the
+shell will issue the prompt ‘[1m> [22m’.  Sometimes this can  be  caused
+by mistyping a quote mark.  If it is unexpected then an interrupt
+(DEL) will return the shell to read another command.  This prompt
+may   be   changed   by  saying,  for  example,          PS2=more
+1.8 The shell and login Following [4mlogin[24m (1) the shell  is  called
+to  read  and execute commands typed at the terminal.  If the us‐
+er’s login directory contains the file [1m.profile [22mthen  it  is  as‐
+sumed to contain commands and is read by the shell before reading
+any commands from the terminal.  1.9 Summary
+
+[1mls[0m
+Print the names of files in the current directory.  [1mls >file[0m
+Put the output from [4mls[24m into [4mfile.[24m  [1mls  wc −l[0m
+Print the number of files in the current directory.  [1mls  grep old[0m
+Print those file names containing the string [4mold.[24m  [1mls   grep  old[0m
+[1mwc −l[0m
+Print the number of files whose name contains the string [4mold.[24m  [1mcc[0m
+[1mpgm.c &[0m
+Run [4mcc[24m in the background.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
