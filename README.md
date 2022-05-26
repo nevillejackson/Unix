@@ -10,5 +10,11 @@ The subdirectory _grub_ contains procedure for transferring a Linux installed on
 ## Shell usage
 The subdirectory _shell_ contains documents from BSD Unix describing the original sh and csh shells written by the authors of these shells.
 
+## Lumina Desktop Environment
+The subdirectory _voidlumina_ contains an investigation of the Lumina Desktop Environment as implemented in Void Linux. This is not an attempt to resurrent Project Trident. It is just an assessment of the Lumina Desktop in a Linux implementation.
+
+## Waterfox Browser
+The subdirectory _waterfox_ contains an article on installing the Waterfox browser in Void Linux.
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on variious issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
