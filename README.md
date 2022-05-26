@@ -17,4 +17,4 @@ The subdirectory _voidlumina_ contains an investigation of the Lumina Desktop En
 The subdirectory _waterfox_ contains an article on installing the Waterfox browser in Void Linux.
 
 ## What does this repository hope to achieve ##
-A bringing together of papers on variious issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
+A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
