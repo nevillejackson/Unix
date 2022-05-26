@@ -464,12 +464,12 @@ The Lxdm screen offers a choice of {\em Fluxbox} or {\em Lumina} desktop environ
 On the command line, Insight is called {\em lumina-fm} and it has a man page. 
 Insight File Manager, on its own,   has limited capability. It will only display filesystems mounted to the current system. It will not scan for other unmounted partitions or disks, in the manner of  Thunar or Dolphin . 
 
-The {\em External Devices} tab in Insighr File Manager says "Scan for Devices" when clicked, but it shows none. I eventually discovered that it needs a helper daemon {\em ldm} called Lightweight Device Munter. So
+The {\em External Devices} tab in Insighr File Manager says "Scan for Devices" when clicked, but it shows none. I eventually discovered that it needs a helper daemon {\em ldm} called Lightweight Device Mounter. So
 \begin{verbatim}
 xbps-install ldm
 ln -s /etc/sv/ldm /var/service/ldm
 \end{verbatim}
-and magically the External Devices tab in Insight now shows a list of all hard disk partitions and any connected USB drives. A {\em df} shown that it mounts all devices to subdirectories in /mnt, even if not accessed. So that is different, Thunar and Dolphin only mount devices if accessed. For example
+and magically the External Devices tab in Insight now shows a list of all hard disk partitions and any connected USB drives. A {\em df} shows that it mounts all devices to subdirectories in /mnt, even if not accessed. So that is different, Thunar and Dolphin only mount devices if accessed. For example
 \begin{verbatim}
 [nevj@trinity ~]$ df
 Filesystem      1K-blocks     Used Available Use% Mounted on
@@ -495,7 +495,7 @@ tmpfs            32918284       12  32918272   1% /tmp
 \end{verbatim}
 Everything is mounted!  That might annoy some, but it actually suits me. I do a lot of mounts looking at other systems.
 
- Insight's display of files and folders in more than adequate. It has thumbnails in an unusual arrangement alongside the filenames.
+ Insight's display of files and folders is more than adequate. It has thumbnails in an unusual arrangement alongside the filenames.
 
 I thought it was worth having a look at other possible choices of File Manager. Within those built on Qt there are PCManFM, Qtfm, and Dolphin. I tried PCManFM and it offered nothing over Insight. Dolphin, of course , is well known , but it comes with a huge KDE baggage. So I settled for Qtfm, which according to the man pages deals with automounts of USB removable devices via a daemon called {\em qtfm-tray}. I could not get Qtfm to mount a removable USB drive, but I kept it as an alternative to Insight with a more conventional thumbnail display of files and folders.  In my opinion Insight is a better File Manager than Qtfm.
 
