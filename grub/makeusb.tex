@@ -182,13 +182,19 @@ So lets do it. Mount the root directory of the USB drive as follows
 \begin{verbatim}
 mount /dev/sdc3 /mnt
 \end{verbatim}
- where sdc3 is the root directory ( use {\em lsblk} to check, then install grub as follows
+ where sdc3 is the root directory ( use {\em lsblk} to check.
+Ensure the EFISystem partition on the usb drive is mounted
+\begin{verbatim}
+mount /dev/sdc1 /media/EFISYSTEM
+\end{verbatim}
+
+ Then install grub as follows
 \begin{verbatim}
 grub-install  --boot-directory=/mnt/boot
               --recheck
               --removable
               --target=x86_64-efi
-              --efi-directory=/dev/sdc1
+              --efi-directory=/media/EFISYSTEM
 \end{verbatim}
  Notice that we dont specify a device , because the efi grub install does not write on the device, it writes in the EFI-System partiton.  This installs grub in UEFI mode.
 
