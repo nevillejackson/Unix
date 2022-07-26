@@ -6,9 +6,9 @@
 \usepackage{graphicx,lscape,subfigure}
  
 
-\title{Installing docker in Void Linux}
+\title{Learning to use Docker in Void Linux}
 \author{Neville Jackson}
-\date{30 June 2022} 
+\date{26 July 2022} 
 
 \begin{document} 
 
@@ -813,9 +813,284 @@ Server:
 
 At last, I think I understand container management.
 
-\subsection{Redo the Dockerfile}
+\subsection{An improved  Dockerfile}
+The next step is to do all the work in the Dockerfile, instead of interactively. So lets attempt to rewrite the Dockerfile as follows
+\begin{verbatim}
+# Use the latest Alpine parent image
+FROM alpine
+# set the working directory inside the container
+WORKDIR /home/Folli
+# copy current project directory to workdir
+COPY . /home/Folli
+# install support packages
+RUN apk add make && \
+    apk add gcc && \
+    apk add libc-dev && \
+    make /home/Folli
+# run the test script
+CMD ["sh -ex folli.scr"]
+\end{verbatim}
+ There is more to it this time than fetching alpine and copying the Folli project directory into the container filesystem. We usr RUN to execute the {\em apk} commands in alpine to install needed packages. We use WORKDIR to define where to put the Folli directory in the alpine filesystem. We use CMD to run the rttest script.
+
+I am not sure about the WORKDIR command. The official  documentation~\cite{dock:07} on constructing Dockerfiles is hard to follow. The third party doc~\cite{dock:05} I found told me this
+\begin{verbatim}
+WORKDIR sets the path where the command, defined with CMD, is to be executed.
+\end{verbatim}
+but the best  overall guide~\cite{dock:06} actually explained things better, while  this~\cite{dock:09} has the best example Dockerfile.
+
+I am now confident about my Dockerfile; the only way to proceed is to use it to build a Docker Image , and learn from mistakes. So here is the build, this time we might try to give it a name, so it doesnt end up as $<none>$
+\begin{verbatim}
+# docker build -t nevj/dockerfiletest:version2 .
+Sending build context to Docker daemon  15.36kB
+Step 1/5 : FROM alpine
+ ---> d7d3d98c851f
+Step 2/5 : WORKDIR /home/Folli
+ ---> Running in 7d84b0d79343
+Removing intermediate container 7d84b0d79343
+ ---> 4ce5883562a1
+Step 3/5 : COPY . /home/Folli
+ ---> 44fe56c74e9f
+Step 4/5 : RUN apk add make &&     apk add gcc &&     apk add libc-dev &&     make /home/Folli
+ ---> Running in 238dee4d1bdc
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.16/community/x86_64/APKINDEX.tar.gz
+(1/1) Installing make (4.3-r0)
+Executing busybox-1.35.0-r15.trigger
+OK: 6 MiB in 15 packages
+(1/10) Installing libgcc (11.2.1_git20220219-r2)
+(2/10) Installing libstdc++ (11.2.1_git20220219-r2)
+(3/10) Installing binutils (2.38-r3)
+(4/10) Installing libgomp (11.2.1_git20220219-r2)
+(5/10) Installing libatomic (11.2.1_git20220219-r2)
+(6/10) Installing gmp (6.2.1-r2)
+(7/10) Installing isl22 (0.22-r0)
+(8/10) Installing mpfr4 (4.1.0-r0)
+(9/10) Installing mpc1 (1.2.1-r0)
+(10/10) Installing gcc (11.2.1_git20220219-r2)
+Executing busybox-1.35.0-r15.trigger
+OK: 109 MiB in 25 packages
+(1/2) Installing musl-dev (1.2.3-r0)
+(2/2) Installing libc-dev (0.7.2-r3)
+OK: 119 MiB in 27 packages
+make: Nothing to be done for '/home/Folli'.
+Removing intermediate container 238dee4d1bdc
+ ---> a022eab277ad
+Step 5/5 : CMD ["sh -ex folli.scr"]
+ ---> Running in 3a033ceb3035
+Removing intermediate container 3a033ceb3035
+ ---> d90895ba8dc3
+Successfully built d90895ba8dc3
+Successfully tagged nevj/dockerfiletest:version2
+# 
+\end{verbatim}
+ Seems to have done something, but what is that message about {\em make: Nothing to be done for '/home/Folli'.} ?
+ 
+The new image is present
+\begin{verbatim}
+# docker images
+REPOSITORY            TAG        IMAGE ID       CREATED              SIZE
+nevj/dockerfiletest   version2   d90895ba8dc3   About a minute ago   124MB
+nevj/dockerfiletest   version1   d15df250f7ac   25 hours ago         124MB
+alpine                latest     d7d3d98c851f   7 days ago           5.53MB
+ubuntu                latest     27941809078c   7 weeks ago          77.8MB
+# 
+\end{verbatim}
+ and {\em docker info} now says there are 8 images? Clearly it is counting something else apart from what we see with {\em docker images}?
+
+We need to run that new (version2) image and see if things are setup as intended.
+\begin{verbatim}
+# docker run --name my_version2_container -it d90895ba8dc3 /bin/ash
+/home/Folli # pwd
+/home/Folli
+/home/Folli # ls -aF
+./             .dockerignore  Makefile       folli.h
+../            Dockerfile     folli.c        folli.scr
+/home/Folli # 
+\end{verbatim}
+ Well, it has setup in /home/folli instead of / , and the base files are present, but where is the stuff made by make? 
+It is not in /home/Folli, and not in / , so I have to presume it did not do the make. That message about make meant something.
+
+Looking at the Dockerfile again, it would seem I have a mistake on the {\em make} line. The target /home/Folli is wrong, {\em make} does not have a file argument, it has a TARGET which is defined in the Makefile. THe targer name is {\em folli}, so it should read {\em make foolli} or just {\em make} because that is the default target. Here is the patched up Dockerfile
+\begin{verbatim}
+# Use the latest Alpine parent image
+FROM alpine
+# set th working directory inside the container
+WORKDIR /home/Folli
+# copy current project directory to workdir
+COPY . /home/Folli
+# install support packages
+RUN apk add make && \
+    apk add gcc && \
+    apk add libc-dev && \
+    make 
+# run the test script
+CMD ["sh -ex folli.scr >&out"]
+\end{verbatim}
+ I have also added something to the CMD line, to save the output of the test script.
+
+ Now we redo the build using the above Dockerfile
+\begin{verbatim}
+# docker build -t nevj/dockerfiletest:version2 .^[[D^[[D^C
+# 
+# docker build -t nevj/dockerfiletest:version3 .
+Sending build context to Docker daemon  15.36kB
+Step 1/5 : FROM alpine
+ ---> d7d3d98c851f
+Step 2/5 : WORKDIR /home/Folli
+ ---> Using cache
+ ---> 4ce5883562a1
+Step 3/5 : COPY . /home/Folli
+ ---> 53a6850eb717
+Step 4/5 : RUN apk add make &&     apk add gcc &&     apk add libc-dev &&     make
+ ---> Running in b6937b87177b
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.16/community/x86_64/APKINDEX.tar.gz
+(1/1) Installing make (4.3-r0)
+Executing busybox-1.35.0-r15.trigger
+OK: 6 MiB in 15 packages
+(1/10) Installing libgcc (11.2.1_git20220219-r2)
+(2/10) Installing libstdc++ (11.2.1_git20220219-r2)
+(3/10) Installing binutils (2.38-r3)
+(4/10) Installing libgomp (11.2.1_git20220219-r2)
+(5/10) Installing libatomic (11.2.1_git20220219-r2)
+(6/10) Installing gmp (6.2.1-r2)
+(7/10) Installing isl22 (0.22-r0)
+(8/10) Installing mpfr4 (4.1.0-r0)
+(9/10) Installing mpc1 (1.2.1-r0)
+(10/10) Installing gcc (11.2.1_git20220219-r2)
+Executing busybox-1.35.0-r15.trigger
+OK: 109 MiB in 25 packages
+(1/2) Installing musl-dev (1.2.3-r0)
+(2/2) Installing libc-dev (0.7.2-r3)
+OK: 119 MiB in 27 packages
+cc -v  -g  -static   -c -o folli.o folli.c
+Using built-in specs.
+COLLECT_GCC=cc
+Target: x86_64-alpine-linux-musl
+Configured with: /home/buildozer/aports/main/gcc/src/gcc-11.2.1_git20220219/configure --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --build=x86_64-alpine-linux-musl --host=x86_64-alpine-linux-musl --target=x86_64-alpine-linux-musl --with-pkgversion='Alpine 11.2.1_git20220219' --enable-checking=release --disable-fixed-point --disable-libstdcxx-pch --disable-multilib --disable-nls --disable-werror --disable-symvers --enable-__cxa_atexit --enable-default-pie --enable-default-ssp --enable-cloog-backend --enable-languages=c,c++,d,objc,go,fortran,ada,jit --disable-libssp --disable-libmpx --disable-libmudflap --disable-libsanitizer --enable-shared --enable-threads --enable-tls --enable-host-shared --with-system-zlib --with-linker-hash-style=gnu
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 11.2.1 20220219 (Alpine 11.2.1_git20220219) 
+COLLECT_GCC_OPTIONS='-v' '-g' '-static' '-c' '-o' 'folli.o' '-mtune=generic' '-march=x86-64'
+ /usr/libexec/gcc/x86_64-alpine-linux-musl/11.2.1/cc1 -quiet -v folli.c -quiet -dumpbase folli.c -dumpbase-ext .c -mtune=generic -march=x86-64 -g -version -o /tmp/ccgEoNDL.s
+GNU C17 (Alpine 11.2.1_git20220219) version 11.2.1 20220219 (x86_64-alpine-linux-musl)
+	compiled by GNU C version 11.2.1 20220219, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.22-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/local/include"
+ignoring nonexistent directory "/usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/include"
+ignoring nonexistent directory "/usr/include/fortify"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/include
+ /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/include
+End of search list.
+GNU C17 (Alpine 11.2.1_git20220219) version 11.2.1 20220219 (x86_64-alpine-linux-musl)
+	compiled by GNU C version 11.2.1 20220219, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.22-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 032e78b3e0ace96e0ed58573fd512cc9
+folli.c:23:1: warning: return type defaults to 'int' [-Wimplicit-int]
+   23 | main(int argc,char *argv[])
+      | ^~~~
+COLLECT_GCC_OPTIONS='-v' '-g' '-static' '-c' '-o' 'folli.o' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/bin/as -v --gdwarf-5 --64 -o folli.o /tmp/ccgEoNDL.s
+GNU assembler version 2.38 (x86_64-alpine-linux-musl) using BFD version (GNU Binutils) 2.38
+COMPILER_PATH=/usr/libexec/gcc/x86_64-alpine-linux-musl/11.2.1/:/usr/libexec/gcc/x86_64-alpine-linux-musl/11.2.1/:/usr/libexec/gcc/x86_64-alpine-linux-musl/:/usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/:/usr/lib/gcc/x86_64-alpine-linux-musl/:/usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/bin/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/:/usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/lib/../lib/:/usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/lib/:/usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-g' '-static' '-c' '-o' 'folli.o' '-mtune=generic' '-march=x86-64' '-dumpdir' 'folli.'
+gcc  -o folli  folli.o  -lm   
+Removing intermediate container b6937b87177b
+ ---> ba1b247845a7
+Step 5/5 : CMD ["sh -ex folli.scr >&out"]
+ ---> Running in bfe533ca7e81
+Removing intermediate container bfe533ca7e81
+ ---> 3780c79c60ea
+Successfully built 3780c79c60ea
+Successfully tagged nevj/dockerfiletest:version3
+# 
+\end{verbatim}
+ Now it looks loke {\em make} has run successfully this time. So we run this Version3 image and check
+\begin{verbatim}
+# docker run --name my_version3_container -it nevj/dockerfiletest:version3 /bin/ash
+/home/Folli # pwd
+/home/Folli
+/home/Folli # ls -aF
+./             .dockerignore  Makefile       folli.c        folli.o
+../            Dockerfile     folli*         folli.h        folli.scr
+/home/Folli # 
+\end{verbatim}
+ OK, the {\em make} has worked, because folli, and folli.o are present, but there is no file {\em out} from running the folli.scr script? 
+
+So run it interactively to check
+\begin{verbatim}
+/home/Folli # sh -ex folli.scr >&out
+/home/Folli # ls
+Dockerfile  folli       folli.h     folli.scr
+Makefile    folli.c     folli.o     out
+
+/home/Folli # head out
++ ./folli
+ number of primary sites 2000000
+ So/P ratio   3.00
+ growthrate - slope of log_wt/log_age line  4.30345
+ growth intercept - of log_wt/log_age line 0.0000020170
+ follicle initiation rate - increase per timeincrement per cm sq 450.0000
+ time of start of primary follicle initiation period       64
+ time of start of secondary original follicle initiation period       86
+ number of founder cells at time zero 100000000.0
+ average number of cells per p,so,sd follicle  35.000   33.000   30.000 
+\end{verbatim}
+ Yes, the script , and the command to run it are OK in that environment. Must be something wrong with the CMD statement in Dockerfile. It looks like it might need a full path to the executable, so change it to 
+\begin{verbatim}
+.....
+# run the test script
+CMD ["sh -ex /home/Folli/folli.scr >&/home/Folli/out"]
+\end{verbatim}
+Then build yet another version
+\begin{verbatim}
+# docker build -t nevj/dockerfiletest:version4 .
+Sending build context to Docker daemon  15.36kB
+Step 1/5 : FROM alpine
+.......
+Step 5/5 : CMD ["sh -ex /home/Folli/folli.scr >&/home/Folli/out"]
+ ---> Running in bd6df7418d48
+Removing intermediate container bd6df7418d48
+ ---> f7acbfc180ee
+Successfully built f7acbfc180ee
+Successfully tagged nevj/dockerfiletest:version4
+# 
+\end{verbatim}
+Then run version 4 
+\begin{verbatim}
+# docker run --name my_version_4_container -it nevj/dockerfiletest:version4 /bin/ash
+
+/home/Folli # ls -aF
+./             .dockerignore  Makefile       folli.c        folli.o
+../            Dockerfile     folli*         folli.h        folli.scr
+/home/Folli # 
+\end{verbatim}
+So still no output from running the shellscript. Otherwise OK. I amm giving up on the CMD line. The documentation is no help and I have run out of guesses. I dont understand why one uses CMD for this and RUN for all the apt and make commands?  One of the tutorial  documents seems to indicate you use RUN for building the application, and CMD for running the application. Well I followed that and arrived  here.  Clearly there is a gap in understanding.
 
 \section{Discussion}
+There is more to learn. Doing it all with the command line is not the problem. The Docker Desktop GUI would not help with understanding how to build a Dockerfile. It might help with managing all the images and containers that one accumulates. 
+
+The lessons so far about learning to use docker are
+\begin{itemize}
+\item make sure docker is installed
+\item start by running a container built from some simple DockerHub parent image such as the hello-world image
+\item learn how to usr docker --help
+\item learn how to manage images and containers
+\item run a container you can interact with , and practice doing things inside it.
+\item start to build your own application, and learn to use a Dockerfile to do this
+\item read the online documentation... you will be disappointed.
+\end{itemize}
+
+One might get the impression that docker is only for people who build software.  While it is certainly used by software builders, like Github, that is not the only possible use. 
+
+Containers are a general method of packaging any segment of user space, even something interactive and GUI driven, like a browser.  They are not just another package system, docker containers are very portable, they are guaranteed to run in any system with the same architecture and be unaffected by other things going on outside the container. So they can be used to share pieces of one's work environment. 
+
+One of the things that is under discussion in the itsFOSS community is to try and improve the way people share things about their linux systems. There has to be something better than text and static pictures. Containers, whether they be docker or something else, may have a role here.
 
 
 
@@ -846,20 +1121,25 @@ Dockerfile Guide
 URL https://medium.com/@BeNitinAgarwal/best-practices-for-working-with-dockerfiles-fb2d22b78186
 
 \bibitem{dock:05}
-Dockerfile Guide
+Docker Basics: How to use Dockerfiles
 URL https://thenewstack.io/docker-basics-how-to-use-dockerfiles/
 
 \bibitem{dock:06}
-Dockerfile Guide
+A Beginners Guide to Understanding and Building Docker Images
 URL https://jfrog.com/knowledge-base/a-beginners-guide-to-understanding-and-building-docker-images/
+
+\bibitem{dock:07}
+Best practices for writing Dockerfiles
+URL https://docs.docker.com/develop/develop-images/dockerfile\_best-practices/
+
+
+\bibitem{dock:09}
+Creating a Docke Image for your Application
+URL https://www.stereolabs.com/docs/docker/creating-your-image/
 
 \bibitem{void:01}
 Void Linux Docker Images
 URL https://github.com/void-linux/void-docker
-
-\bibitem{foss:21}
-FOSS article on Project Trident
-URL https://news.itsfoss.com/project-trident-discontinues/
 
 
 \bibitem{libr:22}
