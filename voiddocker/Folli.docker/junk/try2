@@ -1,0 +1,13 @@
+# docker build .
+Sending build context to Docker daemon  15.87kB
+Step 1/12 : ARG BOOTSTRAP_SOURCE=ghcr.io/void-linux/docker-bootstrap
+Step 2/12 : ARG BOOTSTRAP_VERSION=latest
+Step 3/12 : FROM ${BOOTSTRAP_SOURCE}:${BOOTSTRAP_VERSION} as build
+latest: Pulling from void-linux/docker-bootstrap
+5c77d62e5839: Pull complete 
+c1580f1461a4: Pull complete 
+Digest: sha256:728ab39730eea00fc87d9056ae72a2c37b9f019ef887a87caa1bacd33688e0f8
+Status: Downloaded newer image for ghcr.io/void-linux/docker-bootstrap:latest
+ ---> 6c3c836cab3f
+Step 4/12 : COPY keys/* /target/var/db/xbps/keys/
+COPY failed: no source files were specified

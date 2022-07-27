@@ -1,0 +1,25 @@
+Script started on 2022-07-24 20:00:29+10:00 [TERM="xterm-256color" TTY="/dev/pts/2" COLUMNS="83" LINES="20"]
+# docker build .
+Sending build context to Docker daemon   42.5kB
+Step 1/12 : ARG BOOTSTRAP_SOURCE=ghcr.io/void-linux/docker-bootstrap
+Step 2/12 : ARG BOOTSTRAP_VERSION=latest
+Step 3/12 : FROM ${BOOTSTRAP_SOURCE}:${BOOTSTRAP_VERSION} as build
+ ---> 6c3c836cab3f
+Step 4/12 : ARG REPOSITORY=https://repo-us.voidlinux.org
+ ---> [Warning] The requested image's platform (linux/arm64) does not match the detected host platform (linux/amd64) and no specific platform was requested
+ ---> Running in 45e69911ddc0
+Removing intermediate container 45e69911ddc0
+ ---> 027e82479db9
+Step 5/12 : ARG ARCH=x86_64
+ ---> [Warning] The requested image's platform (linux/arm64) does not match the detected host platform (linux/amd64) and no specific platform was requested
+ ---> Running in afa8da013eef
+Removing intermediate container afa8da013eef
+ ---> 8c666ed8d229
+Step 6/12 : RUN         case "${ARCH}" in         aarch64*)             export REPOSITORIES="--repository=${REPOSITORY}/current/aarch64" ;;         *-musl)             export REPOSITORIES="--repository=${REPOSITORY}/current/musl" ;;         *)             export REPOSITORIES="--repository=${REPOSITORY}/current" ;;         esac;         XBPS_ARCH=${ARCH} xbps-install -yMU         $REPOSITORIES         -r /target         xbps base-files dash coreutils grep run-parts sed gawk &&         rm -rf /target/var/cache/
+ ---> [Warning] The requested image's platform (linux/arm64) does not match the detected host platform (linux/amd64) and no specific platform was requested
+ ---> Running in 498e3c37b2de
+[91mexec /bin/sh: exec format error
+[0mThe command '/bin/sh -c case "${ARCH}" in         aarch64*)             export REPOSITORIES="--repository=${REPOSITORY}/current/aarch64" ;;         *-musl)             export REPOSITORIES="--repository=${REPOSITORY}/current/musl" ;;         *)             export REPOSITORIES="--repository=${REPOSITORY}/current" ;;         esac;         XBPS_ARCH=${ARCH} xbps-install -yMU         $REPOSITORIES         -r /target         xbps base-files dash coreutils grep run-parts sed gawk &&         rm -rf /target/var/cache/' returned a non-zero code: 1
+# 
+
+Script done on 2022-07-24 20:01:22+10:00 [COMMAND_EXIT_CODE="1"]

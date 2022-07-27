@@ -1,0 +1,16 @@
+Script started on 2022-07-24 19:37:40+10:00 [TERM="xterm-256color" TTY="/dev/pts/2" COLUMNS="83" LINES="20"]
+# docker build .
+Sending build context to Docker daemon  23.04kB
+Step 1/16 : FROM alpine:3.12 as stage0
+ ---> 24c8ece58a1a
+Step 2/16 : ARG REPOSITORY=https://alpha.de.repo.voidlinux.org
+ ---> Using cache
+ ---> f12eb188e65d
+Step 3/16 : ARG ARCH=x86_64
+ ---> Using cache
+ ---> 41c9e507896d
+Step 4/16 : COPY /var/db/xbps/keys/* /target/var/db/xbps/keys/
+COPY failed: no source files were specified
+# exit
+
+Script done on 2022-07-24 19:41:50+10:00 [COMMAND_EXIT_CODE="1"]

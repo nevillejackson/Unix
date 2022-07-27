@@ -1,0 +1,32 @@
+Script started on 2022-07-24 19:44:48+10:00 [TERM="xterm-256color" TTY="/dev/pts/2" COLUMNS="83" LINES="20"]
+# docjker    ker build .
+Sending build context to Docker daemon  24.58kB
+Step 1/15 : FROM alpine:3.12 as stage0
+ ---> 24c8ece58a1a
+Step 2/15 : ARG REPOSITORY=https://alpha.de.repo.voidlinux.org
+ ---> Using cache
+ ---> f12eb188e65d
+Step 3/15 : ARG ARCH=x86_64
+ ---> Using cache
+ ---> 41c9e507896d
+Step 4/15 : RUN apk add ca-certificates curl &&   curl ${REPOSITORY}/static/xbps-static-latest.$(uname -m)-musl.tar.xz |     tar Jx &&   XBPS_ARCH=${ARCH} xbps-install.static -yMU     --repository=${REPOSITORY}/current     --repository=${REPOSITORY}/current/musl     -r /target     base-minimal
+ ---> Running in a34f404d5fcf
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/main/x86_64/APKINDEX.tar.gz
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/community/x86_64/APKINDEX.tar.gz
+(1/4) Installing ca-certificates (20211220-r0)
+(2/4) Installing nghttp2-libs (1.41.0-r0)
+(3/4) Installing libcurl (7.79.1-r1)
+(4/4) Installing curl (7.79.1-r1)
+Executing busybox-1.31.1-r22.trigger
+Executing ca-certificates-20211220-r0.trigger
+OK: 7 MiB in 18 packages
+[91m  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent [0m[91m   Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:-[0m[91m-     0[0m[91m  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--    [0m[91m 0[0m[91m  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0[0m[91m  1 4411k    1 81902    0     0  32789      0  0:02:17  0:00:02  0:02:15 32787[0m[91m  3 4411k    3  175k    0     0  47125      0  0:01:35  0:00:03  0:01:32 47125[0m[91m 12 4411k   12  543k    0     0   120k      0  0:00:36  0:00:04  0:00:32  12[0m[91m0k[0m[91m 15 4411k   15  687k    0     0   125k      0  0:00:35  0:00:05  0:00[0m[91m:30  140k[0m[91m 19 4411k   19  847k    0     0   130k      0  0:00:33  0:00:06  0:00:27  [0m[91m175k[0m[91m 22 4411k   22 1007k    0     0   134k      0  0:00:[0m[91m32  0:00:07  0:00:25  185k[0m[91m 27 4411k   27 1199k    0     0   141k      0  0:00:31  0:00:08  0:00:[0m[91m23  218k[0m[91m 31 4411k   31 1407k    0     0   148k      0  0:00:29  0:00:09  0:0[0m[91m0:20  172k[0m[91m 36 4411k   36 1615k    0     0   153k      0  0:00:28  0:00:10  0:00:18  185[0m[91mk[0m[91m 41 4411k   41 1839k    0     0   160k      0  0:00:27  0:00:11  0:00:1[0m[91m6  198k[0m[91m 46 4411k   46 2063k    0     0   165k      0  0:00:26  0:00:12  0:00:14 [0m[91m 211k[0m[91m 52 4411k   52 2303k    0     0   170k      0  0:00:25  0:00:13  0:00:12  220k[0m[91m 58 4411k   58 2559k    0     0   176k      0  0:00:24  0:00:14  0:00:10  230k[0m[91m 64 4411k   64 2831k    0     0   182k      0  0:00:24  0:00:15  0:00:09[0m[91m  243k[0m[91m 70 4411k   70 3103k    0     0   188k      0  0:00:23  0:00:16  0:00:07  252k[0m[91m 77 4411k   77 3407k    0     0   194k      0  0:00:22  0:00:17  0:00:05  268k[0m[91m 83 4411k   83 3695k    0     0   199k      0  0:00:22  0:00:18  0:00:04  27[0m[91m8k[0m[91m 90 4411k   90 3983k    0     0   204k      0  0:00:21  0:00:19  0:00:02  284k[0m[91m 96 4411k   96 4271k    0     0   208k      0  0:00:21  0:00:20  0:00:01  287k[0m[91m100 4411k  100 4411k    0     0   210k      0  0:00:20  0:00:20 --:--:--  29[0m[91m4k
+[0m`https://alpha.de.repo.voidlinux.org/current' repository has been RSA signed by "Void Linux"
+[91mDo you want to import this public key? [Y/n] [0m[91mPackage 'base-minimal' not found in repository pool.
+[0mFingerprint: 60:ae:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d
+The command '/bin/sh -c apk add ca-certificates curl &&   curl ${REPOSITORY}/static/xbps-static-latest.$(uname -m)-musl.tar.xz |     tar Jx &&   XBPS_ARCH=${ARCH} xbps-install.static -yMU     --repository=${REPOSITORY}/current     --repository=${REPOSITORY}/current/musl     -r /target     base-minimal' returned a non-zero code: 2
+# 
+
+Script done on 2022-07-24 19:46:35+10:00 [COMMAND_EXIT_CODE="2"]
