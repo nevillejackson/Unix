@@ -8,7 +8,7 @@
 
 \title{Learning to use Docker in Void Linux}
 \author{Neville Jackson}
-\date{26 July 2022} 
+\date{29 July 2022} 
 
 \begin{document} 
 
@@ -242,7 +242,7 @@ Deleted: sha256:e07ee1baac5fae6a26f30cabfe54a36d3402f96afda318fe0a96cec4ca393359
 \section{Docker Desktop}
 We have been using the command line interface (CLI) to docker, which is the void package {\em docker-cli}. There is a Docker Desktop available from the docker website~\cite{dock:01} as a .deb.or .rpm file.  Void cannot use .deb.or .rpm files, and there does not seem to be a Void Docker Desktop package, so we are stuck with the CLI in Void.
 
-The Docker Desktop install webpage~\cite{dock:01} says that in addition to the .deb or .rpm package, Docker Desktop requires KVM support, and QEMO, and Gnome or KDE DTE. My Void installation has none of those installed. The KVM and QEMU packages exist
+The Docker Desktop install webpage~\cite{dock:01} says that in addition to the .deb or .rpm package, Docker Desktop requires KVM support, and QEMU, and Gnome or KDE DTE. My Void installation has none of those installed. The KVM and QEMU packages exist
 \begin{verbatim}
 xbps-query -Rs KVM
 [-] aqemu-0.9.4_1                       GUI to QEMU and KVM emulators, writte...
@@ -1103,7 +1103,26 @@ Then run version 4
 ../            Dockerfile     folli*         folli.h        folli.scr
 /home/Folli # 
 \end{verbatim}
-So still no output from running the shellscript. Otherwise OK. I amm giving up on the CMD line. The documentation is no help and I have run out of guesses. I dont understand why one uses CMD for this and RUN for all the apt and make commands?  One of the tutorial  documents seems to indicate you use RUN for building the application, and CMD for running the application. Well I followed that and arrived  here.  Clearly there is a gap in understanding.
+So still no output from running the shellscript. Otherwise OK. I am giving up on the CMD line. The documentation is no help and I have run out of guesses. I dont understand why one uses CMD for this and RUN for all the apt and make commands?  One of the tutorial  documents seems to indicate you use RUN for building the application, and CMD for running the application. Well I followed that and arrived  here.  Clearly there is a gap in understanding.
+
+Further consideration leads to the view that running the test script {\em folli.scr} should be done in the RUN section, preferably using {\em make}. CMD should only be used for starting an interactive shell. Here is the revised Dockerfile
+\begin{verbatim}
+# Use the latest Alpine parent image
+FROM alpine
+# set th working directory inside the container
+WORKDIR /home/Folli
+# copy current project directory to workdir
+COPY . /home/Folli
+# install support packages, complie and test
+RUN apk add make && \
+    apk add gcc && \
+    apk add libc-dev && \
+    make folli  && \
+    make test
+# run the test script
+CMD ["/bin/sh"]
+\end{verbatim}
+ This version works. The test script writes its output file in the container filesystem.
 
 \section{Discussion}
 There is more to learn. Doing it all with the command line is not the problem. The Docker Desktop GUI would not help with understanding how to build a Dockerfile. It might help with managing all the images and containers that one accumulates. 
@@ -1119,9 +1138,11 @@ The lessons so far about learning to use docker are
 \item read the online documentation... you will be disappointed.
 \end{itemize}
 
+Dont take my dissatisfaction with online documentation to heart. Rosika Schreck has discovered a really helpful online book called "Docker Containerization Cookbook” - Hot Recipes for Docker Automation"~\cite{dock:10}
+
 One might get the impression that docker is only for people who build software.  While it is certainly used by software builders, like Github, that is not the only possible use. 
 
-Containers are a general method of packaging any segment of user space, even something interactive and GUI driven, like a browser.  They are not just another package system, docker containers are very portable, they are guaranteed to run in any system with the same architecture and be unaffected by other things going on outside the container. So they can be used to share pieces of one's work environment. 
+Containers are a general method of packaging any segment of user space, even something interactive and GUI driven, like a browser.  They are not just another package system, docker containers are very portable, they are guaranteed to run in any linux system with the same architecture. and be unaffected by other things going on outside the container. So they can be used to share pieces of one's work environment. 
 
 One of the things that is under discussion in the itsFOSS community is to try and improve the way people share things about their linux systems. There has to be something better than text and static pictures. Containers, whether they be docker or something else, may have a role here.
 
@@ -1169,6 +1190,10 @@ URL https://docs.docker.com/develop/develop-images/dockerfile\_best-practices/
 \bibitem{dock:09}
 Creating a Docke Image for your Application
 URL https://www.stereolabs.com/docs/docker/creating-your-image/
+
+\bibitem{dock:10}
+Docker Containerization Cookbook” - Hot Recipes for Docker Automation
+URL https://distrowatch.tradepub.com/free/w\_java39/prgm.cgi?a=1
 
 \bibitem{void:01}
 Void Linux Docker Images
