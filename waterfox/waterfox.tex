@@ -70,9 +70,9 @@ So before we install it, how about we check if it will run? Just type {\em ./wat
 
 We need to put the binary in some {\em bin} directory, but not {\em /bin} and not {\em /usr/bin}. So I opt for {\em /usr/local/bin}
 \begin{verbatim}
-cp waterfox /usr/local/bin
+ln /usr/local/src/waterfox/waterfox /usr/local/bin/waterfox
 \end{verbatim}
-That is all.  Now I do not have to be in {\em /usr/local/src/waterfox} to execute it, I can just type {\em waterfox} from anywhere, because {\em /usr/local/bin} is in my {\em PATH}. 
+That is all, I use a link rather than copying the executable file to /usr/local/bin because when waterfox executes it sets its paths relative to the location of the executable file.  Now I do not have to be in {\em /usr/local/src/waterfox} to execute it, I can just type {\em waterfox} from anywhere, because {\em /usr/local/bin} is in my {\em PATH}. 
 
 \subsection{Getting an app menu item and an icon}
 There is still a lot of material in {\em /usr/local/src/waterfox} and we need to put it somewhere where the system can find it. The same material for firefox is in {\em /usr/lib/firefox} on my system, so I opt for {\em /usr/local/lib/waterfox}. So copy it over
