@@ -16,5 +16,10 @@ The subdirectory _voidlumina_ contains an investigation of the Lumina Desktop En
 ## Waterfox Browser
 The subdirectory _waterfox_ contains an article on installing the Waterfox browser in Void Linux.
 
+## Waterfox Dockerfile
+The subdirectory_wfoxdocker_ contains an article on learning to make a Dockerfile which runs a Waterfox browser in a docker container.
+
+## Learning to use docker in Void Linux
+The subdirectory _voiddocker_ contains an article on learning to use docker and Dockerfiles. This is an elementary tutorial on docker in the Void Linux environment.
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
