@@ -75,15 +75,9 @@ ln /usr/local/src/waterfox/waterfox /usr/local/bin/waterfox
 That is all, I use a link rather than copying the executable file to /usr/local/bin because when waterfox executes it sets its paths relative to the location of the executable file.  Now I do not have to be in {\em /usr/local/src/waterfox} to execute it, I can just type {\em waterfox} from anywhere, because {\em /usr/local/bin} is in my {\em PATH}. 
 
 \subsection{Getting an app menu item and an icon}
-There is still a lot of material in {\em /usr/local/src/waterfox} and we need to put it somewhere where the system can find it. The same material for firefox is in {\em /usr/lib/firefox} on my system, so I opt for {\em /usr/local/lib/waterfox}. So copy it over
-\begin{verbatim}
-cd /usr/local/src/waterfox
-mkdir /usr/local/lib/waterfox
-cp -r * /usr/local/lib/waterfox
-cd /usr/lib
-ln -s /usr/local/lib/waterfox waterfox
-\end{verbatim}
-Now I magically get an entry for Waterfox Web Browser in the Applications Menu, but still no desktop icon. Why the link?  Well  my system only seems to look in {\em /usr/lib} when it is looking for applications. Without the link, I dont get an entry in the Applications Menu.
+The remaining material in {\em /usr/local/src/waterfox} can just stay there because the waterfox binary looks for its dynamic libraries (.so files) at the location of the waterfox binary. The same material for firefox is in {\em /usr/lib/firefox} on my system,  because firefox is installed by the package system. 
+
+Now I magically get an entry for Waterfox Web Browser in the Applications Menu, but still no desktop icon. 
 
 Now for the icon. My system defines material for desktop icons in {\em /usr/share/applications}.
 \begin{verbatim}
