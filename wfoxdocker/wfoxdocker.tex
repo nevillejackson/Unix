@@ -35,9 +35,58 @@ ln /usr/local/src/waterfox/waterfox /usr/local/bin/waterfox
 \end{enumerate}
 We need to implement steps 1 to 3 in a Dockerfile. Step 4 can be omitted, as there will be no icon if running Waterfox in a container. The container will have to be started from the command line.
 
+\section{How to run a docker container requiring access to the host Xserver}
+We assume the host is running X11 ( not Wayland ). Set up the following primitive Dockerfile.
+\begin{verbatim}
+FROM debian
+WORKDIR /home/demo
+RUN apt-get -y update
+RUN apt-get -y upgrade
+RUN apt-get -y x11-apps
+RUN groupadd -g 1000 demo
+RUN useradd -d /home/demo -s /bin/bash -m demo -u 1000 -g 1000
+USER demo
+ENV HOME /home/demo
+CMD /usr/bin/xcalc
+\end{verbatim}
+ Build this with 
+\begin{verbatim}
+docker build -t nevj/test:v2 .
+Sending build context to Docker daemon  2.048kB
+Step 1/10 : FROM debian
+ ---> 07d9246c53a6
+Step 2/10 : WORKDIR /home/demo
+ ---> Running in 2e0e40e0fd4c
+..........
+Successfully built 517c1937106a
+Successfully tagged nevj/test:v2
+\end{verbatim}
+ Then run it with
+\begin{verbatim}
+[nevj@trinity dtest]$ xhost +
+[nevj@trinity dtest]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix \
+          -e DISPLAY=$DISPLAY -h $HOSTNAME \
+          -v $HOME/.Xauthority:/home/nevj/.Xauthority nevj/test:v2
+\end{verbatim}
+and the xcalc app appears in a separate X window, as shown in Figure~\ref{fig:xcalc}
+\input{figxcalc.tex}
+The {\em xhost +} statement is needed to give the container permission to communicate with the host X11 server. 
+ The purpose of the options included in the {\em docker run} statement are as follows
+\begin{description}
+\item[-v /tmp/.X11-unix:/tmp/.X11-unix] defines a {\em mount} for a volume. The string {\em /tmp/.X11-unix:/tmp/.X11-unix} is the mount point on the host. The part before {\em ':'} is the volume name on the host. The part after {\em ':'} is where the file or directory is mounted oinside the container. A volume is just a file or directory in the host filesystem.
+\item[-e DISPLAY=\$DISPLAY] sets the environment variable DISPLAY in the container
+\item[-h \$HOSTNAME] sets the container hostname
+\item[\$HOME/.Xauthority:/home/nevj/.Xauthority] sets the .Xauthority file of the container to the .Xauthority file of the host user who initiated the {\em run} statement again using a volume mount.
+\item[nevj/test:v2] is the name of te image, build as above.
+\end{description}
+Volumes are the mechanism used by Docker containers to share data between the host and the container ( and between containers). They are need in this case because the container is an X11 client, while the host acts as the X11 server, so information has to pass between container and host.  A docker container can only write on the part of the host filesystem defined as a docker volume. There is also {\em tmpfs mount} which is a temporary ram disk used for non-permanent data within a container.
 
-\section{First attempt at a Dockerfile, using  Debian parent image}
-I chose Debian parent image for a first attempt, because Debian is familiar and is most likely to compatable with Waterfox. 
+\section{First attempt at a Waterfox Dockerfile, using a  Debian parent image}
+There is no new principle involved in running Waterfox rather than the simple xcalc app, in a docker container. The Waterfox browser is a large program with many dependencies, so the Dockerfile will have to build up a complete working environment specifically for Waterfox. 
+
+I chose Debian parent image for a first attempt, because Debian is familiar and is most likely to compatable with Waterfox.  The Debian parent image is large. We shall try later to repeat the job with a smaller parent image. 
+
+\subsection{Finding the dependencies of a binary program file}
 
 \begin{thebibliography}{99}
 
