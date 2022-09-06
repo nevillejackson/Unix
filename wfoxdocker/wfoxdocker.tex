@@ -87,6 +87,170 @@ There is no new principle involved in running Waterfox rather than the simple xc
 I chose Debian parent image for a first attempt, because Debian is familiar and is most likely to compatable with Waterfox.  The Debian parent image is large. We shall try later to repeat the job with a smaller parent image. 
 
 \subsection{Finding the dependencies of a binary program file}
+There is a really good article~\cite{rehn:21} on identifying dependencies of a runtime binary when making a dockerfile.
+
+If one looks at the unpacked Waterfox ditribution tarfile, it contains the files shon in Figure~\ref{fig:wfoxfiles}
+\input{figwfoxfiles.tex}
+The *.so files shown in green are dynamically loaded libraries. Presumably these are all dependencies of waterfox, but they may not be the only dependencies. There is a file TwemojiMozilla.ttf in the fonts subdirectory, and there are various default configuration files.
+
+An initial check for dependencies can be obtained with {\em ldd}
+\begin{verbatim}
+nevj@mary:/usr/local/src/waterfox$ ldd waterfox
+	linux-vdso.so.1 (0x00007ffc3eb95000)
+	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f2a6d46c000)
+	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f2a6d466000)
+	libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f2a6d299000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f2a6d155000)
+	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f2a6d13b000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f2a6cf76000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f2a6d569000)
+\end{verbatim}
+This is best done in a Debian system in which waterfox has been installed
+There are 8 libraries called directly by waterfox, and none of them are present in the distribution tarfile. These are libraries required for waterfox to start up. Note that linux-vdso.so.1 is a virtual library, ie it is built into the kernel and does not exist as a package. The other 7 should each be supplied by a package. We shall leave the problem of finding the package names which supply each library later.
+
+ There may also be libraries which waterfoox loads dynamically while executing. To find these we do the following, again in a Debian system
+\begin{verbatim}
+nevj@mary:~$ LD_DEBUG=libs waterfox >&logfile
+
+nevj@mary:~$ cat logfile
+     2572:     find library=libpthread.so.0 [0]; searching
+      2572:      search cache=/etc/ld.so.cache
+      2572:       trying file=/lib/x86_64-linux-gnu/libpthread.so.0
+      2572:
+      2572:     find library=libdl.so.2 [0]; searching
+      2572:      search cache=/etc/ld.so.cache
+      2572:       trying file=/lib/x86_64-linux-gnu/libdl.so.2
+      2572:
+      2572:     find library=libstdc++.so.6 [0]; searching
+      2572:      search cache=/etc/ld.so.cache
+      2572:       trying file=/lib/x86_64-linux-gnu/libstdc++.so.6
+      2572:
+      2572:     find library=libm.so.6 [0]; searching
+      2572:      search cache=/etc/ld.so.cache
+      2572:       trying file=/lib/x86_64-linux-gnu/libm.so.6
+      2572:
+      2572:     find library=libgcc_s.so.1 [0]; searching
+      2572:      search cache=/etc/ld.so.cache
+      2572:       trying file=/lib/x86_64-linux-gnu/libgcc_s.so.1
+     2572:
+      2572:     find library=libc.so.6 [0]; searching
+      2572:      search cache=/etc/ld.so.cache
+      2572:       trying file=/lib/x86_64-linux-gnu/libc.so.6
+      2572:
+      2572:
+      2572:     calling init: /lib/x86_64-linux-gnu/libpthread.so.0
+      2572:
+      2572:
+      2572:     calling init: /lib/x86_64-linux-gnu/libc.so.6
+      2572:
+      2572:
+      2572:     calling init: /lib/x86_64-linux-gnu/libgcc_s.so.1
+      2572:
+      2572:
+      2572:     calling init: /lib/x86_64-linux-gnu/libm.so.6
+      2572:
+      2572:
+      2572:     calling init: /lib/x86_64-linux-gnu/libstdc++.so.6
+      2572:
+      2572:
+      2572:     calling init: /lib/x86_64-linux-gnu/libdl.so.2
+      2572:
+      2572:
+      2572:     initialize program: waterfox
+      2572:
+      2572:
+      2572:     transferring control: waterfox
+      2572:
+      2572:
+      2572:     calling init: /usr/local/src/waterfox/libnspr4.so
+      2572:
+      2572:
+      2572:     calling init: /usr/local/src/waterfox/libplc4.so
+      2572:
+      2572:
+      2572:     calling init: /usr/local/src/waterfox/libplds4.so
+      2572:
+      2572:     find library=librt.so.1 [0]; searching
+      2572:      search cache=/etc/ld.so.cache
+      2572:       trying file=/lib/x86_64-linux-gnu/librt.so.1
+      2572:
+      2572:
+      2572:     calling init: /lib/x86_64-linux-gnu/librt.so.1
+      2572:
+      2572:
+      2572:     calling init: /usr/local/src/waterfox/libmozsandbox.so
+      2572:
+      2572:
+      2572:     calling init: /usr/local/src/waterfox/liblgpllibs.so
+      2572:
+      2572:
+      2572:     calling init: /usr/local/src/waterfox/libnssutil3.so
+      2572:
+      2572:
+      2572:     calling init: /usr/local/src/waterfox/libnss3.so
+      2572:
+  ..................
+     2796:     calling init: /lib/x86_64-linux-gnu/libX11-xcb.so.1
+      2796:
+      2796:
+      2796:     calling init: /usr/local/src/waterfox/libxul.so
+      2796:
+      2796:     /usr/local/src/waterfox/waterfox: error: symbol lookup error:
+ undefined symbol: nspr_use_zone_allocator (fatal)
+      2796:
+      2796:     calling init: /usr/local/src/waterfox/libsoftokn3.so
+      2796:
+      2796:
+      2796:     calling init: /usr/local/src/waterfox/libfreeblpriv3.so
+      2796:
+JavaScript error: resource://gre/modules/PartitioningExceptionListService.jsm
+, line 69: NS_ERROR_MALFORMED_URI: Component returned failure code: 0x804b000
+a (NS_ERROR_MALFORMED_URI) [nsIPartitioningExceptionListObserver.onExceptionL
+istUpdate]
+console.error: PushService:
+  clearOriginData: Error clearing origin data:
+  TypeError
+JavaScript error: resource:///modules/Interactions.jsm, line 209: NS_ERROR_FA
+ILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUse
+rIdleService.removeIdleObserver]
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, me
+ssages will be lost
+\end{verbatim}
+Lots of messages, had to truncate it, was 5744 lines.
+The first 3 lines say it is searching for a system library called {\em libpthread}. The lines beginning {\em calling init} indicate the library has been found and give its absolute path. Some libraries may not be found, and they will have no line beginning {\em calling init}. We can get a list of libraries found with 
+\begin{verbatim}
+nevj@mary:~$  cat out | grep init > outinit
+nevj@mary:~$ wc outinit
+  715  2878 45875 outinit
+nevj@mary:~$  cat outinit
+   2572:	calling init: /lib/x86_64-linux-gnu/libpthread.so.0
+      2572:	calling init: /lib/x86_64-linux-gnu/libc.so.6
+      2572:	calling init: /lib/x86_64-linux-gnu/libgcc_s.so.1
+      2572:	calling init: /lib/x86_64-linux-gnu/libm.so.6
+      2572:	calling init: /lib/x86_64-linux-gnu/libstdc++.so.6
+      2572:	calling init: /lib/x86_64-linux-gnu/libdl.so.2
+      2572:	initialize program: waterfox
+      2572:	calling init: /usr/local/src/waterfox/libnspr4.so
+      2572:	calling init: /usr/local/src/waterfox/libplc4.so
+      2572:	calling init: /usr/local/src/waterfox/libplds4.so
+      2572:	calling init: /lib/x86_64-linux-gnu/librt.so.1
+      2572:	calling init: /usr/local/src/waterfox/libmozsandbox.so
+      2572:	calling init: /usr/local/src/waterfox/liblgpllibs.so
+      2572:	calling init: /usr/local/src/waterfox/libnssutil3.so
+      2572:	calling init: /usr/local/src/waterfox/libnss3.so
+      2572:	calling init: /usr/local/src/waterfox/libsmime3.so
+      2572:	calling init: /usr/local/src/waterfox/libmozsqlite3.so
+      2572:	calling init: /usr/local/src/waterfox/libssl3.so
+      2572:	calling init: /lib/x86_64-linux-gnu/libgpg-error.so.0
+  ............
+\end{verbatim}
+  
+So there are still 715 of them. The first 6 are the startiup dependencies, and the rest are runtime dependencies
+
+There is also the question of configuration files.
+
+
 
 \begin{thebibliography}{99}
 
@@ -146,6 +310,10 @@ URL https://github.com/void-linux/void-docker
 LibreWolf source code website.
 URL https://gitlab.com/librewolf-community/browser/source
 
+\bibitem{rehn:21}
+Rehn, A. (2021)
+Identifying application runtime dependencies: A toolkit for identifying the runtime libraries and associated data that applications require in order to run correctly inside containers. 
+URL https://unrealcontainers.com/blog/identifying-application-runtime-dependencies/
 
 \bibitem{wate:22} 
 Waterfox website. URL https://www.waterfox.net
