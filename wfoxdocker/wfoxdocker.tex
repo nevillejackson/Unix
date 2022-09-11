@@ -4,6 +4,11 @@
  
 \documentclass{article}  % Latex2e
 \usepackage{graphicx,lscape,subfigure}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{mathptmx}
+\usepackage{listings}
+\lstset{upquote=true,basicstyle={\small\ttfamily}}
  
 
 \title{Making a docker image to run the Waterfox browser}
@@ -248,8 +253,247 @@ nevj@mary:~$  cat outinit
   
 So there are still 715 of them. The first 6 are the startiup dependencies, and the rest are runtime dependencies
 
-There is also the question of configuration files.
+There is also the question of configuration files. Most of these are hopefully included in the Waterfox tarfile. We can check
+\begin{verbatim}
+strace --trace=open,openat /usr/local/bin/waterfox >&strace.out
 
+Lots of libraries which we can ignore
+....
+Conf files
+openat(AT_FDCWD, "/etc/host.conf", O_RDONLY|O_CLOEXEC) = 7
+openat(AT_FDCWD, "/etc/resolv.conf", O_RDONLY|O_CLOEXEC) = 7
+openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 7
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 7
+......
+openat(AT_FDCWD, "/home/nevj/.Xauthority", O_RDONLY) = 5
+openat(AT_FDCWD, "/usr/share/X11/locale/locale.alias", O_RDONLY) = 5
+openat(AT_FDCWD, "/usr/share/X11/locale/locale.alias", O_RDONLY) = 5
+openat(AT_FDCWD, "/usr/share/X11/locale/locale.dir", O_RDONLY) = 5
+openat(AT_FDCWD, "/usr/share/X11/locale/en_US.UTF-8/XLC_LOCALE", O_RDONLY) = 
+5
+openat(AT_FDCWD, "/home/nevj/.Xdefaults-mary", O_RDONLY) = -1 ENOENT (No such
+ file or directory)
+....
+openat(AT_FDCWD, "/home/nevj/.waterfox/profiles.ini", O_RDONLY) = 8
+openat(AT_FDCWD, "/home/nevj/.Xauthority", O_RDONLY) = 9
+....
+openat(AT_FDCWD, "/usr/local/src/waterfox/omni.ja", O_RDONLY) = 14
+openat(AT_FDCWD, "/usr/local/src/waterfox/browser/omni.ja", O_RDONLY) = 15
+openat(AT_FDCWD, "/sys/devices/system/cpu", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_D
+IRECTORY) = 16
+openat(AT_FDCWD, "/usr/local/src/waterfox/defaults/pref", O_RDONLY|O_NONBLOCK
+|O_CLOEXEC|O_DIRECTORY) = 16
+openat(AT_FDCWD, "/usr/local/src/waterfox/defaults/pref/channel-prefs.js", O_
+RDONLY) = 17
+......
+openat(AT_FDCWD, "/usr/share/fontconfig/conf.avail/11-lcdfilter-default.conf"
+, O_RDONLY|O_CLOEXEC) = 38
+openat(AT_FDCWD, "/etc/fonts/conf.avail/20-unhint-small-dejavu-lgc-sans-mono.
+conf", O_RDONLY|O_CLOEXEC) = 38
+.....
+openat(AT_FDCWD, "/etc/os-release", O_RDONLY) = 37
+openat(AT_FDCWD, "/sys/devices/system/cpu/present", O_RDONLY) = 37
+openat(AT_FDCWD, "/usr/share/locale/locale.alias", O_RDONLY) = 38
+openat(AT_FDCWD, "/usr/share/icons/Tango/index.theme", O_RDONLY) = 38
+openat(AT_FDCWD, "/usr/share/icons/Tango/icon-theme.cache", O_RDONLY) = 38
+......
+openat(AT_FDCWD, "/usr/share/icons/index.theme", O_RDONLY) = -1 ENOENT (No su
+ch file or directory)
+openat(AT_FDCWD, "/usr/share/pixmaps/cursors/e-resize", O_RDONLY) = -1 ENOENT
+ (No such file or directory)
+....
+penat(AT_FDCWD, "/home/nevj/.icons/Adwaita/cursors/e-resize", O_RDONLY) = -1
+ ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nevj/.icons/Adwaita/index.theme", O_RDONLY) = -1 ENOE
+NT (No such file or directory)
+.....
+openat(AT_FDCWD, "/home/nevj/.config/xfce-mimeapps.list", O_RDONLY) = -1 ENOE
+NT (No such file or directory)
+openat(AT_FDCWD, "/home/nevj/.config/mimeapps.list", O_RDONLY) = 80
+....
+openat(AT_FDCWD, "/usr/local/share/applications/xfce-mimeapps.list", O_RDONLY
+) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/share/applications/mimeapps.list", O_RDONLY) = -
+1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/share/applications/defaults.list", O_RDONLY) = -
+1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/share/applications/mimeinfo.cache", O_RDONLY) = 
+-1 ENOENT (No such file or directory)
+.....
+openat(AT_FDCWD, "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", O_RD
+ONLY) = 88
+JavaScript error: resource:///actors/AboutNewTabParent.jsm, line 23: InvalidS
+tateError: An attempt was made to use an object that is not, or is no longer,
+ usable
+.....
+JavaScript error: resource://gre/modules/PartitioningExceptionListService.jsm
+, line 69: NS_ERROR_MALFORMED_URI: Component returned failure code: 0x804b000
+a (NS_ERROR_MALFORMED_URI) [nsIPartitioningExceptionListObserver.onExceptionL
+istUpdate]
+....
+penat(AT_FDCWD, "/home/nevj/.icons/Adwaita/cursors/hand2", O_RDONLY) = -1 EN
+OENT (No such file or directory)
+openat(AT_FDCWD, "/home/nevj/.icons/Adwaita/index.theme", O_RDONLY) = -1 ENOE
+NT (No such file or directory)
+.....
+\end{verbatim}
+ Some of the files have the message {\em (No such file or directory)}. They are probably not serious issues... the above was done in a Waterfox install which works satisfactorily. I have only shown a selection. The full output above was 1402 lines. 
+
+
+\subsection{Which Debian packages provide these files?}
+We have a long list of files which are dependencies. We need to convert this into a list of {\em .deb} packages which supply the necessary files.  That should reduce the information to a much shorter list of packages. The tool for finding which package supplies a file is {\em apt-file}.
+
+{\em apt-file} is not part of a standard Debian system. We need to install it
+
+\begin{verbatim}
+root@trinity:/home/nevj# apt-get install apt-file
+......
+The following additional packages will be installed:
+  libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+The following NEW packages will be installed:
+  apt-file libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+0 upgraded, 6 newly installed, 0 to remove and 6 not upgraded.
+Need to get 322 kB of archives.
+After this operation, 901 kB of additional disk space will be used.
+The following additional packages will be installed:
+  libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+The following NEW packages will be installed:
+  apt-file libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+0 upgraded, 6 newly installed, 0 to remove and 6 not upgraded.
+Need to get 322 kB of archives.
+After this operation, 901 kB of additional disk space will be used.
+The following additional packages will be installed:
+  libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+The following NEW packages will be installed:
+  apt-file libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+0 upgraded, 6 newly installed, 0 to remove and 6 not upgraded.
+Need to get 322 kB of archives.
+After this operation, 901 kB of additional disk space will be used.
+The following additional packages will be installed:
+  libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+The following NEW packages will be installed:
+  apt-file libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+0 upgraded, 6 newly installed, 0 to remove and 6 not upgraded.
+Need to get 322 kB of archives.
+After this operation, 901 kB of additional disk space will be used.
+The following additional packages will be installed:
+  libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+The following NEW packages will be installed:
+  apt-file libapt-pkg-perl libexporter-tiny-perl liblist-moreutils-perl
+  liblist-moreutils-xs-perl libregexp-assemble-perl
+0 upgraded, 6 newly installed, 0 to remove and 6 not upgraded.
+Need to get 322 kB of archives.
+After this operation, 901 kB of additional disk space will be used.
+......
+\end{verbatim}
+Then we need to generate apt-file's database
+\begin{verbatim}
+root@trinity:/home/nevj# apt-file update
+\end{verbatim}
+Then we can search 
+\begin{verbatim}
+nevj@trinity:~$ apt-file search libpthread.so.0
+libc6: /lib/x86_64-linux-gnu/libpthread.so.0
+......
+Lots of other libraries .... it is better to use dthe full path
+nevj@trinity:~$ apt-file search /lib/x86_64-linux-gnu/libpthread.so.0
+libc6: /lib/x86_64-linux-gnu/libpthread.so.0
+ So we just get the relevant one
+\end{verbatim}
+
+
+There is an alternative to apt-file
+\begin{verbatim}
+nevj@trinity:~$ dpkg -s libpthread.so.0
+dpkg-query: package 'libpthread.so.0' is not installed and no information is available
+Use dpkg --info (= dpkg-deb --info) to examine archive files.
+\end{verbatim}
+ So {\em dpkg -s} only works for installed library files, {\em apt-file works for all available packages}.
+
+Now we have the tools , it is a mere matter of feeding several hundred library files to {\em apt-file search} . 
+\begin{verbatim}
+#  a bit of hand editing
+$  cp outinit outinit.edit
+$  vi outinit.edit
+
+# make a simple awk script to extract the 4th field
+$ vi field4.awk
+{print $4}
+
+# run the script
+$ awk -f field4.awk < outinit.edit > libfiles.txt
+
+# and the output is
+$ more libfiles.txt
+/lib/x86_64-linux-gnu/libpthread.so.0
+/lib/x86_64-linux-gnu/libc.so.6
+/lib/x86_64-linux-gnu/libgcc_s.so.1
+/lib/x86_64-linux-gnu/libm.so.6
+/lib/x86_64-linux-gnu/libstdc++.so.6
+/lib/x86_64-linux-gnu/libdl.so.2
+/usr/local/src/waterfox/libnspr4.so
+/usr/local/src/waterfox/libplc4.so
+....... too many to list
+
+  $ wc libfiles.txt
+  711   711 26829 libfiles.txt
+So 711 libraries in total
+\end{verbatim}
+  So now we have out list of libraries,  we need a shell script to feed it to apt-file.
+\begin{lstlisting}
+#! /bin/csh
+foreach lib (`cat libfiles.txt`)
+ apt-file --fixed-string -l search $lib >>& package.txt
+end
+\end{lstlisting}
+Now if we run that script we get
+\begin{verbatim}
+chmod 755 packages.csh
+./packages.csh
+wc package.txt
+ 125  125 1124 package.txt
+\end{verbatim}
+So we have reduced from 711 libraries  to 125 packages. However there are duplicates so
+\begin{verbatim}
+sort <package.txt | uniq >uniqpackage.txt
+wc uniqpackage.txt
+ 21  21 249 uniqpackage.txt
+cat uniqpackage.txt
+dconf-gsettings-backend
+gvfs
+gvfs-libs
+libc6
+libcom-err2
+libdbus-1-3
+libelogind0
+libexpat1
+libgcc-s1
+libgdk-pixbuf-2.0-0
+libgl1-mesa-dri
+libgpg-error0
+libkeyutils1
+liblzma5
+libnss-mdns
+libpcre3
+libpulse0
+libselinux1
+libtirpc3
+python3-minimal
+zlib1g
+\end{verbatim}
+ There are 21 unique packages reguired.
+Now we can write the Dockerfile with some confidence that it will supply an suitable environment for Waterfox.
+
+\subsection{First Debian parent Dockerfile}
 
 
 \begin{thebibliography}{99}
