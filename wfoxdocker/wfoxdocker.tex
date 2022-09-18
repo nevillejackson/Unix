@@ -494,6 +494,401 @@ zlib1g
 Now we can write the Dockerfile with some confidence that it will supply an suitable environment for Waterfox.
 
 \subsection{First Debian parent Dockerfile}
+For a first attempt, we will use a copy of the waterfox tarfile which I have downloaded and placed in the Dockerfile directory. Later we will try to setup the Dockerfile to download it from the Waterfox site~\cite{wate:22b}.
+
+We will work within the container in a directory {\em /wfox}. There will be a user called {\em wfox} and the container will execute the waterfox binary.
+
+Our first Dockerfile is as follows
+\begin{verbatim}
+# get a parent image
+FROM debian:stable-20220801
+
+#set working dir inside container
+WORKDIR /wfox
+
+# get waterfox
+COPY . .
+
+# install waterfox.desktop file
+RUN mkdir /usr/share/applications && \
+  cp waterfox.desktop /usr/share/applications
+
+#  
+RUN cd /etc/apt && \
+# apt debian setup
+  cp sources.list sources.list.orig && \
+  sed 's/main/main contrib non-free/' sources.list.orig >sources.list && \
+  cd /wfox && \
+  apt-get update && \
+  apt-get upgrade -y && \
+# apt install libraries
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 python3-minimal zlib1g
+
+#    unpack waterfox distro tarfile
+  cd /wfox && \
+  bzip2 -dc waterfox-G4.1.4.en-US.linux-x86_64.tar.bz2 | tar xvf - 
+# setup environment
+RUN groupadd -g 1000 wfox
+RUN useradd -d /home/wfox -s /bin/bash -m wfox -u 1000 -g 1000
+USER wfox
+ENV HOME /home/wfox
+CMD /wfox/waterfox/waterfox
+\end{verbatim}
+ Then build an image using the above Dockerfile and run it
+\begin{verbatim}
+# work directory in host system
+cd ~/Waterfox.docker
+ls
+Dockerfile  junk      waterfox-G4.1.4.en-US.linux-x86_64.tar.bz2  wget
+buildrun    libsused  waterfox.desktop                            x11docker
+
+# docker build
+docker build -t wfoxdeb:v1 .
+.....
+Successfully built 7d1e1798583a
+Successfully tagged wfoxdeb:v1
+
+#docker run
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority xfoxdeb:v1
+
+XPCOMGlueLoad error for file /wfox/waterfox/libmozgtk.so:
+libgtk-3.so.0: cannot open shared object file: No such file or directory
+Couldn't load XPCOM.
+\end{verbatim}
+ What the message means is that the library {\em libmozgtk.so} which comes with the waterfox tarfile requires the library {\em libgtk-3.so.0}, but it was not present in the container system.
+
+So our wonderful, complicated procedure for reducing 711 libraries to 21 packages has missed something. What is missing is that we traced all the libraries called by the {\em waterfox} binary, but we neglected to trace all the libraries called by the 18 special waterfox libraries included in the waterfox tarfile. 
+
+We need to do the library tracing and package finding all over again for each of the 18 special libraries. 
+
+\subsection{Dependencies of the 18 special {\em waterfox} libraries.}
+We setup a list of the 18 special libraries in a file {\em list18libs.txt}. We need to process each library in the list with {\em ldd} so we setup a script. We can not execute a library, so we cant use {\em strace} or {\em LD\_DEBUG} , but we can use {\em ldd}.
+\begin{verbatim}
+cd /usr/local/src/waterfox
+ls | grep so 
+libfreeblpriv3.so
+liblgpllibs.so
+libmozavcodec.so
+libmozavutil.so
+libmozgtk.so
+libmozsandbox.so
+libmozsqlite3.so
+libmozwayland.so
+libnspr4.so
+libnss3.so
+libnssckbi.so
+libnssutil3.so
+libplc4.so
+libplds4.so
+libsmime3.so
+libsoftokn3.so
+libssl3.so
+libxul.so
+\end{verbatim}
+
+ Store this on a file
+\begin{lstlisting}
+ls | grep so > list18libs.txt
+# make a script to process each of these with ldd
+#! /bin/csh
+foreach lib (`cat list18libs.txt`)
+  ldd lib >>& list18libsdeps.txt
+end
+\end{lstlisting}
+
+How many libraries found?
+\begin{verbatim} 
+wc list18libsdeps.txt
+  291  1107 20639 list18libsdeps.txt
+\end{verbatim}
+What packages contain these libraries?
+t have a look at list18libsdeps.txt
+\begin{verbatim}
+head list18libsdeps.txt
+	linux-vdso.so.1 (0x00007fff591c5000)
+	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f346a0d9000)
+	libnspr4.so => /lib/x86_64-linux-gnu/libnspr4.so (0x00007f346a098000)
+	libplc4.so => /lib/x86_64-linux-gnu/libplc4.so (0x00007f346a091000)
+	libplds4.so => /lib/x86_64-linux-gnu/libplds4.so (0x00007f346a08c000)
+	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f346a086000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3469ec1000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f346a1eb000)
+	linux-vdso.so.1 (0x00007ffec61a5000)
+	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007ffaa2b5d000)
+......
+\end{verbatim}
+We need the third field from the file list18libsdeps.txt, so use our awk script again, after removing the first line
+\begin{verbatim}
+cat field3.awk
+{print $3}
+
+awk -f field3.awk <list18libsdeps.txt2 >list18libsdeps.txt3
+head list18libsdeps.txt3
+/lib/x86_64-linux-gnu/libpthread.so.0
+/lib/x86_64-linux-gnu/libnspr4.so
+/lib/x86_64-linux-gnu/libplc4.so
+/lib/x86_64-linux-gnu/libplds4.so
+/lib/x86_64-linux-gnu/libdl.so.2
+/lib/x86_64-linux-gnu/libc.so.6
+
+
+/lib/x86_64-linux-gnu/libpthread.so.0
+/lib/x86_64-linux-gnu/libdl.so.2
+.......
+\end{verbatim}
+We have extracted the full pathname of each library, there are a few blank line, so we edit those out (may not actually matter, then
+\begin{verbatim}
+wc list18libsdeps.txt3
+ 245  245 8897 list18libsdeps.txt3
+\end{verbatim}
+There are 245 library paths left. We can process this with {\em apt-file} to see what packages supply these libraries
+\begin{verbatim}
+cat packages18.csh
+#! /bin/csh
+foreach lib (`cat list18libsdeps.txt3`)
+ apt-file --fixed-string -l search $lib >>& package18.txt
+end
+
+./packages18.
+
+wc package18.txt
+ 85  85 596 package18.txt
+
+head package18.txt
+libc6
+libc6
+libc6
+libc6
+libc6
+libc6
+libgcc-s1
+libc6
+libc6
+libc6
+......
+\end{verbatim}
+We have reduced te 245 library paths to 85 packages, but we can see from the partial listing there are lots of duplicates, so
+\begin{verbatim}
+sort package18.txt | uniq > uniqpackage18.txt
+wc uniqpackage18.txt
+ 10  10 101 uniqpackage18.txt
+cat uniqpackage18.txt
+libc6
+libdbus-1-3
+libelogind0
+libexpat1
+libgcc-s1
+libgpg-error0
+liblzma5
+libpcre3
+libselinux1
+zlib1g
+\end{verbatim}
+ There are 10 unique package names, and all 10 are already present in our previous list of 21 required packages.  So this does not solve the dependency problem ?
+
+An investigation of each of the above steps reveals that the {\em apt-file} statement in the script packages18.csh does not require the option {\em --fixed-string}. Running this step again leads to
+
+\begin{verbatim}
+cat packages18.csh
+#! /bin/csh
+foreach lib (`cat list18libsdeps.txt3`)
+ apt-file  -l search $lib >>& package18.txt
+end
+
+./packages18.chh
+
+wc package18.txt
+ 338  338 3128 package18.txt
+
+\end{verbatim}
+So now we have 338 packages instead of 245. Removing duplicates again gives
+\begin{verbatim}
+sort package18.txt | uniq >uniqpackage18.txt
+
+wc uniqpackage18.txt
+ 72  72 853 uniqpackage18.txt
+
+head uniqpackage18.txt
+libatk1.0-0
+libatk-bridge2.0-0
+libatspi2.0-0
+libblkid1
+libbrotli1
+libbsd0
+libc6
+libcairo2
+libcairo-gobject2
+libdatrie1
+......
+\end{verbatim}
+
+We now have 72 package some of which  are not included in  the 21  package dependencies of the waterfox binary. We need to remove from these 72 those which are  in both lists
+\begin{verbatim}
+sort uniqpackage.txt > sorteduniqpackage.txt
+sort uniqpackage18.txt > sorteduniqpackage18.txt
+comm -3 sorteduniqpackage.txt sorteduniqpackage18.txt >commpackage.txt
+
+wc commpackage.txt
+ 71  71 921 commpackage.txt
+\end{verbatim}
+So we still have 71 packages to add to the Dockerfile.
+
+\subsection{Second Debian parent Dockerfile attempt}
+We now add an apt-get install for the 71 packages required to satisfy Waterfox's 18 special libraries. So version 2 of our Dockerfile looks as follows
+\begin{verbatim}
+
+FROM debian:stable-20220801
+#set working dir inside container
+WORKDIR /wfox
+# get waterfox
+COPY . .
+# install waterfox.desktop file
+RUN mkdir /usr/share/applications && \
+  cp waterfox.desktop /usr/share/applications
+#
+RUN cd /etc/apt && \
+# apt debian setup
+  cp sources.list sources.list.orig && \
+  sed 's/main/main contrib non-free/' sources.list.orig >sources.list && \
+  cd /wfox && \
+  apt-get update && \
+  apt-get upgrade -y && \
+# apt install packages for waterfox
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 python3-minimal zlib1g && \
+# apt install packages for waterfox libraries
+  apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libblkid1 libbrotli1 libbsd0 libc6 libcairo2 libcairo-gobject2 libdatrie1 libdbus-1-3 libdbus-glib-1-2 libelogind0 libepoxy0 libexpat1 libffi7 libfontconfig1 libfreetype6 libfribidi0 libgcc-s1 libgcrypt20 libgdk-pixbuf-2.0-0 libglib2.0-0 libglib2.0-dev libgpg-error0 libgraphite2-3 libgtk-3-0 libharfbuzz0b libice6 liblz4-1 liblzma5 libmd0 libmount1 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpcre2-8-0 libpcre3 libpixman-1-0 libpng16-16 libselinux1 libsm6 libstdc++6 libsystemd0 libthai0 libuuid1 libwayland-client0 libwayland-cursor0 libwayland-egl1 libx11-6 libx11-xcb1 libxau6 libxcb1 libxcb-render0 libxcb-shm0 libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxext6-dbg libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxt6 libzstd1 zlib1g && \
+# needed to unpack waterfox tarfile
+ apt-get install -y bzip2 && \
+#    unpack waterfox distro tarfile
+  cd /wfox && \
+  bzip2 -dc waterfox-G4.1.4.en-US.linux-x86_64.tar.bz2 | tar xvf -
+# setup environment
+RUN groupadd -g 1000 wfox
+RUN useradd -d /home/wfox -s /bin/bash -m wfox -u 1000 -g 1000
+USER wfox
+ENV HOME /home/wfox
+# exec waterfox
+CMD /wfox/waterfox/waterfox
+\end{verbatim}
+We build this Dockerfile with
+\begin{verbatim}
+docker build -t wfoxdeb:vt2 .
+\end{verbatim}
+and it fails to build because the packages libelogind0 and libsystemd0 have conflicts and apt refuses to install both. We choose to delete libelogind0. 
+Then the build works , and we are able to run its docker image with
+\begin{verbatim}
+xhost +
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:vt2
+\end{verbatim}
+This time we are successful. The container executes the Waterfox binary and we ger an X11 window with a blank welcome page shown in Figure~\ref{fig:welcom}, a correct release page shown in Figure~\ref{fig:releas}, all the search functions and page displays seem to work as shown in Figure~\ref{fig:search}
+\input{figwelcom.tex}
+\input{figreleas.tex}
+\input{figsearch.tex}
+There are messages in the container terminal as follows
+\begin{verbatim}
+[nevj@trinity Waterfox.docker]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:vt2
+Authorization required, but no authorization protocol specified
+Unable to init server: Could not connect: Connection refused
+Error: cannot open display: :0.0
+[nevj@trinity Waterfox.docker]$ xhost +
+access control disabled, clients can connect from any host
+[nevj@trinity Waterfox.docker]$ 
+[nevj@trinity Waterfox.docker]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:vt2
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: glxtest: libpci missing (t=0.361222) [GFX1-]: glxtest: libpci missing
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: glxtest: libpci missing (t=0.361222) |[1][GFX1-]: glxtest: libEGL missing (t=0.361261) [GFX1-]: glxtest: libEGL missing
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: glxtest: libpci missing (t=0.361222) |[1][GFX1-]: glxtest: libEGL missing (t=0.361261) |[2][GFX1-]: glxtest: libGL.so.1 missing (t=0.361269) [GFX1-]: glxtest: libGL.so.1 missing
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: glxtest: libpci missing (t=0.361222) |[1][GFX1-]: glxtest: libEGL missing (t=0.361261) |[2][GFX1-]: glxtest: libGL.so.1 missing (t=0.361269) |[3][GFX1-]: glxtest: libEGL missing (t=0.361276) [GFX1-]: glxtest: libEGL missing
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: glxtest: libpci missing (t=0.361222) |[1][GFX1-]: glxtest: libEGL missing (t=0.361261) |[2][GFX1-]: glxtest: libGL.so.1 missing (t=0.361269) |[3][GFX1-]: glxtest: libEGL missing (t=0.361276) |[4][GFX1-]: No GPUs detected via PCI (t=0.361286) [GFX1-]: No GPUs detected via PCI
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /home/wfox/.waterfox/0cuuoqs9.default-default/search.json.mozlz4", (void 0)))
+JavaScript error: resource://gre/modules/XPCOMUtils.jsm, line 161: NS_ERROR_XPC_GS_RETURNED_FAILURE: ServiceManager::GetService returned failure code:
+JavaScript error: , line 0: InternalError: Promise rejection value is a non-unwrappable cross-compartment wrapper.
+JavaScript error: resource://gre/modules/PromiseWorker.jsm, line 106: Error: Could not get children of file(/home/wfox/.waterfox/0cuuoqs9.default-default/thumbnails) because it does not exist
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/PartitioningExceptionListService.jsm, line 69: NS_ERROR_MALFORMED_URI: Component returned failure code: 0x804b000a (NS_ERROR_MALFORMED_URI) [nsIPartitioningExceptionListObserver.onExceptionListUpdate]
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://login.microsoftonline.com"
+JavaScript error: https://p.ad.gt/api/v1/p/450, line 1: TypeError: t.vendor is undefined
+JavaScript warning: https://pagead2.googlesyndication.com/bg/5BBnFljR3G8Y2LtXULQJm9Fu_0DS9XrGSjZ8CuJ-SSg.js line 2 > eval line 3628 > eval line 1 > eval line 1 > eval, line 1: WebGL warning: <Create>: WebglAllowWindowsNativeGl:false restricts context creation on this system.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/5BBnFljR3G8Y2LtXULQJm9Fu_0DS9XrGSjZ8CuJ-SSg.js line 2 > eval line 3628 > eval line 1 > eval line 1 > eval, line 1: Failed to create WebGL context: WebGL creation failed: 
+* WebglAllowWindowsNativeGl:false restricts context creation on this system. ()
+* Exhausted GL driver options. (FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS)
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+console.error: PushService: 
+  clearOriginData: Error clearing origin data:
+  TypeError
+JavaScript error: resource:///modules/Interactions.jsm, line 209: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+[Parent 7, IPC I/O Parent] WARNING: FileDescriptorSet destroyed with unconsumed descriptors: file /home/ubuntu/actions-runner/_work/Waterfox/Waterfox/ipc/chromium/src/chrome/common/file_descriptor_set_posix.cc:19
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+\end{verbatim}
+It would seem we have not found all dependencies yet. It says that {\em libpci} and {\em libEGL} are missing, and there are some Javascript resources required.
+Instead of just adding those 2 extra libraries/packages, we need to search out why our dependencies searches missed them.
+
+\subsection{Finding missing dependencies after attempt No. 2}
+
+A rerun of all the searches fails to reveal any hint of {\em libpci} and {\
+em libEGL} being required. We conclude that some process other than waterfox which runs when the container runs, must be requiring them, perhaps the video drivers?
+
+We can try and see what extra processes are running when the waterfox image is run in a docker container. All tha tcould be found using {\em pa ax} was
+\begin{verbatim}
+a4170 ?        Sl     0:00 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 33ef059b4edab7b543f72b86d7849df7246d42433ef8d97fb159d7e14d89de4b -address /run/containerd/containerd.sock
+ 4408 ?        Sl     0:00 /wfox/waterfox/waterfox -contentproc -childID 1 -isForBrowser -prefsLen 1 -prefMapSize 230518 -jsInit 285636 -parentBuildID 20220728185049 -appdir /wfox/waterfox/browser 7 tab
+.......   5 more like the above
+4488 ?        S      0:00 dbus-launch --autolaunch=796ea3dd4303ebc6c386a3176
+4494 ?        Ss     0:00 /usr/bin/dbus-daemon --syslog-only --fork --print-
+\end{verbatim}
+ So running a container only adds the {\em /usr/bin/containerd-shim-runc-v2} process, and {\em dbus-launch} and {\em dbus-daemon} apart from several processes associates with waterfox.
+
+WE can see what they require
+\begin{verbatim}
+ldd /usr/bin/containerd-shim-runc-v2
+	linux-vdso.so.1 (0x00007fffc3118000)
+	libdl.so.2 => /usr/lib/libdl.so.2 (0x00007fb56d758000)
+	libpthread.so.0 => /usr/lib/libpthread.so.0 (0x00007fb56d737000)
+	libc.so.6 => /usr/lib/libc.so.6 (0x00007fb56d571000)
+	/lib64/ld-linux-x86-64.so.2 => /usr/lib64/ld-linux-x86-64.so.2 (0x00007fb56d773000)
+
+ldd /usr/bin/dbus-daemon
+	linux-vdso.so.1 (0x00007ffefdb46000)
+	libdbus-1.so.3 => /usr/lib/libdbus-1.so.3 (0x00007f8b5d62e000)
+	libexpat.so.1 => /usr/lib/libexpat.so.1 (0x00007f8b5d5fd000)
+	libpthread.so.0 => /usr/lib/libpthread.so.0 (0x00007f8b5d5dc000)
+	libc.so.6 => /usr/lib/libc.so.6 (0x00007f8b5d416000)
+	/lib64/ld-linux-x86-64.so.2 => /usr/lib64/ld-linux-x86-64.so.2 (0x00007f8b5d6d3000)
+
+ldd /bin/dbus-launch
+	linux-vdso.so.1 (0x00007ffd8226e000)
+	libdbus-1.so.3 => /usr/lib/libdbus-1.so.3 (0x00007fc4e7b6a000)
+	libX11.so.6 => /usr/lib/libX11.so.6 (0x00007fc4e7a26000)
+	libc.so.6 => /usr/lib/libc.so.6 (0x00007fc4e7860000)
+	libpthread.so.0 => /usr/lib/libpthread.so.0 (0x00007fc4e783f000)
+	libxcb.so.1 => /usr/lib/libxcb.so.1 (0x00007fc4e7814000)
+	libdl.so.2 => /usr/lib/libdl.so.2 (0x00007fc4e780e000)
+	/lib64/ld-linux-x86-64.so.2 => /usr/lib64/ld-linux-x86-64.so.2 (0x00007fc4e7bdf000)
+	libXau.so.6 => /usr/lib/libXau.so.6 (0x00007fc4e7807000)
+	libXdmcp.so.6 => /usr/lib/libXdmcp.so.6 (0x00007fc4e77ff000)
+
+\end{verbatim}
+but these would be requirements in the host system, not in the waterfox container.
+The command {\em docker logs ...} gives the same information as appears in the command line window.  There seems to be no way  to trace the source of these remaining dependencies, which I assume are inside the container.
+
+I tried using {\em strace} on the {\em docker run} statement
+\begin{verbatim}
+strace docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:vt2
+execve("/bin/docker", ["docker", "run", "-v", "/tmp/.X11-unix:/tmp/.X11-unix", "-e", "DISPLAY=:0.0", "-h", "trinity", "-v", "/home/nevj/.Xauthority:/home/nev"..., "wfoxdeb:vt2"], 0x7fffd125f8d0 /* 38 vars */) = 0
+brk(NULL)                               = 0x308b000
+.....
+\end{verbatim}
+There is  a lot of output,  but the critical messages are the same as appears on the terminal screen.
+
+The only remaining option is to add things by trial and error combined with a touch of intuition.
+
+\subsection{Third Debian parent dockerfile attempt}
 
 
 \begin{thebibliography}{99}
