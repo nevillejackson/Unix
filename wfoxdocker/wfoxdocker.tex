@@ -18,6 +18,7 @@
 \begin{document} 
 
 \maketitle      
+\tableofcontents
 
 \section{Introduction} 
 This project is about learning how to compose a Dockerfile which runs an X11 application. The Waterfox browser was chosen as an example X11 application, because Waterfox is not available as a package in most Linux distributions, so the result might actually be a useful means of obtaining Waterfox without having to download a tarfile and do a local install. 
@@ -86,7 +87,7 @@ The {\em xhost +} statement is needed to give the container permission to commun
 \end{description}
 Volumes are the mechanism used by Docker containers to share data between the host and the container ( and between containers). They are need in this case because the container is an X11 client, while the host acts as the X11 server, so information has to pass between container and host.  A docker container can only write on the part of the host filesystem defined as a docker volume. There is also {\em tmpfs mount} which is a temporary ram disk used for non-permanent data within a container.
 
-\section{First attempt at a Waterfox Dockerfile, using a  Debian parent image}
+\section{Attempt at a Waterfox Dockerfile, using a  Debian parent image}
 There is no new principle involved in running Waterfox rather than the simple xcalc app, in a docker container. The Waterfox browser is a large program with many dependencies, so the Dockerfile will have to build up a complete working environment specifically for Waterfox. 
 
 I chose Debian parent image for a first attempt, because Debian is familiar and is most likely to compatable with Waterfox.  The Debian parent image is large. We shall try later to repeat the job with a smaller parent image. 
@@ -522,7 +523,11 @@ RUN cd /etc/apt && \
   apt-get update && \
   apt-get upgrade -y && \
 # apt install libraries
-  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 python3-minimal zlib1g
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 \
+  libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 \
+  libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 \
+  liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 \
+  python3-minimal zlib1g
 
 #    unpack waterfox distro tarfile
   cd /wfox && \
@@ -549,7 +554,9 @@ Successfully built 7d1e1798583a
 Successfully tagged wfoxdeb:v1
 
 #docker run
-docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority xfoxdeb:v1
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
+   -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority \
+   xfoxdeb:v1
 
 XPCOMGlueLoad error for file /wfox/waterfox/libmozgtk.so:
 libgtk-3.so.0: cannot open shared object file: No such file or directory
@@ -754,9 +761,26 @@ RUN cd /etc/apt && \
   apt-get update && \
   apt-get upgrade -y && \
 # apt install packages for waterfox
-  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 python3-minimal zlib1g && \
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 \
+   libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 \
+   libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 \
+   liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 \
+   python3-minimal zlib1g && \
 # apt install packages for waterfox libraries
-  apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libblkid1 libbrotli1 libbsd0 libc6 libcairo2 libcairo-gobject2 libdatrie1 libdbus-1-3 libdbus-glib-1-2 libelogind0 libepoxy0 libexpat1 libffi7 libfontconfig1 libfreetype6 libfribidi0 libgcc-s1 libgcrypt20 libgdk-pixbuf-2.0-0 libglib2.0-0 libglib2.0-dev libgpg-error0 libgraphite2-3 libgtk-3-0 libharfbuzz0b libice6 liblz4-1 liblzma5 libmd0 libmount1 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpcre2-8-0 libpcre3 libpixman-1-0 libpng16-16 libselinux1 libsm6 libstdc++6 libsystemd0 libthai0 libuuid1 libwayland-client0 libwayland-cursor0 libwayland-egl1 libx11-6 libx11-xcb1 libxau6 libxcb1 libxcb-render0 libxcb-shm0 libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxext6-dbg libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxt6 libzstd1 zlib1g && \
+  apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 \
+   libblkid1 libbrotli1 libbsd0 libc6 libcairo2 libcairo-gobject2 \
+   libdatrie1 libdbus-1-3 libdbus-glib-1-2 libelogind0 libepoxy0 \
+   libexpat1 libffi7 libfontconfig1 libfreetype6 libfribidi0 libgcc-s1 \
+   libgcrypt20 libgdk-pixbuf-2.0-0 libglib2.0-0 libglib2.0-dev \ 
+   libgpg-error0 libgraphite2-3 libgtk-3-0 libharfbuzz0b libice6 \
+   liblz4-1 liblzma5 libmd0 libmount1 libnspr4 libnss3 libpango-1.0-0 \
+   libpangocairo-1.0-0 libpangoft2-1.0-0 libpcre2-8-0 libpcre3 \
+   libpixman-1-0 libpng16-16 libselinux1 libsm6 libstdc++6 libsystemd0 \
+   libthai0 libuuid1 libwayland-client0 libwayland-cursor0 libwayland-egl1 \
+   libx11-6 libx11-xcb1 libxau6 libxcb1 libxcb-render0 libxcb-shm0 \
+   libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxext6-dbg \
+   libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 \
+   libxt6 libzstd1 zlib1g && \
 # needed to unpack waterfox tarfile
  apt-get install -y bzip2 && \
 #    unpack waterfox distro tarfile
@@ -786,7 +810,9 @@ This time we are successful. The container executes the Waterfox binary and we g
 \input{figsearch.tex}
 There are messages in the container terminal as follows
 \begin{verbatim}
-[nevj@trinity Waterfox.docker]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:vt2
+[nevj@trinity Waterfox.docker]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority 
+  wfoxdeb:vt2
 Authorization required, but no authorization protocol specified
 Unable to init server: Could not connect: Connection refused
 Error: cannot open display: :0.0
@@ -844,7 +870,7 @@ a4170 ?        Sl     0:00 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 
 \end{verbatim}
  So running a container only adds the {\em /usr/bin/containerd-shim-runc-v2} process, and {\em dbus-launch} and {\em dbus-daemon} apart from several processes associates with waterfox.
 
-WE can see what they require
+We can see what they require
 \begin{verbatim}
 ldd /usr/bin/containerd-shim-runc-v2
 	linux-vdso.so.1 (0x00007fffc3118000)
@@ -889,7 +915,569 @@ There is  a lot of output,  but the critical messages are the same as appears on
 The only remaining option is to add things by trial and error combined with a touch of intuition.
 
 \subsection{Third Debian parent dockerfile attempt}
+ Add the packages needed to provide Libpci and libEGL and the Dockerfile becomes
+\begin{verbatim}
+M debian:stable-20220801
+#set working dir inside container
+WORKDIR /wfox
+# get waterfox
+COPY . .
+# install waterfox.desktop file
+RUN mkdir /usr/share/applications && \
+  cp waterfox.desktop /usr/share/applications
+#
+RUN cd /etc/apt && \
+# apt debian setup
+  cp sources.list sources.list.orig && \
+  sed 's/main/main contrib non-free/' sources.list.orig >sources.list && \
+  cd /wfox && \
+  apt-get update && \
+  apt-get upgrade -y && \
+# apt install packages for waterfox
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 \
+   libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 \
+   libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 \
+   liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 \
+   python3-minimal zlib1g && \
+# apt install packages for waterfox libraries
+  apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 \
+   libblkid1 libbrotli1 libbsd0 libc6 libcairo2 libcairo-gobject2 \
+   libdatrie1 libdbus-1-3 libdbus-glib-1-2 libepoxy0 libexpat1 libffi7 \
+   libfontconfig1 libfreetype6 libfribidi0 libgcc-s1 libgcrypt20 \
+   libgdk-pixbuf-2.0-0 libglib2.0-0 libglib2.0-dev libgpg-error0 \
+   libgraphite2-3 libgtk-3-0 libharfbuzz0b libice6 liblz4-1 liblzma5 \
+   libmd0 libmount1 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 \
+   libpangoft2-1.0-0 libpcre2-8-0 libpcre3 libpixman-1-0 libpng16-16 \
+   libselinux1 libsm6 libstdc++6 libsystemd0 libthai0 libuuid1 \
+   libwayland-client0 libwayland-cursor0 libwayland-egl1 libx11-6 \
+   libx11-xcb1 libxau6 libxcb1 libxcb-render0 libxcb-shm0 libxcomposite1 \
+   libxcursor1 libxdamage1 libxdmcp6 libxext6 libxext6-dbg libxfixes3 \
+   libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxt6 \
+   libzstd1 zlib1g && \
+# needed to unpack waterfox tarfile
+ apt-get install -y bzip2 && \
+# Mystery dependencies
+  apt-get install -y libpci3 libpciaccess0 && \
+  apt-get install -y libgl1 libegl1 libgl-dev libegl-dev  && \
+#    unpack waterfox distro tarfile
+  cd /wfox && \
+  bzip2 -dc waterfox-G4.1.4.en-US.linux-x86_64.tar.bz2 | tar xvf -
+# setup environment
+RUN groupadd -g 1000 wfox
+RUN useradd -d /home/wfox -s /bin/bash -m wfox -u 1000 -g 1000
+USER wfox
+ENV HOME /home/wfox
+# exec waterfox
+CMD /wfox/waterfox/waterfox
+\end{verbatim}
 
+Build this Dockerfile to make version 3 of the image, and run it and we obtain
+\begin{verbatim}
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
+   -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority \
+   wfoxdeb:vt3
+
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /home/wfox/.waterfox/ssxfyte5.default-default/search.json.mozlz4", (void 0)))
+JavaScript error: resource://gre/modules/XPCOMUtils.jsm, line 161: NS_ERROR_XPC_GS_RETURNED_FAILURE: ServiceManager::GetService returned failure code:
+JavaScript error: , line 0: InternalError: Promise rejection value is a non-unwrappable cross-compartment wrapper.
+JavaScript error: resource://gre/modules/PromiseWorker.jsm, line 106: Error: Could not get children of file(/home/wfox/.waterfox/ssxfyte5.default-default/thumbnails) because it does not exist
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/PartitioningExceptionListService.jsm, line 69: NS_ERROR_MALFORMED_URI: Component returned failure code: 0x804b000a (NS_ERROR_MALFORMED_URI) [nsIPartitioningExceptionListObserver.onExceptionListUpdate]
+\end{verbatim}
+
+Same JavaScript messages as before but there are no missing libraries now.  As far as I can tell Waterfox runs exactly as before.   The Welcome Screen is still blank, the rest is OK.
+
+\subsection{Fourth attempt at Dockerfile}
+ We need to try and satisfy the missing Java resources. I know nothing about JacaScript, so I can only proceed by guessing the required packages. 
+An {\em apt-cache search javascript} yields a very long list of packages. It is impossible to know what is needed.  I resort to searching the internet and find that the minumal requirement for JavaScript in Debian is two packages {\em nodejs} which provides the JavaScript runtime environment and {\em npm} which is a package registry providing access to shared JavaScript software. 
+
+So we add these 2 packages to the Dockerfile.
+\begin{verbatim}
+FROM debian:stable-20220801
+#set working dir inside container
+WORKDIR /wfox
+# get waterfox
+COPY . .
+# install waterfox.desktop file
+RUN mkdir /usr/share/applications && \
+  cp waterfox.desktop /usr/share/applications
+#
+RUN cd /etc/apt && \
+# apt debian setup
+  cp sources.list sources.list.orig && \
+  sed 's/main/main contrib non-free/' sources.list.orig >sources.list && \
+  cd /wfox && \
+  apt-get update && \
+  apt-get upgrade -y && \
+# apt install packages for waterfox
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 \
+   libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 \
+   libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 \
+   liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 \
+   python3-minimal zlib1g && \
+# apt install packages for waterfox libraries
+  apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 \
+   libblkid1 libbrotli1 libbsd0 libc6 libcairo2 libcairo-gobject2 \
+   libdatrie1 libdbus-1-3 libdbus-glib-1-2 libepoxy0 libexpat1 libffi7 \
+   libfontconfig1 libfreetype6 libfribidi0 libgcc-s1 libgcrypt20 \
+   libgdk-pixbuf-2.0-0 libglib2.0-0 libglib2.0-dev libgpg-error0 \
+   libgraphite2-3 libgtk-3-0 libharfbuzz0b libice6 liblz4-1 liblzma5 \
+   libmd0 libmount1 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 \
+   libpangoft2-1.0-0 libpcre2-8-0 libpcre3 libpixman-1-0 libpng16-16 \
+   libselinux1 libsm6 libstdc++6 libsystemd0 libthai0 libuuid1 \
+   libwayland-client0 libwayland-cursor0 libwayland-egl1 libx11-6 \
+   libx11-xcb1 libxau6 libxcb1 libxcb-render0 libxcb-shm0 libxcomposite1 \
+   libxcursor1 libxdamage1 libxdmcp6 libxext6 libxext6-dbg libxfixes3 \
+   libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxt6 \
+   libzstd1 zlib1g && \
+# needed to unpack waterfox tarfile
+ apt-get install -y bzip2 && \
+# Mystery dependencies
+  apt-get install -y libpci3 libpciaccess0 && \
+  apt-get install -y libgl1 libegl1 libgl-dev libegl-dev  && \
+# Javascript packages
+  apt-get install -y nodejs npm  && \
+#    unpack waterfox distro tarfile
+  cd /wfox && \
+  bzip2 -dc waterfox-G4.1.4.en-US.linux-x86_64.tar.bz2 | tar xvf -
+# setup environment
+RUN groupadd -g 1000 wfox
+RUN useradd -d /home/wfox -s /bin/bash -m wfox -u 1000 -g 1000
+USER wfox
+ENV HOME /home/wfox
+# exec waterfox
+CMD /wfox/waterfox/waterfox
+\end{verbatim}
+then build the image and run the container
+\begin{verbatim}
+docker build -t wfoxdeb:vt4 .
+.....
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
+   -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority \
+   wfoxdeb:vt4
+Console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /home/wfox/.waterfox/3ou7yrqh.default-default/search.json.mozlz4", (void 0)))
+JavaScript error: resource://gre/modules/XPCOMUtils.jsm, line 161: NS_ERROR_XPC_GS_RETURNED_FAILURE: ServiceManager::GetService returned failure code:
+JavaScript error: , line 0: InternalError: Promise rejection value is a non-unwrappable cross-compartment wrapper.
+JavaScript error: resource://gre/modules/PromiseWorker.jsm, line 106: Error: Could not get children of file(/home/wfox/.waterfox/3ou7yrqh.default-default/thumbnails) because it does not exist
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/PartitioningExceptionListService.jsm, line 69: NS_ERROR_MALFORMED_URI: Component returned failure code: 0x804b000a (NS_ERROR_MALFORMED_URI) [nsIPartitioningExceptionListObserver.onExceptionListUpdate]
+\end{verbatim}
+
+Then when I do a search there are more messages
+\begin{verbatim}
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://login.microsoftonline.com"
+JavaScript error: https://p.ad.gt/api/v1/p/450, line 1: TypeError: t.vendor is undefined
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to load driver: nouveau
+\end{verbatim}
+Waterfox still has a blank Welcome page, but it seems to work properly.
+The most concerning is the {\em libGL error}. It only happened after I did a search. 
+I added {\em libgl} in the third Dockerfile attempt because I was unsure whether it was needed as well as {\em libEGL}. I did not notice this message, probably because I did not do a search.  The messages from second attempt at a Dockerfile only said {\em libEGL} and {\em libpci} were missing. So I think I should try removing {\em libGL}
+
+\subsubsection{Removing libGL}
+\begin{verbatim}
+FROM debian:stable-20220801
+#set working dir inside container
+WORKDIR /wfox
+# get waterfox
+COPY . .
+# install waterfox.desktop file
+RUN mkdir /usr/share/applications && \
+  cp waterfox.desktop /usr/share/applications
+#
+RUN cd /etc/apt && \
+# apt debian setup
+  cp sources.list sources.list.orig && \
+  sed 's/main/main contrib non-free/' sources.list.orig >sources.list && \
+  cd /wfox && \
+  apt-get update && \
+  apt-get upgrade -y && \
+# apt install packages for waterfox
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 \
+   libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 \
+   libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 \
+   liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 \
+   python3-minimal zlib1g && \
+# apt install packages for waterfox libraries
+  apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 \
+   libblkid1 libbrotli1 libbsd0 libc6 libcairo2 libcairo-gobject2 \
+   libdatrie1 libdbus-1-3 libdbus-glib-1-2 libepoxy0 libexpat1 \
+   libffi7 libfontconfig1 libfreetype6 libfribidi0 libgcc-s1 \
+   libgcrypt20 libgdk-pixbuf-2.0-0 libglib2.0-0 libglib2.0-dev \
+   libgpg-error0 libgraphite2-3 libgtk-3-0 libharfbuzz0b libice6 \
+   liblz4-1 liblzma5 libmd0 libmount1 libnspr4 libnss3 libpango-1.0-0 \
+   libpangocairo-1.0-0 libpangoft2-1.0-0 libpcre2-8-0 libpcre3 \
+   libpixman-1-0 libpng16-16 libselinux1 libsm6 libstdc++6 libsystemd0 \
+   libthai0 libuuid1 libwayland-client0 libwayland-cursor0 \
+   libwayland-egl1 libx11-6 libx11-xcb1 libxau6 libxcb1 libxcb-render0 \
+   libxcb-shm0 libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 \
+   libxext6 libxext6-dbg libxfixes3 libxi6 libxinerama1 libxkbcommon0 \
+   libxrandr2 libxrender1 libxt6 libzstd1 zlib1g && \
+# needed to unpack waterfox tarfile
+ apt-get install -y bzip2 && \
+# Mystery dependencies
+  apt-get install -y libpci3 libpciaccess0 && \
+  apt-get install -y libegl1 libegl-dev  && \
+# Javascript packages
+  apt-get install -y nodejs npm  && \
+#    unpack waterfox distro tarfile
+  cd /wfox && \
+  bzip2 -dc waterfox-G4.1.4.en-US.linux-x86_64.tar.bz2 | tar xvf -
+# setup environment
+RUN groupadd -g 1000 wfox
+RUN useradd -d /home/wfox -s /bin/bash -m wfox -u 1000 -g 1000
+USER wfox
+ENV HOME /home/wfox
+# exec waterfox
+CMD /wfox/waterfox/waterfox
+
+docker build -t wfoxdeb:vt4 .
+....
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
+   -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority \
+   wfoxdeb:vt4
+Console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /home/wfox/.waterfox/dfm0052p.default-default/search.json.mozlz4", (void 0)))
+JavaScript error: resource://gre/modules/XPCOMUtils.jsm, line 161: NS_ERROR_XPC_GS_RETURNED_FAILURE: ServiceManager::GetService returned failure code:
+JavaScript error: , line 0: InternalError: Promise rejection value is a non-unwrappable cross-compartment wrapper.
+JavaScript error: resource://gre/modules/PromiseWorker.jsm, line 106: Error: Could not get children of file(/home/wfox/.waterfox/dfm0052p.default-default/thumbnails) because it does not exist
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/PartitioningExceptionListService.jsm, line 69: NS_ERROR_MALFORMED_URI: Component returned failure code: 0x804b000a (NS_ERROR_MALFORMED_URI) [nsIPartitioningExceptionListObserver.onExceptionListUpdate]
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://login.microsoftonline.com"
+JavaScript error: https://p.ad.gt/api/v1/p/450, line 1: TypeError: t.vendor is undefined
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to load driver: nouveau
+\end{verbatim}
+I did a search, and now when I go to a website the libGL message is as before. So not adding {\em libGL} did not change anything... it is apparently unnecessary, but is not the source of the error message.  
+
+\subsubsection{Error messages about .jsm files}
+We need to have a look at the messages about {\em .jsm} files
+\begin{verbatim}
+XPCOMUtils.jsm
+PromiseWorker.jsm
+XULStore.jsm
+PartitioningExceptionListService.jsm
+\end{verbatim}
+A web search reveals that {\em .jsm} files store Firefox Javascript modules. So we need to see if there are any missing packages related to Mozilla Firefox.
+There are no missing packages. 
+Adding `apt-get install firefox-esr` to the Dockerfile does not change the number of Javascript errer messages.  If I force the execution of firefox in the container
+\begin{verbatim}
+[nevj@trinity Waterfox.docker]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -e DISPLAY=$DISPLAY -h $HOSTNAME \
+  -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:ffox firefox
+.....
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to load driver: nouveau
+\end{verbatim}
+
+The Javascript errors disappear when running firefox in this container. So firefox is using  the same JavasScript modules without error. That proves the JavaScript errors are a Waterfox problem , and are not solvable by adding any packages.
+I would like to acknowledge assistance from Laszlo Kovacs and Akito Kitsune in diagnosing the Javascript error messages with {\em .jsm} modules.
+
+The libGL error however remains.
+
+\subsubsection{LibGL errors}
+We have these  messages
+\begin{verbatim}
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to load driver: nouveau
+\end{verbatiom}
+which occur after one does a search and goes to a website. The seem to indicate that some device is missing, so I tried adding the following option
+\begin{verbatim}
+-t /dev/dri/card0:/dev/dri/card0
+\end{verbatim}
+What it should do is make the device {\em /dev/dri/card0} in the host available in the container under the same name. 
+It failed but it changes the messages to
+\begin{verbatim}
+libGL error: failed to open /dev/dri/card0: Operation not permitted
+libGL error: failed to load driver: nouveau
+\end{verbatim}
+So failed again , but the message is different. 
+I think the name of the device inside the container should probably be different, but I dont know what it should be.
+
+I discovered another way of making a device available to a container
+\begin{verbatim}
+docker run ...... --device=/dev/dri/card0 ......
+\end{verbatim}
+On adding this to the docker run statement I get
+\begin{verbatim} 
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority --device=/dev/dri/card0 wfoxdeb:test
+.......
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to load driver: nouveau
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to load driver: nouveau
+console.error: PushService: 
+  clearOriginData: Error clearing origin data:
+\end{verbatim}
+THere are now twice as many error messages.
+
+We shall have to leave the libGL messages for now. It does not seem to disable operation of waterfox in the container
+
+\subsection{Fifth attempt at Dockerfile}
+to the {\em docker run statement}. 
+What needs to be done now is to make the Dockerfile site independent by downloading the Waterfox tarfile from the Official Waterfox site, rather than copying a file which has been pre-downloaded into my working directory. 
+
+One way to download a file from the web is with {\em wget}
+\begin{verbatim}
+wget https://github.com/WaterfoxCo/Waterfox/releases/download/\
+G4.1.5/waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2
+
+-2022-09-25 21:05:20--  https://github.com/WaterfoxCo/Waterfox/releases/download/G4.1.5/waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2
+Resolving github.com (github.com)... 20.248.137.48
+Connecting to github.com (github.com)|20.248.137.48|:443... connected.
+.......
+waterfox-G4.1.5.en- 100%[===================>]  79.05M  4.20MB/s    in 24s     
+
+
+2022-09-25 21:05:46 (3.31 MB/s) - ‘waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2’ saved [82892946/82892946]
+\end{verbatim}
+ So it works, the download is 79Mb and on my system took 24sec.  It names a specific release of Waterfox. Because Waterfox keeps all old releases on its Github site, doing wget for a specific release will always work. Also we want the Dockerfile to use the release for which the environment (particularly dependencies) was built. Using a later release may introduce further dependencies. So this retrieval with wget would suit our Dockerfile.
+
+ Another option is {\em curl}.
+\begin{verbatim}
+curl  https://github.com/WaterfoxCo/Waterfox/releases/download\
+/G4.1.5/waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2 > wfox.tar.bz2
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+\end{verbatim}
+This attempt does not work. It makes an empty file?
+So we may as well use what works. Our fiftg Dockerfile attempt becomes
+\begin{verbatim}
+FROM debian:stable-20220801
+#set working dir inside container
+WORKDIR /wfox
+# copy commented out 
+# COPY . .
+# install waterfox.desktop file
+# RUN mkdir /usr/share/applications && \
+# cp waterfox.desktop /usr/share/applications
+#
+RUN cd /etc/apt && \
+# apt debian setup
+  cp sources.list sources.list.orig && \
+  sed 's/main/main contrib non-free/' sources.list.orig >sources.list && \
+  cd /wfox && \
+  apt-get update && \
+  apt-get upgrade -y && \
+  apt-get install -y apt-utils && \
+# apt install packages for waterfox
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 \
+   libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 \
+   libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 \
+   liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 \
+   python3-minimal zlib1g && \
+# apt install packages for waterfox libraries
+  apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libblkid1 libbrotli1 libbsd0 libc6 libcairo2 libcairo-gobject2 libdatrie1 libdbus-1-3 libdbus-glib-1-2 libepoxy0 libexpat1 libffi7 libfontconfig1 libfreetype6 libfribidi0 libgcc-s1 libgcrypt20 libgdk-pixbuf-2.0-0 libglib2.0-0 libglib2.0-dev libgpg-error0 libgraphite2-3 libgtk-3-0 libharfbuzz0b libice6 liblz4-1 liblzma5 libmd0 libmount1 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpcre2-8-0 libpcre3 libpixman-1-0 libpng16-16 libselinux1 libsm6 libstdc++6 libsystemd0 libthai0 libuuid1 libwayland-client0 libwayland-cursor0 libwayland-egl1 libx11-6 libx11-xcb1 libxau6 libxcb1 libxcb-render0 libxcb-shm0 libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxext6-dbg libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxt6 libzstd1 zlib1g && \
+# needed to unpack waterfox tarfile
+ apt-get install -y bzip2 && \
+# Mystery dependencies
+  apt-get install -y libpci3 libpciaccess0 && \
+  apt-get install -y libegl1 libegl-dev  && \
+# apt-get install -y libgl1 libglfw3  && \
+# video
+# apt-get install -y xserver-xorg-video-nouveau && \
+# Javascript packages
+  apt-get install -y nodejs npm  && \
+  apt-get install -y  gir1.2-javascriptcoregtk-4.0 javascriptcoregtk-4.0\
+   javascript-common libnode72 && \
+# firefox
+# apt-get install -y firefox-esr && \
+#  get waterfox distro tarfile and unpack
+  apt-get install -y wget && \
+  cd /wfox 
+RUN wget https://github.com/WaterfoxCo/Waterfox/releases/download/\
+G4.1.5/waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2 && \
+  bzip2 -dc waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2 | tar xvf -
+# setup environment
+RUN groupadd -g 1000 wfox
+RUN useradd -d /home/wfox -s /bin/bash -m wfox -u 1000 -g 1000
+USER wfox
+ENV HOME /home/wfox
+# exec waterfox
+CMD /wfox/waterfox/waterfox
+\end{verbatim}
+Note we have changed to version G4.1.5 of waterfox. It is only a minor update. Will check if dependencies are affected.
+
+After building the above fifth Dockerfile attempt, and running it, Waterfox still works and the messages while running are exactly the same as for the fourth attempt. There are no additional missing libraries , so the version change to G4.1.5 is OK. The libGL error messages are still present. 
+
+We can conclude that the changeover from a local file to a download was successful.
+
+\subsection{Sixth attempt at a Dockefile - using slim Debian parent image}
+a The full Debian parent image is 124Mb. We can save space by using the Debian-slim image which is 80Mb.  We can also make the image smaller by removing the downloaded Waterfox tarfile, after we have unpacked it.
+So our sixth Dockerfile attempt is as follows
+\begin{verbatim}
+FROM debian:stable-20220801-slim
+#set working dir inside container
+WORKDIR /wfox
+#
+RUN cd /etc/apt && \
+# apt debian setup
+  cp sources.list sources.list.orig && \
+  sed 's/main/main contrib non-free/' sources.list.orig >sources.list && \
+  cd /wfox && \
+  apt-get update && \
+  apt-get upgrade -y && \
+  apt-get install -y apt-utils && \
+# apt install packages for waterfox
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 \
+   libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 \
+   libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 \
+   liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 \
+   python3-minimal zlib1g && \
+# apt install packages for waterfox libraries
+  apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libblkid1 libbrotli1 libbsd0 libc6 libcairo2 libcairo-gobject2 libdatrie1 libdbus-1-3 libdbus-glib-1-2 libepoxy0 libexpat1 libffi7 libfontconfig1 libfreetype6 libfribidi0 libgcc-s1 libgcrypt20 libgdk-pixbuf-2.0-0 libglib2.0-0 libglib2.0-dev libgpg-error0 libgraphite2-3 libgtk-3-0 libharfbuzz0b libice6 liblz4-1 liblzma5 libmd0 libmount1 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpcre2-8-0 libpcre3 libpixman-1-0 libpng16-16 libselinux1 libsm6 libstdc++6 libsystemd0 libthai0 libuuid1 libwayland-client0 libwayland-cursor0 libwayland-egl1 libx11-6 libx11-xcb1 libxau6 libxcb1 libxcb-render0 libxcb-shm0 libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxext6-dbg libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxt6 libzstd1 zlib1g && \
+# needed to unpack waterfox tarfile
+ apt-get install -y bzip2 && \
+# Mystery dependencies
+  apt-get install -y libpci3 libpciaccess0 && \
+  apt-get install -y libegl1 libegl-dev  && \
+# apt-get install -y libgl1 libglfw3  && \
+# Javascript packages
+  apt-get install -y nodejs npm  && \
+  apt-get install -y  gir1.2-javascriptcoregtk-4.0 javascriptcoregtk-4.0\
+   javascript-common libnode72 && \
+# firefox
+# apt-get install -y firefox-esr && \
+#  get waterfox distro tarfile and unpack
+  apt-get install -y wget && \
+  cd /wfox 
+RUN wget https://github.com/WaterfoxCo/Waterfox/releases/download/\
+G4.1.5/waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2 && \
+  bzip2 -dc waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2 | tar xvf - && \
+  rm waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2
+# setup environment
+RUN groupadd -g 1000 wfox
+RUN useradd -d /home/wfox -s /bin/bash -m wfox -u 1000 -g 1000
+USER wfox
+ENV HOME /home/wfox
+# exec waterfox
+CMD /wfox/waterfox/waterfox
+\end{verbatim}
+So build and run this sixth Dockerfile attempt. The build works, the run gives exactly the same messages as with the fourth and fifth Dockerfiles, and Waterfox still works, the only issue being the blank welcome page.
+
+So the full Debian parent image was unnecessary. The fifth image was 1.43Gb, the sixth is 1.16Gb. 
+
+\subsection{Seventh Dockerfile attempt - setting locale}
+We  have defined a user and a group and a home directory. We need to set the time zone and character set. There is an article~\cite{dock:11} on setting locale in a Ubuntu container. It recommends the following Dockerfile statements
+\begin{verbatim}
+# Set the locale
+RUN locale-gen en_US.UTF-8  
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8  
+\end{verbatim}
+Another reference~\cite{dock:12} recommends installing {\em locales} and {\em locales-all} in the container
+\begin{verbatim}
+RUN apt-get install -y locales locales-all
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+\end{verbatim}
+That does not set the timezone. That is done with 
+\begin{verbatim}
+ENV TZ Australia/Sydney
+\end{verbatim}
+The above will result in the environment values being hardcoded ito the Dockerfile. So if a user wishes to change one or more values, they have to edit the Dockerfile.
+
+It is possible to set the environment values dynamically when the container is run. To do this the ENV statements inside Dockerfile should be
+\begin{verbatim}
+RUN apt-get install -y locales locales-all
+ENV LC_ALL=$[LC_ALL]
+ENV LANG=$[lang]
+ENV LANGUAGE=$[language]
+ENV TZ=$[TZ]
+\end{verbatim}
+Then the {\em docker run} statement can pass these values using the {\em -e} option as follows
+\begin{verbatim}
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
+   -e LC_ALL=en_AU.UTF-8 LANG=en_AU.UTF-8 LANGUAGE=en_AU.UTF-8 \
+   TZ=Australia/Sydney -h $HOSTNAME \
+   -v $HOME/.Xauthority:/home/nevj/.Xauthority imagename
+\end{verbatim}
+We shall use the simpler method, so our seventh Dockerfile attempt becomes
+\begin{verbatim}
+FROM debian:stable-20220801-slim
+#set working dir inside container
+WORKDIR /wfox
+#
+RUN cd /etc/apt && \
+# apt debian setup
+  cp sources.list sources.list.orig && \
+  sed 's/main/main contrib non-free/' sources.list.orig >sources.list && \
+  cd /wfox && \
+  apt-get update && \
+  apt-get upgrade -y && \
+  apt-get install -y apt-utils && \
+# apt install packages for waterfox
+  apt-get install -y  dconf-gsettings-backend gvfs gvfs-libs libc6 \
+   libcom-err2 libdbus-1-3 libelogind0 libexpat1 libgcc-s1 \
+   libgdk-pixbuf-2.0-0 libgl1-mesa-dri libgpg-error0 libkeyutils1 \
+   liblzma5 libnss-mdns libpcre3 libpulse0 libselinux1 libtirpc3 \
+   python3-minimal zlib1g && \
+# apt install packages for waterfox libraries
+  apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libblkid1 libbrotli1 libbsd0 libc6 libcairo2 libcairo-gobject2 libdatrie1 libdbus-1-3 libdbus-glib-1-2 libepoxy0 libexpat1 libffi7 libfontconfig1 libfreetype6 libfribidi0 libgcc-s1 libgcrypt20 libgdk-pixbuf-2.0-0 libglib2.0-0 libglib2.0-dev libgpg-error0 libgraphite2-3 libgtk-3-0 libharfbuzz0b libice6 liblz4-1 liblzma5 libmd0 libmount1 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpcre2-8-0 libpcre3 libpixman-1-0 libpng16-16 libselinux1 libsm6 libstdc++6 libsystemd0 libthai0 libuuid1 libwayland-client0 libwayland-cursor0 libwayland-egl1 libx11-6 libx11-xcb1 libxau6 libxcb1 libxcb-render0 libxcb-shm0 libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxext6-dbg libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxt6 libzstd1 zlib1g && \
+# needed to unpack waterfox tarfile
+ apt-get install -y bzip2 && \
+# Mystery dependencies
+  apt-get install -y libpci3 libpciaccess0 && \
+  apt-get install -y libegl1 libegl-dev  && \
+# apt-get install -y libgl1 libglfw3  && \
+# Javascript packages
+  apt-get install -y nodejs npm  && \
+  apt-get install -y  gir1.2-javascriptcoregtk-4.0 javascriptcoregtk-4.0\
+   javascript-common libnode72 && \
+# firefox
+# apt-get install -y firefox-esr && \
+# locale
+  apt-get install -y locales locales-all && \
+#  get waterfox distro tarfile and unpack
+  apt-get install -y wget && \
+  cd /wfox 
+RUN wget https://github.com/WaterfoxCo/Waterfox/releases/download/\
+G4.1.5/waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2 && \
+  bzip2 -dc waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2 | tar xvf - && \
+  rm waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2
+# setup environment
+RUN groupadd -g 1000 wfox
+RUN useradd -d /home/wfox -s /bin/bash -m wfox -u 1000 -g 1000
+RUN rm -fr /tmp/* /var/tmp/* /var/cache/*/*
+USER wfox
+ENV HOME /home/wfox
+ENV LC_ALL en_AU.UTF-8
+ENV LANG en_AU.UTF-8
+ENV LANGUAGE en_AU.UTF-8
+ENV TZ=Australia/Sydney
+# exec waterfox
+CMD /wfox/waterfox/waterfox
+\end{verbatim}
+A build and run of this Dockerfile works and gives all the same messages afds the sixth attempt. THe image size is now 1.4Gb, compared to 1.16Gb for sixth attempt, the increase being the added locale packages.
+
+\section{Attempt at a Waterfox Dockerfile using a Void Linux parent image}
+This work has been removed to a separate document. Void offers the possibility of a much smaller parent image than Debian. However all the work of tracing the dependencies has to be done again, because opackages in Vois's {\em xbps} package system have different names to Debian's packages.
+
+Void may offer better support for Waterfox, because its packages are more up to date. In particular the JavaScript errors may be resolved. 
+
+\section{Discussion}
+I have attempted to lay out a systematic way of determining what packages should be in the docker image environment, using Waterfox as an example. For a large app like Waterfox, it is important to trace dependencies systematically. 
+
+It turns out that dependencies can be reliably traced, but it is a large job for a big package like Waterfox.
+
+The issue of running in a container a program which has GUI output with X11 is quite simple. One just has to provide the image at run time with access to a couple of jost system X11 files.  This is done by defining {\em volumes} in the {\em run} statement.
+
+There are some unresolved issues, particularly those labelled {\em libGL error}. They do not seem to stop Waterfox working.
+
+If one were going to tackle a project like this, it would be almost essential to have an install of Waterfox in a  Debian system ( assuming one were using a Debian parent image). One needs to have a working Waterfox to trace dependencies,  and it needs to be running in the same Linux as used for the parent image. 
+
+One of the reasondss for undertaking this project was to see if it woulld be feasable to use docker to share software setups among users.  It is possible, but too complicated for any sort of automatic use. 
 
 \begin{thebibliography}{99}
 
@@ -931,6 +1519,10 @@ URL https://jfrog.com/knowledge-base/a-beginners-guide-to-understanding-and-buil
 Best practices for writing Dockerfiles
 URL https://docs.docker.com/develop/develop-images/dockerfile\_best-practices/
 
+\bibitem{dock:08}
+A Beginners Guide to Understanding and Building Docker Images
+https://jfrog.com/knowledge-base/a-beginners-guide-to-understanding-and-
+building-docker-images/
 
 \bibitem{dock:09}
 Creating a Docke Image for your Application
@@ -939,6 +1531,14 @@ URL https://www.stereolabs.com/docs/docker/creating-your-image/
 \bibitem{dock:10}
 Docker Containerization Cookbook” - Hot Recipes for Docker Automation
 URL https://distrowatch.tradepub.com/free/w\_java39/prgm.cgi?a=1
+
+\bibitem{dock:11}
+Markell J.(2014) Docker and Locales
+URL http://jaredmarkell.com/docker-and-locales/
+
+\bibitem{dock:12}
+
+URL https://stackoverflow.com/questions/28405902/how-to-set-the-locale-inside-a-debian-ubuntu-docker-container
 
 \bibitem{void:01}
 Void Linux Docker Images
