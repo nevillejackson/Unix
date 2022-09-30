@@ -1,0 +1,8 @@
+JavaScript error: https://p.ad.gt/api/v1/p/450, line 1: TypeError: t.vendor is undefined
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to open /dev/dri/card0: Permission denied
+libGL error: failed to load driver: nouveau
+console.error: PushService: 
+  clearOriginData: Error clearing origin data:
+  TypeError
+JavaScript error: resource:///modules/Interactions.jsm, line 209: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]

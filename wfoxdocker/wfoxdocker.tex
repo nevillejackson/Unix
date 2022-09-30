@@ -13,7 +13,7 @@
 
 \title{Making a docker image to run the Waterfox browser}
 \author{Neville Jackson}
-\date{4 Sep 2022} 
+\date{29 Sep 2022} 
 
 \begin{document} 
 
@@ -39,7 +39,7 @@ ln /usr/local/src/waterfox/waterfox /usr/local/bin/waterfox
 \end{verbatim}
 \item Define the desktop icon by adding a file waterfox.desktop to the directory /usr/share applications. The file waterfox.desktop does not come with the tarfile, but is available here~\cite{wate:22a}
 \end{enumerate}
-We need to implement steps 1 to 3 in a Dockerfile. Step 4 can be omitted, as there will be no icon if running Waterfox in a container. The container will have to be started from the command line.
+To make a docker image, we need to implement steps 1 to 3 in a Dockerfile. Step 4 can be omitted, as there will be no icon if running Waterfox in a container. The container will have to be started from the command line.
 
 \section{How to run a docker container requiring access to the host Xserver}
 We assume the host is running X11 ( not Wayland ). Set up the following primitive Dockerfile.
@@ -82,20 +82,20 @@ The {\em xhost +} statement is needed to give the container permission to commun
 \item[-v /tmp/.X11-unix:/tmp/.X11-unix] defines a {\em mount} for a volume. The string {\em /tmp/.X11-unix:/tmp/.X11-unix} is the mount point on the host. The part before {\em ':'} is the volume name on the host. The part after {\em ':'} is where the file or directory is mounted oinside the container. A volume is just a file or directory in the host filesystem.
 \item[-e DISPLAY=\$DISPLAY] sets the environment variable DISPLAY in the container
 \item[-h \$HOSTNAME] sets the container hostname
-\item[\$HOME/.Xauthority:/home/nevj/.Xauthority] sets the .Xauthority file of the container to the .Xauthority file of the host user who initiated the {\em run} statement again using a volume mount.
-\item[nevj/test:v2] is the name of te image, build as above.
+\item[-v \$HOME/.Xauthority:/home/nevj/.Xauthority] sets the .Xauthority file of the container to the .Xauthority file of the host user who initiated the {\em run} statement again using a volume mount.
+\item[nevj/test:v2] is the name of the image.
 \end{description}
-Volumes are the mechanism used by Docker containers to share data between the host and the container ( and between containers). They are need in this case because the container is an X11 client, while the host acts as the X11 server, so information has to pass between container and host.  A docker container can only write on the part of the host filesystem defined as a docker volume. There is also {\em tmpfs mount} which is a temporary ram disk used for non-permanent data within a container.
+Volumes are the mechanism used by Docker containers to share data between the host and the container ( and between containers). They are needed in this case because the container is an X11 client, while the host acts as the X11 server, so information has to pass between container and host.  A docker container can only write on the part of the host filesystem defined as a docker volume. There is also {\em tmpfs mount} which is a temporary ram disk used for non-permanent data within a container.
 
 \section{Attempt at a Waterfox Dockerfile, using a  Debian parent image}
 There is no new principle involved in running Waterfox rather than the simple xcalc app, in a docker container. The Waterfox browser is a large program with many dependencies, so the Dockerfile will have to build up a complete working environment specifically for Waterfox. 
 
-I chose Debian parent image for a first attempt, because Debian is familiar and is most likely to compatable with Waterfox.  The Debian parent image is large. We shall try later to repeat the job with a smaller parent image. 
+I chose a Debian parent image for a first attempt, because Debian is familiar and is most likely to compatable with Waterfox.  The Debian parent image is large. We shall try later to repeat the job with a smaller parent image. 
 
 \subsection{Finding the dependencies of a binary program file}
 There is a really good article~\cite{rehn:21} on identifying dependencies of a runtime binary when making a dockerfile.
 
-If one looks at the unpacked Waterfox ditribution tarfile, it contains the files shon in Figure~\ref{fig:wfoxfiles}
+If one looks at the unpacked Waterfox distribution tarfile, it contains the files shown in Figure~\ref{fig:wfoxfiles}
 \input{figwfoxfiles.tex}
 The *.so files shown in green are dynamically loaded libraries. Presumably these are all dependencies of waterfox, but they may not be the only dependencies. There is a file TwemojiMozilla.ttf in the fonts subdirectory, and there are various default configuration files.
 
@@ -252,7 +252,7 @@ nevj@mary:~$  cat outinit
   ............
 \end{verbatim}
   
-So there are still 715 of them. The first 6 are the startiup dependencies, and the rest are runtime dependencies
+So there are still 715 of them. The first 6 are the startup dependencies, and the rest are runtime dependencies
 
 There is also the question of configuration files. Most of these are hopefully included in the Waterfox tarfile. We can check
 \begin{verbatim}
@@ -338,7 +338,7 @@ openat(AT_FDCWD, "/home/nevj/.icons/Adwaita/index.theme", O_RDONLY) = -1 ENOE
 NT (No such file or directory)
 .....
 \end{verbatim}
- Some of the files have the message {\em (No such file or directory)}. They are probably not serious issues... the above was done in a Waterfox install which works satisfactorily. I have only shown a selection. The full output above was 1402 lines. 
+ Some of the files have the message {\em (No such file or directory)}. They are probably not serious issues... the above was done in a Debian Waterfox install which works satisfactorily. I have only shown a selection. The full output above was 1402 lines. 
 
 
 \subsection{Which Debian packages provide these files?}
@@ -1462,9 +1462,26 @@ CMD /wfox/waterfox/waterfox
 A build and run of this Dockerfile works and gives all the same messages afds the sixth attempt. THe image size is now 1.4Gb, compared to 1.16Gb for sixth attempt, the increase being the added locale packages.
 
 \section{Attempt at a Waterfox Dockerfile using a Void Linux parent image}
-This work has been removed to a separate document. Void offers the possibility of a much smaller parent image than Debian. However all the work of tracing the dependencies has to be done again, because opackages in Vois's {\em xbps} package system have different names to Debian's packages.
+This work has been removed to a separate document. Void offers the possibility of a much smaller parent image than Debian. However all the work of tracing the dependencies has to be done again, because packages in Void's {\em xbps} package system have different names to Debian's packages.
 
 Void may offer better support for Waterfox, because its packages are more up to date. In particular the JavaScript errors may be resolved. 
+
+\section{Testing}
+The whole idea of using docker is to be able to build and run images in any Linux system. My Dockerfile should work in any Linux with a reasonably recent kernel. The Dockef ile was developed in a Void host system, so I know it works in Void.
+
+I tested the Dockerfile in Debian, Devuan, and Solus. There were no issues.
+
+In Debian and Devuan the {\em libGL} error messages were slightly different
+\begin{verbatim}
+libGL error: MESA-LOADER: failed to retrieve device information
+MESA-LOADER: failed to retrieve device information
+MESA-LOADER: failed to retrieve device information
+\end{verbatim}
+I think it means the same. Things in Debian have different names.
+
+In Solus I chose to install docker from the GUI Software Centre. The install required numerous dependencies be installed first, including firefox and thunderbird, which were already installed?  I cant imagine why docker would have firefox or thunderbird as dependencies?  The libGL error messages in Solus were the same as in Void Linux. 
+
+So my Dockerfile passes the test of operating in various Linux versions. They were all x86_64 architecture. I am not sure about different architectures?
 
 \section{Discussion}
 I have attempted to lay out a systematic way of determining what packages should be in the docker image environment, using Waterfox as an example. For a large app like Waterfox, it is important to trace dependencies systematically. 
@@ -1477,7 +1494,7 @@ There are some unresolved issues, particularly those labelled {\em libGL error}.
 
 If one were going to tackle a project like this, it would be almost essential to have an install of Waterfox in a  Debian system ( assuming one were using a Debian parent image). One needs to have a working Waterfox to trace dependencies,  and it needs to be running in the same Linux as used for the parent image. 
 
-One of the reasondss for undertaking this project was to see if it woulld be feasable to use docker to share software setups among users.  It is possible, but too complicated for any sort of automatic use. 
+One of the reasons for undertaking this project was to see if it woulld be feasable to use docker to share software setups among users.  It is possible, but too complicated for any sort of automatic use. 
 
 \begin{thebibliography}{99}
 
