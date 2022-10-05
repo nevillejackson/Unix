@@ -2,18 +2,27 @@
 % Draft  document voiddocker.tex
 %
  
-\documentclass{article}  % Latex2e
+\documentclass[a4paper]{article}  % Latex2e
 \usepackage{graphicx,lscape,subfigure}
+\usepackage{amssymb,amsmath}
+\usepackage[utf8]{inputenc}
+
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \usepackage{mathptmx}
+%\usepackage[margin=2.5cm]{geometry}
+\usepackage[margin=0.5in]{geometry}
 \usepackage{listings}
 \lstset{upquote=true,basicstyle={\small\ttfamily}}
+
+\usepackage{color}
+\usepackage{tcolorbox}
+\usepackage{fancyvrb}
  
 
 \title{Making a docker image to run the Waterfox browser}
 \author{Neville Jackson}
-\date{29 Sep 2022} 
+\date{5 Oct 2022} 
 
 \begin{document} 
 
@@ -30,19 +39,24 @@ There is a document~\cite{wate:22a} on that.  Briefly the steps are
 \begin{enumerate}
 \item Download a tarfile from the Waterfox website~\cite{wate:22} or from the Github site~\cite{wate:22b}.
 \item  Unpack the tarfile in /usr/local/src
+\begin{tcolorbox}
 \begin{verbatim}
 bzip2 -dc waterfox-G4.1.1.1.en-US.linux-x86_64.tar.bz2 | tar xvf -
 \end{verbatim}
+\end{tcolorbox}
 \item Make a link in /usr/local/bin to point to the Waterfox binary
+\begin{tcolorbox}
 \begin{verbatim}
 ln /usr/local/src/waterfox/waterfox /usr/local/bin/waterfox
 \end{verbatim}
+\end{tcolorbox}
 \item Define the desktop icon by adding a file waterfox.desktop to the directory /usr/share applications. The file waterfox.desktop does not come with the tarfile, but is available here~\cite{wate:22a}
 \end{enumerate}
 To make a docker image, we need to implement steps 1 to 3 in a Dockerfile. Step 4 can be omitted, as there will be no icon if running Waterfox in a container. The container will have to be started from the command line.
 
 \section{How to run a docker container requiring access to the host Xserver}
 We assume the host is running X11 ( not Wayland ). Set up the following primitive Dockerfile.
+\begin{tcolorbox}
 \begin{verbatim}
 FROM debian
 WORKDIR /home/demo
@@ -55,7 +69,9 @@ USER demo
 ENV HOME /home/demo
 CMD /usr/bin/xcalc
 \end{verbatim}
+\end{tcolorbox}
  Build this with 
+\begin{tcolorbox}
 \begin{verbatim}
 docker build -t nevj/test:v2 .
 Sending build context to Docker daemon  2.048kB
@@ -67,13 +83,16 @@ Step 2/10 : WORKDIR /home/demo
 Successfully built 517c1937106a
 Successfully tagged nevj/test:v2
 \end{verbatim}
+\end{tcolorbox}
  Then run it with
+\begin{tcolorbox}
 \begin{verbatim}
 [nevj@trinity dtest]$ xhost +
 [nevj@trinity dtest]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix \
           -e DISPLAY=$DISPLAY -h $HOSTNAME \
           -v $HOME/.Xauthority:/home/nevj/.Xauthority nevj/test:v2
 \end{verbatim}
+\end{tcolorbox}
 and the xcalc app appears in a separate X window, as shown in Figure~\ref{fig:xcalc}
 \input{figxcalc.tex}
 The {\em xhost +} statement is needed to give the container permission to communicate with the host X11 server. 
@@ -100,6 +119,7 @@ If one looks at the unpacked Waterfox distribution tarfile, it contains the file
 The *.so files shown in green are dynamically loaded libraries. Presumably these are all dependencies of waterfox, but they may not be the only dependencies. There is a file TwemojiMozilla.ttf in the fonts subdirectory, and there are various default configuration files.
 
 An initial check for dependencies can be obtained with {\em ldd}
+\begin{tcolorbox}
 \begin{verbatim}
 nevj@mary:/usr/local/src/waterfox$ ldd waterfox
 	linux-vdso.so.1 (0x00007ffc3eb95000)
@@ -111,10 +131,12 @@ nevj@mary:/usr/local/src/waterfox$ ldd waterfox
 	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f2a6cf76000)
 	/lib64/ld-linux-x86-64.so.2 (0x00007f2a6d569000)
 \end{verbatim}
+\end{tcolorbox}
 This is best done in a Debian system in which waterfox has been installed
 There are 8 libraries called directly by waterfox, and none of them are present in the distribution tarfile. These are libraries required for waterfox to start up. Note that linux-vdso.so.1 is a virtual library, ie it is built into the kernel and does not exist as a package. The other 7 should each be supplied by a package. We shall leave the problem of finding the package names which supply each library later.
 
  There may also be libraries which waterfoox loads dynamically while executing. To find these we do the following, again in a Debian system
+\begin{tcolorbox}
 \begin{verbatim}
 nevj@mary:~$ LD_DEBUG=libs waterfox >&logfile
 
@@ -223,8 +245,10 @@ rIdleService.removeIdleObserver]
 ###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, me
 ssages will be lost
 \end{verbatim}
+\end{tcolorbox}
 Lots of messages, had to truncate it, was 5744 lines.
 The first 3 lines say it is searching for a system library called {\em libpthread}. The lines beginning {\em calling init} indicate the library has been found and give its absolute path. Some libraries may not be found, and they will have no line beginning {\em calling init}. We can get a list of libraries found with 
+\begin{tcolorbox}
 \begin{verbatim}
 nevj@mary:~$  cat out | grep init > outinit
 nevj@mary:~$ wc outinit
@@ -251,10 +275,12 @@ nevj@mary:~$  cat outinit
       2572:	calling init: /lib/x86_64-linux-gnu/libgpg-error.so.0
   ............
 \end{verbatim}
+\end{tcolorbox}
   
 So there are still 715 of them. The first 6 are the startup dependencies, and the rest are runtime dependencies
 
 There is also the question of configuration files. Most of these are hopefully included in the Waterfox tarfile. We can check
+\begin{tcolorbox}
 \begin{verbatim}
 strace --trace=open,openat /usr/local/bin/waterfox >&strace.out
 
@@ -338,6 +364,7 @@ openat(AT_FDCWD, "/home/nevj/.icons/Adwaita/index.theme", O_RDONLY) = -1 ENOE
 NT (No such file or directory)
 .....
 \end{verbatim}
+\end{tcolorbox}
  Some of the files have the message {\em (No such file or directory)}. They are probably not serious issues... the above was done in a Debian Waterfox install which works satisfactorily. I have only shown a selection. The full output above was 1402 lines. 
 
 
@@ -346,6 +373,7 @@ We have a long list of files which are dependencies. We need to convert this int
 
 {\em apt-file} is not part of a standard Debian system. We need to install it
 
+\begin{tcolorbox}
 \begin{verbatim}
 root@trinity:/home/nevj# apt-get install apt-file
 ......
@@ -396,11 +424,15 @@ Need to get 322 kB of archives.
 After this operation, 901 kB of additional disk space will be used.
 ......
 \end{verbatim}
+\end{tcolorbox}
 Then we need to generate apt-file's database
+\begin{tcolorbox}
 \begin{verbatim}
 root@trinity:/home/nevj# apt-file update
 \end{verbatim}
+\end{tcolorbox}
 Then we can search 
+\begin{tcolorbox}
 \begin{verbatim}
 nevj@trinity:~$ apt-file search libpthread.so.0
 libc6: /lib/x86_64-linux-gnu/libpthread.so.0
@@ -410,17 +442,21 @@ nevj@trinity:~$ apt-file search /lib/x86_64-linux-gnu/libpthread.so.0
 libc6: /lib/x86_64-linux-gnu/libpthread.so.0
  So we just get the relevant one
 \end{verbatim}
+\end{tcolorbox}
 
 
 There is an alternative to apt-file
+\begin{tcolorbox}
 \begin{verbatim}
 nevj@trinity:~$ dpkg -s libpthread.so.0
 dpkg-query: package 'libpthread.so.0' is not installed and no information is available
 Use dpkg --info (= dpkg-deb --info) to examine archive files.
 \end{verbatim}
+\end{tcolorbox}
  So {\em dpkg -s} only works for installed library files, {\em apt-file works for all available packages}.
 
 Now we have the tools , it is a mere matter of feeding several hundred library files to {\em apt-file search} . 
+\begin{tcolorbox}
 \begin{verbatim}
 #  a bit of hand editing
 $  cp outinit outinit.edit
@@ -449,6 +485,7 @@ $ more libfiles.txt
   711   711 26829 libfiles.txt
 So 711 libraries in total
 \end{verbatim}
+\end{tcolorbox}
   So now we have out list of libraries,  we need a shell script to feed it to apt-file.
 \begin{lstlisting}
 #! /bin/csh
@@ -457,13 +494,16 @@ foreach lib (`cat libfiles.txt`)
 end
 \end{lstlisting}
 Now if we run that script we get
+\begin{tcolorbox}
 \begin{verbatim}
 chmod 755 packages.csh
 ./packages.csh
 wc package.txt
  125  125 1124 package.txt
 \end{verbatim}
+\end{tcolorbox}
 So we have reduced from 711 libraries  to 125 packages. However there are duplicates so
+\begin{tcolorbox}
 \begin{verbatim}
 sort <package.txt | uniq >uniqpackage.txt
 wc uniqpackage.txt
@@ -491,6 +531,7 @@ libtirpc3
 python3-minimal
 zlib1g
 \end{verbatim}
+\end{tcolorbox}
  There are 21 unique packages reguired.
 Now we can write the Dockerfile with some confidence that it will supply an suitable environment for Waterfox.
 
@@ -500,6 +541,7 @@ For a first attempt, we will use a copy of the waterfox tarfile which I have dow
 We will work within the container in a directory {\em /wfox}. There will be a user called {\em wfox} and the container will execute the waterfox binary.
 
 Our first Dockerfile is as follows
+\begin{tcolorbox}
 \begin{verbatim}
 # get a parent image
 FROM debian:stable-20220801
@@ -539,7 +581,9 @@ USER wfox
 ENV HOME /home/wfox
 CMD /wfox/waterfox/waterfox
 \end{verbatim}
+\end{tcolorbox}
  Then build an image using the above Dockerfile and run it
+\begin{tcolorbox}
 \begin{verbatim}
 # work directory in host system
 cd ~/Waterfox.docker
@@ -562,6 +606,7 @@ XPCOMGlueLoad error for file /wfox/waterfox/libmozgtk.so:
 libgtk-3.so.0: cannot open shared object file: No such file or directory
 Couldn't load XPCOM.
 \end{verbatim}
+\end{tcolorbox}
  What the message means is that the library {\em libmozgtk.so} which comes with the waterfox tarfile requires the library {\em libgtk-3.so.0}, but it was not present in the container system.
 
 So our wonderful, complicated procedure for reducing 711 libraries to 21 packages has missed something. What is missing is that we traced all the libraries called by the {\em waterfox} binary, but we neglected to trace all the libraries called by the 18 special waterfox libraries included in the waterfox tarfile. 
@@ -570,6 +615,7 @@ We need to do the library tracing and package finding all over again for each of
 
 \subsection{Dependencies of the 18 special {\em waterfox} libraries.}
 We setup a list of the 18 special libraries in a file {\em list18libs.txt}. We need to process each library in the list with {\em ldd} so we setup a script. We can not execute a library, so we cant use {\em strace} or {\em LD\_DEBUG} , but we can use {\em ldd}.
+\begin{tcolorbox}
 \begin{verbatim}
 cd /usr/local/src/waterfox
 ls | grep so 
@@ -592,6 +638,7 @@ libsoftokn3.so
 libssl3.so
 libxul.so
 \end{verbatim}
+\end{tcolorbox}
 
  Store this on a file
 \begin{lstlisting}
@@ -604,12 +651,15 @@ end
 \end{lstlisting}
 
 How many libraries found?
+\begin{tcolorbox}
 \begin{verbatim} 
 wc list18libsdeps.txt
   291  1107 20639 list18libsdeps.txt
 \end{verbatim}
+\end{tcolorbox}
 What packages contain these libraries?
 t have a look at list18libsdeps.txt
+\begin{tcolorbox}
 \begin{verbatim}
 head list18libsdeps.txt
 	linux-vdso.so.1 (0x00007fff591c5000)
@@ -624,7 +674,9 @@ head list18libsdeps.txt
 	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007ffaa2b5d000)
 ......
 \end{verbatim}
+\end{tcolorbox}
 We need the third field from the file list18libsdeps.txt, so use our awk script again, after removing the first line
+\begin{tcolorbox}
 \begin{verbatim}
 cat field3.awk
 {print $3}
@@ -643,12 +695,16 @@ head list18libsdeps.txt3
 /lib/x86_64-linux-gnu/libdl.so.2
 .......
 \end{verbatim}
+\end{tcolorbox}
 We have extracted the full pathname of each library, there are a few blank line, so we edit those out (may not actually matter, then
+\begin{tcolorbox}
 \begin{verbatim}
 wc list18libsdeps.txt3
  245  245 8897 list18libsdeps.txt3
 \end{verbatim}
+\end{tcolorbox}
 There are 245 library paths left. We can process this with {\em apt-file} to see what packages supply these libraries
+\begin{tcolorbox}
 \begin{verbatim}
 cat packages18.csh
 #! /bin/csh
@@ -674,7 +730,9 @@ libc6
 libc6
 ......
 \end{verbatim}
+\end{tcolorbox}
 We have reduced te 245 library paths to 85 packages, but we can see from the partial listing there are lots of duplicates, so
+\begin{tcolorbox}
 \begin{verbatim}
 sort package18.txt | uniq > uniqpackage18.txt
 wc uniqpackage18.txt
@@ -691,10 +749,12 @@ libpcre3
 libselinux1
 zlib1g
 \end{verbatim}
+\end{tcolorbox}
  There are 10 unique package names, and all 10 are already present in our previous list of 21 required packages.  So this does not solve the dependency problem ?
 
 An investigation of each of the above steps reveals that the {\em apt-file} statement in the script packages18.csh does not require the option {\em --fixed-string}. Running this step again leads to
 
+\begin{tcolorbox}
 \begin{verbatim}
 cat packages18.csh
 #! /bin/csh
@@ -708,7 +768,9 @@ wc package18.txt
  338  338 3128 package18.txt
 
 \end{verbatim}
+\end{tcolorbox}
 So now we have 338 packages instead of 245. Removing duplicates again gives
+\begin{tcolorbox}
 \begin{verbatim}
 sort package18.txt | uniq >uniqpackage18.txt
 
@@ -728,8 +790,10 @@ libcairo-gobject2
 libdatrie1
 ......
 \end{verbatim}
+\end{tcolorbox}
 
 We now have 72 package some of which  are not included in  the 21  package dependencies of the waterfox binary. We need to remove from these 72 those which are  in both lists
+\begin{tcolorbox}
 \begin{verbatim}
 sort uniqpackage.txt > sorteduniqpackage.txt
 sort uniqpackage18.txt > sorteduniqpackage18.txt
@@ -738,10 +802,12 @@ comm -3 sorteduniqpackage.txt sorteduniqpackage18.txt >commpackage.txt
 wc commpackage.txt
  71  71 921 commpackage.txt
 \end{verbatim}
+\end{tcolorbox}
 So we still have 71 packages to add to the Dockerfile.
 
 \subsection{Second Debian parent Dockerfile attempt}
 We now add an apt-get install for the 71 packages required to satisfy Waterfox's 18 special libraries. So version 2 of our Dockerfile looks as follows
+\begin{tcolorbox}
 \begin{verbatim}
 
 FROM debian:stable-20220801
@@ -794,21 +860,27 @@ ENV HOME /home/wfox
 # exec waterfox
 CMD /wfox/waterfox/waterfox
 \end{verbatim}
+\end{tcolorbox}
 We build this Dockerfile with
+\begin{tcolorbox}
 \begin{verbatim}
 docker build -t wfoxdeb:vt2 .
 \end{verbatim}
+\end{tcolorbox}
 and it fails to build because the packages libelogind0 and libsystemd0 have conflicts and apt refuses to install both. We choose to delete libelogind0. 
 Then the build works , and we are able to run its docker image with
+\begin{tcolorbox}
 \begin{verbatim}
 xhost +
 docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:vt2
 \end{verbatim}
+\end{tcolorbox}
 This time we are successful. The container executes the Waterfox binary and we ger an X11 window with a blank welcome page shown in Figure~\ref{fig:welcom}, a correct release page shown in Figure~\ref{fig:releas}, all the search functions and page displays seem to work as shown in Figure~\ref{fig:search}
 \input{figwelcom.tex}
 \input{figreleas.tex}
 \input{figsearch.tex}
 There are messages in the container terminal as follows
+\begin{tcolorbox}
 \begin{verbatim}
 [nevj@trinity Waterfox.docker]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority 
@@ -852,6 +924,7 @@ JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch res
 ###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
 
 \end{verbatim}
+\end{tcolorbox}
 It would seem we have not found all dependencies yet. It says that {\em libpci} and {\em libEGL} are missing, and there are some Javascript resources required.
 Instead of just adding those 2 extra libraries/packages, we need to search out why our dependencies searches missed them.
 
@@ -861,6 +934,7 @@ A rerun of all the searches fails to reveal any hint of {\em libpci} and {\
 em libEGL} being required. We conclude that some process other than waterfox which runs when the container runs, must be requiring them, perhaps the video drivers?
 
 We can try and see what extra processes are running when the waterfox image is run in a docker container. All tha tcould be found using {\em pa ax} was
+\begin{tcolorbox}
 \begin{verbatim}
 a4170 ?        Sl     0:00 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 33ef059b4edab7b543f72b86d7849df7246d42433ef8d97fb159d7e14d89de4b -address /run/containerd/containerd.sock
  4408 ?        Sl     0:00 /wfox/waterfox/waterfox -contentproc -childID 1 -isForBrowser -prefsLen 1 -prefMapSize 230518 -jsInit 285636 -parentBuildID 20220728185049 -appdir /wfox/waterfox/browser 7 tab
@@ -868,9 +942,11 @@ a4170 ?        Sl     0:00 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 
 4488 ?        S      0:00 dbus-launch --autolaunch=796ea3dd4303ebc6c386a3176
 4494 ?        Ss     0:00 /usr/bin/dbus-daemon --syslog-only --fork --print-
 \end{verbatim}
+\end{tcolorbox}
  So running a container only adds the {\em /usr/bin/containerd-shim-runc-v2} process, and {\em dbus-launch} and {\em dbus-daemon} apart from several processes associates with waterfox.
 
 We can see what they require
+\begin{tcolorbox}
 \begin{verbatim}
 ldd /usr/bin/containerd-shim-runc-v2
 	linux-vdso.so.1 (0x00007fffc3118000)
@@ -900,22 +976,26 @@ ldd /bin/dbus-launch
 	libXdmcp.so.6 => /usr/lib/libXdmcp.so.6 (0x00007fc4e77ff000)
 
 \end{verbatim}
+\end{tcolorbox}
 but these would be requirements in the host system, not in the waterfox container.
 The command {\em docker logs ...} gives the same information as appears in the command line window.  There seems to be no way  to trace the source of these remaining dependencies, which I assume are inside the container.
 
 I tried using {\em strace} on the {\em docker run} statement
+\begin{tcolorbox}
 \begin{verbatim}
 strace docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:vt2
 execve("/bin/docker", ["docker", "run", "-v", "/tmp/.X11-unix:/tmp/.X11-unix", "-e", "DISPLAY=:0.0", "-h", "trinity", "-v", "/home/nevj/.Xauthority:/home/nev"..., "wfoxdeb:vt2"], 0x7fffd125f8d0 /* 38 vars */) = 0
 brk(NULL)                               = 0x308b000
 .....
 \end{verbatim}
+\end{tcolorbox}
 There is  a lot of output,  but the critical messages are the same as appears on the terminal screen.
 
 The only remaining option is to add things by trial and error combined with a touch of intuition.
 
 \subsection{Third Debian parent dockerfile attempt}
  Add the packages needed to provide Libpci and libEGL and the Dockerfile becomes
+\begin{tcolorbox}
 \begin{verbatim}
 M debian:stable-20220801
 #set working dir inside container
@@ -970,8 +1050,10 @@ ENV HOME /home/wfox
 # exec waterfox
 CMD /wfox/waterfox/waterfox
 \end{verbatim}
+\end{tcolorbox}
 
 Build this Dockerfile to make version 3 of the image, and run it and we obtain
+\begin{tcolorbox}
 \begin{verbatim}
 docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
    -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority \
@@ -985,6 +1067,7 @@ JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't fin
 JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
 JavaScript error: resource://gre/modules/PartitioningExceptionListService.jsm, line 69: NS_ERROR_MALFORMED_URI: Component returned failure code: 0x804b000a (NS_ERROR_MALFORMED_URI) [nsIPartitioningExceptionListObserver.onExceptionListUpdate]
 \end{verbatim}
+\end{tcolorbox}
 
 Same JavaScript messages as before but there are no missing libraries now.  As far as I can tell Waterfox runs exactly as before.   The Welcome Screen is still blank, the rest is OK.
 
@@ -993,6 +1076,7 @@ Same JavaScript messages as before but there are no missing libraries now.  As f
 An {\em apt-cache search javascript} yields a very long list of packages. It is impossible to know what is needed.  I resort to searching the internet and find that the minumal requirement for JavaScript in Debian is two packages {\em nodejs} which provides the JavaScript runtime environment and {\em npm} which is a package registry providing access to shared JavaScript software. 
 
 So we add these 2 packages to the Dockerfile.
+\begin{tcolorbox}
 \begin{verbatim}
 FROM debian:stable-20220801
 #set working dir inside container
@@ -1049,7 +1133,9 @@ ENV HOME /home/wfox
 # exec waterfox
 CMD /wfox/waterfox/waterfox
 \end{verbatim}
+\end{tcolorbox}
 then build the image and run the container
+\begin{tcolorbox}
 \begin{verbatim}
 docker build -t wfoxdeb:vt4 .
 .....
@@ -1064,8 +1150,10 @@ JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't fin
 JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
 JavaScript error: resource://gre/modules/PartitioningExceptionListService.jsm, line 69: NS_ERROR_MALFORMED_URI: Component returned failure code: 0x804b000a (NS_ERROR_MALFORMED_URI) [nsIPartitioningExceptionListObserver.onExceptionListUpdate]
 \end{verbatim}
+\end{tcolorbox}
 
 Then when I do a search there are more messages
+\begin{tcolorbox}
 \begin{verbatim}
 console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://login.microsoftonline.com"
 JavaScript error: https://p.ad.gt/api/v1/p/450, line 1: TypeError: t.vendor is undefined
@@ -1073,11 +1161,13 @@ libGL error: failed to open /dev/dri/card0: Permission denied
 libGL error: failed to open /dev/dri/card0: Permission denied
 libGL error: failed to load driver: nouveau
 \end{verbatim}
+\end{tcolorbox}
 Waterfox still has a blank Welcome page, but it seems to work properly.
 The most concerning is the {\em libGL error}. It only happened after I did a search. 
 I added {\em libgl} in the third Dockerfile attempt because I was unsure whether it was needed as well as {\em libEGL}. I did not notice this message, probably because I did not do a search.  The messages from second attempt at a Dockerfile only said {\em libEGL} and {\em libpci} were missing. So I think I should try removing {\em libGL}
 
 \subsubsection{Removing libGL}
+\begin{tcolorbox}
 \begin{verbatim}
 FROM debian:stable-20220801
 #set working dir inside container
@@ -1152,19 +1242,23 @@ libGL error: failed to open /dev/dri/card0: Permission denied
 libGL error: failed to open /dev/dri/card0: Permission denied
 libGL error: failed to load driver: nouveau
 \end{verbatim}
+\end{tcolorbox}
 I did a search, and now when I go to a website the libGL message is as before. So not adding {\em libGL} did not change anything... it is apparently unnecessary, but is not the source of the error message.  
 
 \subsubsection{Error messages about .jsm files}
 We need to have a look at the messages about {\em .jsm} files
+\begin{tcolorbox}
 \begin{verbatim}
 XPCOMUtils.jsm
 PromiseWorker.jsm
 XULStore.jsm
 PartitioningExceptionListService.jsm
 \end{verbatim}
+\end{tcolorbox}
 A web search reveals that {\em .jsm} files store Firefox Javascript modules. So we need to see if there are any missing packages related to Mozilla Firefox.
 There are no missing packages. 
 Adding `apt-get install firefox-esr` to the Dockerfile does not change the number of Javascript errer messages.  If I force the execution of firefox in the container
+\begin{tcolorbox}
 \begin{verbatim}
 [nevj@trinity Waterfox.docker]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DISPLAY=$DISPLAY -h $HOSTNAME \
@@ -1174,6 +1268,7 @@ libGL error: failed to open /dev/dri/card0: Permission denied
 libGL error: failed to open /dev/dri/card0: Permission denied
 libGL error: failed to load driver: nouveau
 \end{verbatim}
+\end{tcolorbox}
 
 The Javascript errors disappear when running firefox in this container. So firefox is using  the same JavasScript modules without error. That proves the JavaScript errors are a Waterfox problem , and are not solvable by adding any packages.
 I would like to acknowledge assistance from Laszlo Kovacs and Akito Kitsune in diagnosing the Javascript error messages with {\em .jsm} modules.
@@ -1182,29 +1277,38 @@ The libGL error however remains.
 
 \subsubsection{LibGL errors}
 We have these  messages
+\begin{tcolorbox}
 \begin{verbatim}
 libGL error: failed to open /dev/dri/card0: Permission denied
 libGL error: failed to open /dev/dri/card0: Permission denied
 libGL error: failed to load driver: nouveau
-\end{verbatiom}
+\end{verbatim}
+\end{tcolorbox}
 which occur after one does a search and goes to a website. The seem to indicate that some device is missing, so I tried adding the following option
+\begin{tcolorbox}
 \begin{verbatim}
 -t /dev/dri/card0:/dev/dri/card0
 \end{verbatim}
+\end{tcolorbox}
 What it should do is make the device {\em /dev/dri/card0} in the host available in the container under the same name. 
 It failed but it changes the messages to
+\begin{tcolorbox}
 \begin{verbatim}
 libGL error: failed to open /dev/dri/card0: Operation not permitted
 libGL error: failed to load driver: nouveau
 \end{verbatim}
+\end{tcolorbox}
 So failed again , but the message is different. 
 I think the name of the device inside the container should probably be different, but I dont know what it should be.
 
 I discovered another way of making a device available to a container
+\begin{tcolorbox}
 \begin{verbatim}
 docker run ...... --device=/dev/dri/card0 ......
 \end{verbatim}
+\end{tcolorbox}
 On adding this to the docker run statement I get
+\begin{tcolorbox}
 \begin{verbatim} 
 docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority --device=/dev/dri/card0 wfoxdeb:test
 .......
@@ -1217,6 +1321,7 @@ libGL error: failed to load driver: nouveau
 console.error: PushService: 
   clearOriginData: Error clearing origin data:
 \end{verbatim}
+\end{tcolorbox}
 THere are now twice as many error messages.
 
 We shall have to leave the libGL messages for now. It does not seem to disable operation of waterfox in the container
@@ -1226,6 +1331,7 @@ to the {\em docker run statement}.
 What needs to be done now is to make the Dockerfile site independent by downloading the Waterfox tarfile from the Official Waterfox site, rather than copying a file which has been pre-downloaded into my working directory. 
 
 One way to download a file from the web is with {\em wget}
+\begin{tcolorbox}
 \begin{verbatim}
 wget https://github.com/WaterfoxCo/Waterfox/releases/download/\
 G4.1.5/waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2
@@ -1239,9 +1345,11 @@ waterfox-G4.1.5.en- 100%[===================>]  79.05M  4.20MB/s    in 24s
 
 2022-09-25 21:05:46 (3.31 MB/s) - ‘waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2’ saved [82892946/82892946]
 \end{verbatim}
+\end{tcolorbox}
  So it works, the download is 79Mb and on my system took 24sec.  It names a specific release of Waterfox. Because Waterfox keeps all old releases on its Github site, doing wget for a specific release will always work. Also we want the Dockerfile to use the release for which the environment (particularly dependencies) was built. Using a later release may introduce further dependencies. So this retrieval with wget would suit our Dockerfile.
 
  Another option is {\em curl}.
+\begin{tcolorbox}
 \begin{verbatim}
 curl  https://github.com/WaterfoxCo/Waterfox/releases/download\
 /G4.1.5/waterfox-G4.1.5.en-US.linux-x86_64.tar.bz2 > wfox.tar.bz2
@@ -1249,8 +1357,10 @@ curl  https://github.com/WaterfoxCo/Waterfox/releases/download\
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 \end{verbatim}
+\end{tcolorbox}
 This attempt does not work. It makes an empty file?
 So we may as well use what works. Our fiftg Dockerfile attempt becomes
+\begin{tcolorbox}
 \begin{verbatim}
 FROM debian:stable-20220801
 #set working dir inside container
@@ -1305,6 +1415,7 @@ ENV HOME /home/wfox
 # exec waterfox
 CMD /wfox/waterfox/waterfox
 \end{verbatim}
+\end{tcolorbox}
 Note we have changed to version G4.1.5 of waterfox. It is only a minor update. Will check if dependencies are affected.
 
 After building the above fifth Dockerfile attempt, and running it, Waterfox still works and the messages while running are exactly the same as for the fourth attempt. There are no additional missing libraries , so the version change to G4.1.5 is OK. The libGL error messages are still present. 
@@ -1314,6 +1425,7 @@ We can conclude that the changeover from a local file to a download was successf
 \subsection{Sixth attempt at a Dockefile - using slim Debian parent image}
 a The full Debian parent image is 124Mb. We can save space by using the Debian-slim image which is 80Mb.  We can also make the image smaller by removing the downloaded Waterfox tarfile, after we have unpacked it.
 So our sixth Dockerfile attempt is as follows
+\begin{tcolorbox}
 \begin{verbatim}
 FROM debian:stable-20220801-slim
 #set working dir inside container
@@ -1362,12 +1474,14 @@ ENV HOME /home/wfox
 # exec waterfox
 CMD /wfox/waterfox/waterfox
 \end{verbatim}
+\end{tcolorbox}
 So build and run this sixth Dockerfile attempt. The build works, the run gives exactly the same messages as with the fourth and fifth Dockerfiles, and Waterfox still works, the only issue being the blank welcome page.
 
 So the full Debian parent image was unnecessary. The fifth image was 1.43Gb, the sixth is 1.16Gb. 
 
 \subsection{Seventh Dockerfile attempt - setting locale}
 We  have defined a user and a group and a home directory. We need to set the time zone and character set. There is an article~\cite{dock:11} on setting locale in a Ubuntu container. It recommends the following Dockerfile statements
+\begin{tcolorbox}
 \begin{verbatim}
 # Set the locale
 RUN locale-gen en_US.UTF-8  
@@ -1375,20 +1489,26 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en  
 ENV LC_ALL en_US.UTF-8  
 \end{verbatim}
+\end{tcolorbox}
 Another reference~\cite{dock:12} recommends installing {\em locales} and {\em locales-all} in the container
+\begin{tcolorbox}
 \begin{verbatim}
 RUN apt-get install -y locales locales-all
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 \end{verbatim}
+\end{tcolorbox}
 That does not set the timezone. That is done with 
+\begin{tcolorbox}
 \begin{verbatim}
 ENV TZ Australia/Sydney
 \end{verbatim}
+\end{tcolorbox}
 The above will result in the environment values being hardcoded ito the Dockerfile. So if a user wishes to change one or more values, they have to edit the Dockerfile.
 
 It is possible to set the environment values dynamically when the container is run. To do this the ENV statements inside Dockerfile should be
+\begin{tcolorbox}
 \begin{verbatim}
 RUN apt-get install -y locales locales-all
 ENV LC_ALL=$[LC_ALL]
@@ -1396,14 +1516,18 @@ ENV LANG=$[lang]
 ENV LANGUAGE=$[language]
 ENV TZ=$[TZ]
 \end{verbatim}
+\end{tcolorbox}
 Then the {\em docker run} statement can pass these values using the {\em -e} option as follows
+\begin{tcolorbox}
 \begin{verbatim}
 docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
    -e LC_ALL=en_AU.UTF-8 LANG=en_AU.UTF-8 LANGUAGE=en_AU.UTF-8 \
    TZ=Australia/Sydney -h $HOSTNAME \
    -v $HOME/.Xauthority:/home/nevj/.Xauthority imagename
 \end{verbatim}
+\end{tcolorbox}
 We shall use the simpler method, so our seventh Dockerfile attempt becomes
+\begin{tcolorbox}
 \begin{verbatim}
 FROM debian:stable-20220801-slim
 #set working dir inside container
@@ -1459,6 +1583,7 @@ ENV TZ=Australia/Sydney
 # exec waterfox
 CMD /wfox/waterfox/waterfox
 \end{verbatim}
+\end{tcolorbox}
 A build and run of this Dockerfile works and gives all the same messages afds the sixth attempt. THe image size is now 1.4Gb, compared to 1.16Gb for sixth attempt, the increase being the added locale packages.
 
 \section{Attempt at a Waterfox Dockerfile using a Void Linux parent image}
@@ -1472,16 +1597,18 @@ The whole idea of using docker is to be able to build and run images in any Linu
 I tested the Dockerfile in Debian, Devuan, and Solus. There were no issues.
 
 In Debian and Devuan the {\em libGL} error messages were slightly different
+\begin{tcolorbox}
 \begin{verbatim}
 libGL error: MESA-LOADER: failed to retrieve device information
 MESA-LOADER: failed to retrieve device information
 MESA-LOADER: failed to retrieve device information
 \end{verbatim}
+\end{tcolorbox}
 I think it means the same. Things in Debian have different names.
 
 In Solus I chose to install docker from the GUI Software Centre. The install required numerous dependencies be installed first, including firefox and thunderbird, which were already installed?  I cant imagine why docker would have firefox or thunderbird as dependencies?  The libGL error messages in Solus were the same as in Void Linux. 
 
-So my Dockerfile passes the test of operating in various Linux versions. They were all x86_64 architecture. I am not sure about different architectures?
+So my Dockerfile passes the test of operating in various Linux versions. They were all x86\_64 architecture. I am not sure about different architectures?
 
 \section{Discussion}
 I have attempted to lay out a systematic way of determining what packages should be in the docker image environment, using Waterfox as an example. For a large app like Waterfox, it is important to trace dependencies systematically. 
