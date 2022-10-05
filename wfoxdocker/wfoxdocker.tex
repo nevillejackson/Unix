@@ -17,6 +17,7 @@
 
 \usepackage{color}
 \usepackage{tcolorbox}
+\tcbuselibrary{breakable}
 \usepackage{fancyvrb}
  
 
@@ -136,7 +137,7 @@ This is best done in a Debian system in which waterfox has been installed
 There are 8 libraries called directly by waterfox, and none of them are present in the distribution tarfile. These are libraries required for waterfox to start up. Note that linux-vdso.so.1 is a virtual library, ie it is built into the kernel and does not exist as a package. The other 7 should each be supplied by a package. We shall leave the problem of finding the package names which supply each library later.
 
  There may also be libraries which waterfoox loads dynamically while executing. To find these we do the following, again in a Debian system
-\begin{tcolorbox}
+\begin{tcolorbox}[breakable]
 \begin{verbatim}
 nevj@mary:~$ LD_DEBUG=libs waterfox >&logfile
 
@@ -280,7 +281,7 @@ nevj@mary:~$  cat outinit
 So there are still 715 of them. The first 6 are the startup dependencies, and the rest are runtime dependencies
 
 There is also the question of configuration files. Most of these are hopefully included in the Waterfox tarfile. We can check
-\begin{tcolorbox}
+\begin{tcolorbox}[breakable]
 \begin{verbatim}
 strace --trace=open,openat /usr/local/bin/waterfox >&strace.out
 
@@ -880,14 +881,8 @@ This time we are successful. The container executes the Waterfox binary and we g
 \input{figreleas.tex}
 \input{figsearch.tex}
 There are messages in the container terminal as follows
-\begin{tcolorbox}
+\begin{tcolorbox}[breakable]
 \begin{verbatim}
-[nevj@trinity Waterfox.docker]$ docker run -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority 
-  wfoxdeb:vt2
-Authorization required, but no authorization protocol specified
-Unable to init server: Could not connect: Connection refused
-Error: cannot open display: :0.0
 [nevj@trinity Waterfox.docker]$ xhost +
 access control disabled, clients can connect from any host
 [nevj@trinity Waterfox.docker]$ 
@@ -1167,7 +1162,7 @@ The most concerning is the {\em libGL error}. It only happened after I did a sea
 I added {\em libgl} in the third Dockerfile attempt because I was unsure whether it was needed as well as {\em libEGL}. I did not notice this message, probably because I did not do a search.  The messages from second attempt at a Dockerfile only said {\em libEGL} and {\em libpci} were missing. So I think I should try removing {\em libGL}
 
 \subsubsection{Removing libGL}
-\begin{tcolorbox}
+\begin{tcolorbox}[breakable]
 \begin{verbatim}
 FROM debian:stable-20220801
 #set working dir inside container
