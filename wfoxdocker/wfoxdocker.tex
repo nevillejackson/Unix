@@ -18,12 +18,13 @@
 \usepackage{color}
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable}
+\tcbuselibrary{listings}
 \usepackage{fancyvrb}
  
 
 \title{Making a docker image to run the Waterfox browser}
 \author{Neville Jackson}
-\date{5 Oct 2022} 
+\date{10 Oct 2022} 
 
 \begin{document} 
 
@@ -873,7 +874,8 @@ Then the build works , and we are able to run its docker image with
 \begin{tcolorbox}
 \begin{verbatim}
 xhost +
-docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:vt2
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY \
+ -h $HOSTNAME -v $HOME/.Xauthority:/home/nevj/.Xauthority wfoxdeb:vt2
 \end{verbatim}
 \end{tcolorbox}
 This time we are successful. The container executes the Waterfox binary and we ger an X11 window with a blank welcome page shown in Figure~\ref{fig:welcom}, a correct release page shown in Figure~\ref{fig:releas}, all the search functions and page displays seem to work as shown in Figure~\ref{fig:search}

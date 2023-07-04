@@ -13,6 +13,9 @@ The subdirectory _shell_ contains documents from BSD Unix describing the origina
 ## Lumina Desktop Environment
 The subdirectory _voidlumina_ contains an investigation of the Lumina Desktop Environment as implemented in Void Linux. This is not an attempt to resurrent Project Trident. It is just an assessment of the Lumina Desktop in a Linux implementation.
 
+## Virt-manager ##
+The subdirectory _virt-manager_ contains markdown files (*.md) reporting a joint investigation with Rosika Schreck of communication between host and guest VM in virt-manager.
+
 ## Waterfox Browser
 The subdirectory _waterfox_ contains an article on installing the Waterfox browser in Void Linux.
 
