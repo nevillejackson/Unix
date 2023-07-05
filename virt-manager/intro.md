@@ -1,11 +1,11 @@
  This is a joint post by @nevj and @Rosika
 
-[quote="Neville Jackson, post:84, topic:10694, username:nevj"]
+[quote="Neville Jackson, username:nevj"]
 [/quote]
 
 and
 
-[quote="Rosika Schreck, post:83, topic:10694, username:Rosika"]
+[quote="Rosika Schreck, username:Rosika"]
 [/quote]
 
 It reports on our collaborative investigations into the virt-manager package which uses qemu/KVM to run virtual machines inside a host Linux system. 

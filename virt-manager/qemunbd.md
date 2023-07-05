@@ -28,7 +28,7 @@ $ ls images
 MXahs.qcow2  debian.qcow2  lost+found
 ```
 
-`qcow2` ia the default image file format used by virt-manager.
+`qcow2` is the default image file format used by virt-manager.
 
 Inside those `.qcow2` files are images of the guest VM's
 filesystem. It is possible to mount those filesystems buried within the .qcow2 file
@@ -36,7 +36,7 @@ using the `qemu-nbd` command.
 
 The `ndb` stands for Network Block Device, a protocol used
 for accessing disks or partitions across a network.
-The program `qemu-nbd` comes n the package `qemu-utils` in Debian and Ubuntu. 
+The program `qemu-nbd` comes in the package `qemu-utils` in Debian and Ubuntu. 
 
 ### Using `qemu-nbd` to mount a qcow2 disk image ###
 There are 4 steps

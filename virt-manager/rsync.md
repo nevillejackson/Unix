@@ -19,7 +19,7 @@ intro.md        nfsmount.md      qemunbd.md      ssh.md    virtmannet.md
 
 ```
 We want to maintain an exact copy of the contents of that
-directory in the host system. This requires issueing an `rsync` command in the guest
+directory in the host system. This requires issuing an `rsync` command in the guest
 
 ```
 
@@ -63,7 +63,7 @@ Use `rsync` if you want to keep a very active directory
 updated in both host and guest. 
 
 
-### LInks ###
+### Links ###
 
 https://www.digitalocean.com/community/tutorials/how-to-use-rsync-to-sync-local-and-remote-directories
 

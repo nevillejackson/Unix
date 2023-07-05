@@ -1,4 +1,4 @@
-## Sharing Data Between Host and Virtual Machine using Thunar  and the 'S' commands (ssh,scp,sftp)
+## Sharing Data Between Host and Virtual Machine using Thunar  and the 'S' commands (ssh,scp,sftp) ##
 
 ### 1. Introduction
 

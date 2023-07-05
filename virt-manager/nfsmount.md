@@ -6,7 +6,7 @@ It works just as well on a virtual network, as on a
 physical network. 
 
 ### Setting up the host to share a filesystem ###
-THe host system must have the NFS server daemon (commonly called nfsd) running 
+The host system must have the NFS server daemon (commonly called nfsd) running 
 for NFS to be able to export a host directory to the guest system. 
 Exporting consists of making a directory available to be mounted by 
 the guest system.

@@ -79,7 +79,7 @@ $ cat /etc/hosts
 ```
 The entry `mxvm` is the hostname of the guest system.
  The host system's hostname is `trinity` and `mary` is another 
-comuter on the local network.
+computer on the local network.
 
 
 With this setup one can do, from the host

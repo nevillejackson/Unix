@@ -37,7 +37,7 @@ mkdir /mnt/mymount
 ```
 
 
- 3. Do the mount statement , usin the mount-tag created in step 4 above     
+ 3. Do the mount statement , using the mount-tag created in step 4 above     
  
  ```
  mount -t virtiofs mount-tag /mnt/mymount
