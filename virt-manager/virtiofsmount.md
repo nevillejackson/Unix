@@ -58,6 +58,10 @@ mkdir /mnt/mymount
 ### Recommendation ###
 Use a virtiofs mount if you want to work in the guest on a host filesystem and prefer a graphic interface. 
 It is not possible to put a virtiofs mount in `/etc/fstab` in the guest system. You have to remount it every time you boot the guest system.
+Correction: 
+That last sentence is wrong. It is possible to setup a permanent virtiofs mount 
+in the guest system. 
+See Reply #44 in this topic, or the file virtiofsaddendum.md
 
 
 
