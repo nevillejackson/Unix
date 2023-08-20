@@ -24,5 +24,8 @@ The subdirectory_wfoxdocker_ contains an article on learning to make a Dockerfil
 
 ## Learning to use docker in Void Linux
 The subdirectory _voiddocker_ contains an article on learning to use docker and Dockerfiles. This is an elementary tutorial on docker in the Void Linux environment.
+
+## Hyperbola ##
+THe subdirectory _hyperbola_ contains a report on setting up a desktop environment in Hyperbola Linux using Lumina DE and SLiM DM as a basis.
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
