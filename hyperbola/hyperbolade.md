@@ -108,12 +108,12 @@ There is a menu for setting the Display Wallpaper.
 then Desktop Settings, and you get the Desktop Settings Menu
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/desktopsettings.png?raw=true"
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/desktopsettings.png?raw=true">
 </p>
 
 We can see the Wallpaper button on the top right, plus there are
 buttons to configure Panels, Themes, Default Applications, etc. 
-Lumina is fully configurable via the GUI... one doers not need to edit config files.
+Lumina is fully configurable via the GUI... one does not need to edit config files.
 
 Now click on Wallpaper, then '+', then choose Solid Color in the dropdoewn menu,
 and you get a Select Color menu
