@@ -84,7 +84,7 @@ That is all there is to it, we just need to activate
 The default startup screen looks as follows
 
 <p align="center">
-<img src="/common/Foss/luminadefault.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/luminadefault.png?raw=true">
 </p>
 
 Battleship grey without trimmings. All it has is a tiny menu
@@ -108,7 +108,7 @@ There is a menu for setting the Display Wallpaper.
 then Desktop Settings, and you get the Desktop Settings Menu
 
 <p align="center">
-<img src="/common/Foss/desktopsettings.png"
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/desktopsettings.png?raw=true"
 </p>
 
 We can see the Wallpaper button on the top right, plus there are
@@ -119,7 +119,7 @@ Now click on Wallpaper, then '+', then choose Solid Color in the dropdoewn menu,
 and you get a Select Color menu
 
 <p align="center">
-<img src="/common/Foss/selectcolor.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/selectcolor.png?raw=true">
 </p>
 
 
@@ -131,7 +131,7 @@ So what does it now look like? I started Xterm and some menues,
 and changed the plasmid to a load monitor, and we get
 
 <p align="center">
-<img src="/common/Foss/de1.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/de1.png?raw=true">
 </p>
 
 Some other icons apart from Xterm have appeared, because I already have some 
@@ -160,7 +160,7 @@ Te best available is `iceweasel-uxp`. The UXP stands for Unified XUL PLatform. X
 Iceweasel is quite competent. It has tabs, bookmarks, and a menu shown below
 
 <p align="center">
-<img src="/common/Foss/iceweaselmenu.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/iceweaselmenu.png?raw=true">
 </p>
 
 It displays the itsfoss.com site properly, but when you go to the Forum , it says 
@@ -170,13 +170,13 @@ Actually the Forum site is a good test of browsers. Discourse has stringent requ
 The available search engines are somewhat restrictive
 
 <p align="center">
-<img src="/common/Foss/iceweaselsearch.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/iceweaselsearch.png?raw=true">
 </p>
 
 None of the major search engines are available, the best seems to be the default SearX. What you can do is load the google ( or whatever) page, then use it to search. It seems to deal with google search results quite well, and if you access the itsFOSS Forum page via a google search, it formats normally?
 
 <p align="center">
-<img src="/common/Foss/iceweaselfoss.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/iceweaselfoss.png?raw=true">
 </p>
 
 Why accessing a page via a google search would change the
@@ -187,7 +187,7 @@ Why accessing a page via a google search would change the
 Given those shortcomings, lets have a look at Dillo
 
 <p align="center">
-<img src="/common/Foss/dillo.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/dillo.png?raw=true">
 </p>
 
 Dillo does not have a search engine at all. What you must  do is load the google ( or whatever) page.  Dillo will display the google search page, but it seems to have difficulty with most websites. It is plainly out of date.
@@ -198,7 +198,7 @@ Icedove-uxp looks just like Thunderbird.
 So I setup my email and tried it
 
 <p align="center">
-<img src="/common/Foss/icedovemail.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/icedovemail.png?raw=true">
 </p>
 
 No issues there.
@@ -207,7 +207,7 @@ No issues there.
 There is the inbuilt Lumina filemanager called `Insight`
 
 <p align="center">
-<img src="/common/Foss/insight.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/insight.png?raw=true">
 </p>
 
 It is about the only reasonably usable Lumina App. 
@@ -221,7 +221,7 @@ The best available is `MuPDF`. It comes in two varieties `mupdf` and `mupdf-gl`.
 The latter is best choice, it uses OpenGL. There is also a command line set of pdf tools callled `mupdf-tools`.
 
 <p align="center">
-<img src="/common/Foss/mupdf.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/mupdf.png?raw=true">
 </p>
 
 You move between pages and lines  with the keyboard, therr are no mouse buttons for navigation. The graphic quality is fine, I can read that fine text in the box. 
@@ -230,7 +230,7 @@ You move between pages and lines  with the keyboard, therr are no mouse buttons 
 Here we go for the old fashioned  but capable `gthumb` viewer.
 
 <p align="center">
-<img src="/common/Foss/gthumb.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/gthumb.png?raw=true">
 </p>
 
 Hyperbola also has `Gimp`  for image manipulation, and `graphicsmagick` which is an `ImageMagick` substitute. 
@@ -238,7 +238,7 @@ Hyperbola also has `Gimp`  for image manipulation, and `graphicsmagick` which is
 #### Office ####
 Hyperbola has LibreOffice... the full set calc, draw, math, base, impress, and writer. 
 <p align="center">
-<img src="/common/Foss/libreoffice.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/libreoffice.png?raw=true">
 </p>
 
 
@@ -256,33 +256,33 @@ If there are preinstalled apps, when Lumina is installed, it detects them and ma
 So after all the above installs, and a few others, the DE looks as follows
 
 <p align="center">
-<img src="/common/Foss/de2.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/de2.png?raw=true">
 </p>
 
 We have a clutter of icons on the background. The Xterm is as before. We have 2 panels, a bottom panel which is the system tray, and a popdown upper panel ( you can just see one line of it at centre top) which has the workspace switcher and some launchers for Lumina apps. At the lower right I have replaced the RSS feed plasmid with a notepad. 
 To tidy it up and to show setting up of a panel we are going to move all the LibreOffice icons to a panel on the right. So Preferences -> Desktop Settings -> Panels, and we get the panel setup window
 
 <p align="center">
-<img src="/common/Foss/panelsetup.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/panelsetup.png?raw=true">
 </p>
 
 We see 2 panels, which reflects the current setup. Each panel has been set to show the panel content (the right hand button) . The other 2 buttons set its position and properties. 
 To make a new (third) panel we click `+` at the top left, and it opens a third panel subwindow. 
 
 <p align="center">
-<img src="/common/Foss/panelsetup2.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/panelsetup2.png?raw=true">
 </p>
 
 We have set it to appear on the right. We now add the content
 
 <p align="center">
-<img src="/common/Foss/panelsetup3.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/panelsetup3.png?raw=true">
 </p>
 
 and delete all the LibreOffice Icons, reduce the size of the remaining icons and we have a new DE
 
 <p align="center">
-<img src="/common/Foss/de3.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/de3.png?raw=true">
 </p>
 
 We have all the LibreOffice icons in the right panel,
@@ -290,7 +290,7 @@ We have all the LibreOffice icons in the right panel,
 description when you hover the mouse pointer
 
 <p align="center">
-<img src="/common/Foss/hover.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/hover.png?raw=true">
 </p>
 
 That is not perfect, but it seems this is a limitation of
@@ -299,7 +299,7 @@ That is not perfect, but it seems this is a limitation of
  in a panel. For example, from my Void/Lumina1.6.2 DE
  
 <p align="center">
-<img src="/common/Foss/icon162.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/icon162.png?raw=true">
 </p>
 
 One still gets symbols, rather than icons, but they are coloured in Lumina 1.6.2
@@ -311,7 +311,7 @@ I installed Conky. It is much better than the inbuilt Lumina
 monitor widget
 
 <p align="center">
-<img src="/common/Foss/conky.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/conky.png?raw=true">
 </p>
 
 I made the right panel autohide, to keep it out of the way,
@@ -367,7 +367,7 @@ sh-5.1# rc-update add slim
 Reboot and we get a login screen
 
 <p align="center">
-<img src="/common/Foss/slimlogin.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/slimlogin.png?raw=true">
 </p>
 
 That is the default SLiM screen. It just has a login slot, no options to start the various Display Managers or Lumina? 
@@ -434,7 +434,7 @@ SLiM in Hyperbola comes only with the default theme. The default theme is in `/u
 I had one attempt at making a custom login screen
 
 <p align="center">
-<img src="/common/Foss/slimcustom.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/hyperbola/slimcustom.png?raw=true">
 </p>
  
 One could improve on that. I spent more time on the login screen, than on the whole DE.
