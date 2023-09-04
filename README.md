@@ -16,6 +16,8 @@ The subdirectory _voidlumina_ contains an investigation of the Lumina Desktop En
 ## Virt-manager ##
 The subdirectory _virt-manager_ contains markdown files (*.md) reporting a joint investigation with Rosika Schreck of communication between host and guest VM in virt-manager.
 
+The .pdf file is a copy of the entire itsFOSS community topic, including discussion posts.
+
 ## Waterfox Browser
 The subdirectory _waterfox_ contains an article on installing the Waterfox browser in Void Linux.
 
