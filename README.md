@@ -29,5 +29,7 @@ The subdirectory _voiddocker_ contains an article on learning to use docker and 
 The subdirectory _hyperbola_ contains a report on setting up a desktop environment in Hyperbola Linux using Lumina DE and SLiM DM as a basis.
 The file _hyperbolade.md_ is the markdown file for thsi deswktop environment report. The file _philosophy.md_ deals with Hyperbols's philosophy regarding packages which are excluded from Hyperbola. 
 
+The original 4 itsFOSS community articles are available here as .pdf files
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
