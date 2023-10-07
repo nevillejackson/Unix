@@ -47,7 +47,7 @@ startxfce4
 It will start up and the default screen looks as follows
 
 <p align="center">
-<img src="/common/Foss/bsd/xfce.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/bsd/xfce.png?raw=true">
 </p>
 
 We have changed the background to a FreeBSD image.

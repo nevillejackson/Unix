@@ -61,7 +61,7 @@ at the CLI. This executes a script at `/usr/local/etc/X11/xinit/xinitrc`, which 
 Twm looks like this
 
 <p align="center">
-<img src=/common/Foss/bsd/twm.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/bsd/twm.png?raw=true">
 </p>
 
 My `xterm` windows are showing coloured because I have a custom `.Xresources` file in my home directory. The default will show a white background and no scrollbar, like the `login` window. 
