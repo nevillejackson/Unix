@@ -23,7 +23,7 @@ One can install from a .img file or a .iso file. We chose to use
 
 which is a CD sized .iso containing the basic system, and relying on network downloads for additional material such as Xorg, and a DE.
 
-Virt-manager can install directly from an `.iso` file, so we pointed a New Virtual Machine to the `.iso` file, setup 40Gb of file space for the `.qcow2` file, left all the virt-manager settings at their default values, and told it to boot the `.iso'.
+Virt-manager can install directly from an `.iso` file, so we pointed a New Virtual Machine to the `.iso` file, setup 40Gb of file space for the `.qcow2` file, left all the virt-manager settings at their default values, and told it to boot the `.iso`.
 
 It starts with a menu which offers the choice of Install, Shell, or Live System. We chose Install. 
 
