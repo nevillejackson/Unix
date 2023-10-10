@@ -1,5 +1,5 @@
 ### login
-## How lo log in to FreeBSD VM
+## How to log in to FreeBSD VM
 
 This chapter aims to describe some different ways of logging in to FreeBSD VM.
 Logging into a FreeBSD guest in virt-manager or via SSH is an important aspect of managing and using the guest VM. Here are the steps for the various methods.
