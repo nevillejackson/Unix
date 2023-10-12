@@ -76,33 +76,33 @@ For Linux hosts with deb package management you may install it with:
 
         `virsh list --all`
         
-        This command displays a list of all virtual machines, including their statuses (running, paused, etc.).
+    This command displays a list of all virtual machines, including their statuses (running, paused, etc.).
 
 2. Start the FreeBSD VM:
 
         `virsh start freebsd13.1`  # freebsd13.1 is an example, so...
         
-        ... replace freebsd13.1 with the actual name of your FreeBSD VM.
+    ... replace freebsd13.1 with the actual name of your FreeBSD VM.
         This command initiates the booting process of the specified virtual machine.
 
 3. Get the VM's IP Address:
 
         `virsh domifaddr freebsd13.1`
         
-        This command provides information about the network interfaces of the virtual machine, including its IP address.
+    This command provides information about the network interfaces of the virtual machine, including its IP address.
 
 4. SSH into the FreeBSD VM:
 
         `ssh username@vm_ip_address`
         
-        Replace username with your FreeBSD username and vm_ip_address with the IP address obtained from step 3.
-        Use this command to log in to your FreeBSD VM via SSH.
+    Replace username with your FreeBSD username and vm_ip_address with the IP address obtained from step 3.
+    Use this command to log in to your FreeBSD VM via SSH.
 
 5. Shutdown the FreeBSD VM:  # final step, when you´re done using FreebSD VM
 
         `virsh shutdown freebsd13.1`
         
-        This command initiates the shutdown of the virtual machine.
+   This command initiates the shutdown of the virtual machine.
 
 
 ### Some additional remarks
