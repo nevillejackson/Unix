@@ -480,7 +480,7 @@ Runlevel: default
 So runit still only supervises the getty processes, but all the default services are running under control of OpenRC
 
 <p align="center">
-<img src="gentoo1.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/runit/gentoo1.png?raw=true">
 </p>
 
 Now, I dont want to have to edit the grub menu every time I boot it, 

@@ -120,7 +120,7 @@ You can see that I have not installed any of these extra packages ([-]).
 I tried vsv
 
 <p align="center">
-<img src="/common/Foss/runit/void1.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/runit/void1.png?raw=true">
 </p>
 
 It is neat but terminal based, not GUI. There are lots of services running in my Void, those called `virt...` are supporting virsh and virt-manager.
@@ -137,7 +137,7 @@ When you bring up a freshly installed Artix, you see the following runit files i
 
 
 <p align="center">
-<img src="/common/Foss/runit/artix1.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/runit/artix1.png?raw=true">
 </p>
 
 What you see above in /runit/runsvdir/default is the "link farm" for a number of services. They are mostly very essential services like `dbus` and the `tty's`. 
@@ -147,14 +147,14 @@ You can just see the /etc/runit/sv directory at the bottom of the tree above.
 The first couple of entries in /etc/runit/sv are
 
 <p align="center">
-<img src="/common/Foss/runit/artix2.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/runit/artix2.png?raw=true">
 </p>
 
 There you see the entry for `acpid` along with its various subdirectories.
 The full set of available services in /etc/runit/sv is
 
 <p align="center">
-<img src="/common/Foss/runit/artix3.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/runit/artix3.png?raw=true">
 </p>
 
 There are more services installed, than have been activated by the "link farm"
@@ -244,7 +244,7 @@ farms.
  But Antix has more than that. Anti has a GUI interface to runit. If you bring up the `Control Centre`, choose `System`, and then choose `Choose Startup Services`, you get the `Runit Service Manager`
 
 <p align="center">
-<img src="/common/Foss/runit/antix1.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/runit/antix1.png?raw=true">
 </p>
 
 You can use the `Runit Service Manager` to do everything that the `sv` command will do, plus you can enable and disable logging on a per service basis. 
@@ -253,7 +253,7 @@ Antix is , as far as I know, the only distribution with  GUI interface to runit.
 Antix also has one peculiarity. There are a small number of services, mostly very basic startup services, to be found in `/etc/init.d` directory
 
 <p align="center">
-<img src="/common/Foss/runit/antix2.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/runit/antix2.png?raw=true">
 </p>
  
 These are sysVinit scripts, not runit run scripts. 
@@ -263,7 +263,7 @@ I think developers have left some of the very basic scripts used at startup in s
 On the other hand, I also installed `ntp` from the package system, and it provided a set of ntp runit scripts in /etc/sv
 
 <p align="center">
-<img src="/common/Foss/runit/antix3.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/runit/antix3.png?raw=true">
 </p>
 So  some parts of Antix's package system supply runit files. Antix has a compound set of repositories, some being Debian, others Antix. 
 
