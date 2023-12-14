@@ -33,5 +33,9 @@ The file _hyperbolade.md_ is the markdown file for thsi deswktop environment rep
 
 The original 4 itsFOSS community articles are available here as .pdf files
 
+## The runit init system ##
+The subdirectory _runit_ contains an investigation of how runit is implemented 
+in a range of Linux distributions. The original itsFOSS topic is available here ad .md files
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
