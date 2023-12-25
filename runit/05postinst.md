@@ -194,7 +194,7 @@ Searching...
       License:       BSD
 ```
 
-Now lets see wjhat it would do if I installed it
+Now lets see what it would do if I installed it
 
 ```
 nevj@mary ~ $ emerge --ask --pretend sys-process/runit
@@ -496,7 +496,7 @@ Then, after much soul searching, I find that I have to run
 in Gentoo, and then run `update-grub` in Debian, with os-prober enabled, because Debian controls my grub, and os-prober needs to see the updated grub.cfg in Gentoo. 
 
 
-After that It boots Gentoo with runit automatically.
+After that it boots Gentoo with runit automatically.
 
 There is still one issue, if I have Gentoo with runit as process #1, it does not halt or reboot or shutdown.  This is documented. One needs to do a shutdown with 
 `runit-init 0`
