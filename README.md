@@ -37,5 +37,11 @@ The original 4 itsFOSS community articles are available here as .pdf files
 The subdirectory _runit_ contains an investigation of how runit is implemented 
 in a range of Linux distributions. The original itsFOSS topic is available here ad .md files
 
+## The S6 init system ##
+The subdirectory _s6_ contains work on the s6 init system.
+
+## The S6 init system with s6-66 Service Manager ##
+The subdirectory _s6-66_ contains a summary of work on the s6-66 init system, 
+in particular what 66 does and how to use it.
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
