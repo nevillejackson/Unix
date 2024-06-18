@@ -1,4 +1,4 @@
-### Getting started with Obarun and s6-66 ###
+### Getting started with Obarun and s6 with 66 ###
  The only official released distro which has S6 with the 66
  Service Manager is Obarun. The init diversity spins
  ( Antix, MX, Devuan) have it but they are spins, ie trial systems not official releases.  Void has S6 and 66 available as packages but the versions are old.
@@ -17,16 +17,16 @@ I took the JWM release, and installed it in a qemu/KVM VM under virt-manager.
 On loading the .iso into the VM, it boots into a live system with the JWM window manager.
 You see a boot screen
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/obarun/obarun1.png?raw=true"
+<img src="https://github.com/nevillejackson/Unix/blob/main/obarun/obarun1.png?raw=true">
 </p>
 then when you boot, you get a console login prompt
 p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/obarun/obarun2.png?raw=true"
+<img src="https://github.com/nevillejackson/Unix/blob/main/obarun/obarun2.png?raw=true">
 </p>
 You login as user 'oblive' with password 'toor' ( 'root' is also password 'toor')
 and you get a jwm screen
 p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/obarun/obarun3.png?raw=true"
+<img src="https://github.com/nevillejackson/Unix/blob/main/obarun/obarun3.png?raw=true">
 </p>
 
 So it finds an internet connection, and it has an icon 'Obarun 

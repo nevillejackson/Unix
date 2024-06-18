@@ -43,5 +43,10 @@ The subdirectory _s6_ contains work on the s6 init system.
 ## The S6 init system with s6-66 Service Manager ##
 The subdirectory _s6-66_ contains a summary of work on the s6-66 init system, 
 in particular what 66 does and how to use it.
+
+## Obarun Linux ##
+The subdirectory _obarun_ contains an exercise at using Obarun with an emphasis on the S6 init system with the 66 Service Manager.
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
+
