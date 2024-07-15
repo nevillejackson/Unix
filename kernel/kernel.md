@@ -99,8 +99,9 @@ modprobe amd_cpu
 ```
 to unload it use
 ```
-modprobe -r amd-gpu
+modprobe -r amd_gpu
 ```
+Of course `amd_gpu` is an example module name; substitute the module you reqiure.
 Changes made with modprobe are temporary. They disappear at reboot.
 
 4. To autoload a module at boot time edit the file  `/etc/modules`

@@ -47,6 +47,9 @@ in particular what 66 does and how to use it.
 ## Obarun Linux ##
 The subdirectory _obarun_ contains an exercise at using Obarun with an emphasis on the S6 init system with the 66 Service Manager.
 
+## Kernel configuration ##
+The subdirectory _kernel_ contains a collection of hints that may help if you need to examine or change a Linux kernel configuration setting.
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
 
