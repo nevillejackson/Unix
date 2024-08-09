@@ -50,6 +50,10 @@ The subdirectory _obarun_ contains an exercise at using Obarun with an emphasis 
 ## Kernel configuration ##
 The subdirectory _kernel_ contains a collection of hints that may help if you need to examine or change a Linux kernel configuration setting.
 
+## Xv for x86-64 ##
+The subdirectory _xv_ contains an updated version of John Bradley's `xv` image display program. It is based on xv-3.10a and there are updates to cope with recent changes to the 'libpng' API.  It is compiled for x86-64architecture and there is a binary file named 'xv' which may be downloaded in raw mode. The downloaded file may need 'chmod 755 xv' before it will execute.
+The source code I started with came from https://github.com/haegar/xv.
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
 
