@@ -3,7 +3,9 @@
 I have some old image manipulation software which uses the `xv` image viewer . It is not available in Debian , Arch or Void repos, so I decided to track down the source code and compile it. 
 
 I obtained the source code from here
+
 https://github.com/haegar/xv
+
 It is beautiful clean coded C written by John Bradley back in the 1990's.  
 It compiles virtually without modification on a modern 64 bit system, with one exception
 
@@ -15,26 +17,26 @@ Otherwise, it is an easy compile, and I have a binary ( called `xv`) which seems
 Here is what it looks like, if you type `xv` with no parameters you get
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/tree/main/xv/FOSS/xv1.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/xv/FOSS/xv1.png?raw=true">
 </p>
 
 and you then have to right click on that window to get the control menu
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/tree/main/xv/FOSS/xv2.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/xv/FOSS/xv2.png?raw=true">
 </p>
 
 and from the control menu you can use `Load`  to load an image
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/tree/main/xv/FOSS/xv3.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/xv/FOSS/xv3.png?raw=true">
 </p>
 
 I have selected a .png image in my ~/Pictures folder.
 If I press OK , I get the image displayed
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/tree/main/xv/FOSS/xv4.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/xv/FOSS/xv4.png?raw=true">
 </p> 
 
 
@@ -118,7 +120,9 @@ or you could start from the original source from which I obtained code
 https://github.com/haegar/xv
 
 or there is one other site which keeps `xv` code
+
 http://www.trilon.com/xv/downloads.html
+
 and they also have a binary i386 architecture in an rpm file ( I have no idea how old this binary is).
 
 #### Documentation ####
