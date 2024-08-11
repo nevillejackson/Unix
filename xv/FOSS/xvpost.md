@@ -125,6 +125,16 @@ http://www.trilon.com/xv/downloads.html
 
 and they also have a binary i386 architecture in an rpm file ( I have no idea how old this binary is).
 
+3. There is a snap download available
+
+https://snapcraft.io/xv
+
+I have not tried it
+
+4. OpenSUSE has xv as a package
+
+https://software.opensuse.org/package/xv
+
 #### Documentation ####
 `xv` comes with a very comprehensive manual. It is in the `doc` subdirectory on my github site
 
