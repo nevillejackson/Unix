@@ -1093,7 +1093,6 @@ int LoadPNG(fname, pinfo)
 */
   pinfo->w = pinfo->normw = width = png_get_image_width(png_ptr,info_ptr);
   pinfo->h = pinfo->normh = height = png_get_image_height(png_ptr, info_ptr); 
-  printf("%d %d \n", width, height);
 
   if (pinfo->w <= 0 || pinfo->h <= 0) {
     SetISTR(ISTR_WARNING, "%s:  image dimensions out of range (%dx%d)",
