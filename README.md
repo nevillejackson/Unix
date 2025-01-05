@@ -54,6 +54,9 @@ The subdirectory _kernel_ contains a collection of hints that may help if you ne
 The subdirectory _xv_ contains an updated version of John Bradley's `xv` image display program. It is based on xv-3.10a and there are updates to cope with recent changes to the 'libpng' API.  It is compiled for x86-64architecture and there is a binary file named 'xv' which may be downloaded in raw mode. The downloaded file may need 'chmod 755 xv' before it will execute.
 The source code I started with came from https://github.com/haegar/xv.
 
+## Chimera ##
+The subdirectory _chimera_ contains a review of Chimera Linux, Dec 2024 beta release
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
 
