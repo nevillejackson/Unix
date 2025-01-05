@@ -42,7 +42,7 @@ I did a VM install using virt-manager. The only additional hardware needed ( ove
 It looks as follows 
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraplasma.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraplasma.png?raw=true">
 </p>
 
 
@@ -64,7 +64,7 @@ Starting with the live system
     EFI, bios-grub, and /.  
 
 <p align-"center">
-<img src="/common/Foss/chimera/chimerapartitions.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimerapartitions.png?raw=true">
 </p>
 
  3. Make a place in the live system to mount the install partition (vda3)
@@ -158,7 +158,7 @@ So I have to figure out how to boot from the grub> prompt
 First I need to know disk and partition names
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeragrub.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeragrub.png?raw=true">
 </p>
 
 So the root filesystem is, in grub notation, (hd0,gpt3) and in linux notation /dev/vda3. Now do this
@@ -172,7 +172,7 @@ and it boots.
 I get to a console prompt
 
 <p align="center"> 
-<img src="/common/Foss/chimera/chimeraconsoleprompt.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraconsoleprompt.png?raw=true">
 </p> 
 
 
@@ -180,7 +180,7 @@ I get to a console prompt
 Now the fun starts. It should look like this
 
 <p align="center"> 
-<img src="/common/Foss/chimera/chimeraconsolelogin.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraconsolelogin.png?raw=true">
 </p> 
 
 
@@ -190,7 +190,7 @@ but several times I have had to fiddle with virt-manager hardware configuration,
 I have to look in /bin to find what to use to start Plasma
 
 <p align="center"> 
-<img src="/common/Foss/chimera/chimerastartde.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimerastartde.png?raw=true">
 </p> 
 
 
@@ -201,7 +201,7 @@ The script I need is
 Run that  and I get the DE
 
 <p align="center"> 
-<img src="/common/Foss/chimera/chimeraplasmakonsole.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraplasmakonsole.png?raw=true">
 </p> 
 
 
@@ -214,7 +214,7 @@ There are no interfaces configured. The Konqueror browser is present but it cann
 I need to find something to configure interfaces. There is nothing in the System settings menu. A search with `apk` gives
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraapknet.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraapknet.png?raw=true">
 </p>
 
 
@@ -229,7 +229,7 @@ Service 'dhcpcd' started.
 Simple as that. I dont need to configure it.... `dhcpcd` finds the virtual machine gateway and sets up the link with dhcp.
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeranetworked.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeranetworked.png?raw=true">
 </p>
 
 
@@ -240,7 +240,7 @@ The console login is a little inconvenient, especially when the VM hardware need
 The login manager `sddm` is already installed. 
 
 <p align="center">
-<img src="/common/Foss/chimera/chimerasddm.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimerasddm.png?raw=true">
 </p>
 
 
@@ -256,7 +256,7 @@ and as soon as I do that, the sddm Login Manager screen appears.
 
 chimerasddmscreen.png
 <p align="center">
-<img src="/common/Foss/chimera/chimerasddmscreen.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimerasddmscreen.png?raw=true">
 </p>
 
 
@@ -276,7 +276,7 @@ That is all. The packages `openssh`  and `openssh-dinit` were already installed.
 Under System Settings there is a Quick Settings menu where I can choose my favourite wallpaper and set a dark theme
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraplasmacustom.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraplasmacustom.png?raw=true">
 </p>
 
 
@@ -290,27 +290,27 @@ Hang on, I cant copy/paste in and out of the VM?
 I need `spice-vdagent`  installed
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraspiceinstall.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraspiceinstall.png?raw=true">
 </p>
 
 OK, it is there now?
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraspiceinstalled.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraspiceinstalled.png?raw=true">
 </p>
 
 
 I still need to start the daemon
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraenablespice-vdagentd.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraenablespice-vdagentd.png?raw=true">
 </p>
 
 
 after a reboot I get
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraspicerunning.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraspicerunning.png?raw=true">
 </p>
 
 
@@ -321,7 +321,7 @@ I install `xwayland` , and `xserver-xorg` .
 Then I get a choice of DE's on the login screen
 
 <p align="center">
-<img src="/common/Foss/chimera/chimerax11.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimerax11.png?raw=true">
 </p>
 
 
@@ -329,7 +329,7 @@ and if I choose Plasma(X11) copy/paste works, but if I choose Plasma(Wayland) it
 The other choice (Weston) gives me a blank screen with a Wayland terminal and nothing else!
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraweston.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraweston.png?raw=true">
 </p>
 
 
@@ -397,7 +397,7 @@ DESCRIPTION
 However the BSD version is like this
 
 <p align="center">
-<img src="/common/Foss/chimera/bsdmancat.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/bsdmancat.png?raw=true">
 </p>
 
 
@@ -430,14 +430,14 @@ We have already used it in this document to do system updates, and to add the gr
 There is a directory `/etc/apk`
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraapk2.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraapk2.png?raw=true">
 </p>
 
 
 and the subdirectory repositories.d contains
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraapk1.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraapk1.png?raw=true">
 </p>
 
 
@@ -447,7 +447,7 @@ It also uses flatpaks, which are accessible via the KDE Discover app.
 The file `world` contains a list of all installed packages
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraapk3.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraapk3.png?raw=true">
 </p>
 
 
@@ -521,7 +521,7 @@ It will need modification in Chimera.
 So lets see if we can find the tools in Chimera. 
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeratools.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeratools.png?raw=true">
 </p>
 
 
@@ -532,7 +532,7 @@ Search for make
 
 chimeramake.png
 <p align="center">
-<img src="/common/Foss/chimera/chimeramake.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeramake.png?raw=true">
 </p>
 
 
@@ -540,28 +540,28 @@ So it is available but not  installed ... `bmake` is the BSD version `gmake` is 
 So lets try bmake
 
 <p align="center">
-<img src="/common/Foss/chimera/chimerabmake.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimerabmake.png?raw=true">
 </p>
 
 
 Now we need to clean up the makefile
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeramakefile.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeramakefile.png?raw=true">
 </p>
 
 
 and try to run it
 
 <p align="center">
-<img src="/common/Foss/chimera/chimerabmake2.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimerabmake2.png?raw=true">
 </p>
 
  
 So, obviously, I needto install clang
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraclang.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraclang.png?raw=true">
 </p>
 
 
@@ -569,7 +569,7 @@ notice it installs `llvm-binutils` and `musl-devl` as well
 Now try again
 
 <p align="center">
-<img src="/common/Foss/chimera/chimerafolli1.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimerafolli1.png?raw=true">
 </p>
 
 
@@ -577,7 +577,7 @@ Clearly clang wants a type specifier in the C code. In Void Linux with gcc you g
 o I add the `int` type to the `main()` statement in the C code, and
 
 <p align="center">
-<img src="/common/Foss/chimera/chimerafollicompile.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimerafollicompile.png?raw=true">
 </p>
 
 
@@ -692,7 +692,7 @@ Dinit is easier to use than runit. Its service management commands are similar t
  1. Sometimes if I click on the Menu button in the bottom panel, I get a completely blank background
 
 <p align="center">
-<img src="/common/Foss/chimera/chimeraproblem.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/chimera/chimeraproblem.png?raw=true">
 </p>
 
 
