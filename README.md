@@ -57,6 +57,9 @@ The source code I started with came from https://github.com/haegar/xv.
 ## Chimera ##
 The subdirectory _chimera_ contains a review of Chimera Linux, Dec 2024 beta release
 
+## Dinit ##
+Thesubdirectory _dinit_ contains a brief description of the dinit init system as implemented in Artix Linux.
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
 

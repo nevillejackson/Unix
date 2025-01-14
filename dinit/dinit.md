@@ -24,13 +24,13 @@ The install is simple... Artix uses the Calamares installer for all but its `bas
 It boots to a typical  Xfce screen
 
 <p align="center">
-<img  src="/common/Foss/dinit/artix1.png">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/dinit/artix1.png?raw=true">
 </p>
 
 That is my favorite Xfce background. The default background is a double helix
 
 <p align="center">
-<img src="/common/Foss/dinit/artix3.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/dinit/artix3.png?raw=true">
 </p>
  
 and I have added some things to the bottom panel there.
@@ -75,7 +75,7 @@ https://forum.artixlinux.org/index.php/topic,3498.0.html
 all of the service information is kept
 
 <p align-"center">
-<img src="/common/Foss/dinit/artix2.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/dinit/artix2.png?raw=true">
 </p>
 
 The files are `service files` . We can see the content of the `sshd` service file. It is a simple list of parameters, there is no script as in `sysVinit` or `run` file as in `runit`. 
