@@ -682,7 +682,7 @@ also provides good documentation.
 
 Dinit provides an init process, service management, and supervision. It can launch multiple services in parallel, and that makes it fast. Boot time for Chimera in my VM is about 3 seconds. It is written in C++ and is compatable across BSD, MasOS, and Linux.
 
-Dinit is considered to be part of the `daemontools` family of init systems ( daemontools, runit, s6, 66, dinit), but unlike the others it does not start a separate process to supervice each daemon. There is one supervision process called `dinit-monitor` that monitors all services.  there is also one process called `dinit` that replaces init as process No. 1. , and manages shutdowns and reboots. As such, it is really the simplest of all init systems except BSD RC. 
+Dinit is not considered to be part of the `daemontools` family of init systems ( daemontools, runit, s6, 66). Dinit does not start a separate process to supervice each daemon. There is one supervision process called `dinit-monitor` that monitors all services.  there is also one process called `dinit` that replaces init as process No. 1. , and manages shutdowns and reboots. As such, it is really the simplest of all init systems except BSD RC. 
 
 
 Dinit is easier to use than runit. Its service management commands are similar to OpenRC. It is a small learning curve ... half an hour will get you there.
