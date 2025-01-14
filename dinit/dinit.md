@@ -115,7 +115,7 @@ dinitctl enable service_name
 
 Dinit, in common with s6 and systemd, allows users as well as root, to manage services That can not be done in runit or OpenRC or sysVinit.
 
- 4. An important feature of dinit is that it automatically manages dependencies between services, so that it starts daemons in a suitable order. S6 can do that too, and so can systemd. Runit and OpenRc and SysVinit do not manage dependencies.  What proper dependency management means is that daemons can be started in parallel if they are independent.  That makes booting fast. Dinit boot time is indeed fast.... Chimera Linux (in a VM) boots in 4 seconds, Artix/dinit ( hard install)  in about 10 seconds.
+ 4. An important feature of dinit is that it automatically manages dependencies between services, so that it starts daemons in a suitable order. S6 can do that too, and so can systemd. Runit and OpenRc and SysVinit do not manage dependencies.  What proper dependency management means is that daemons can be started in parallel if they are independent.  That makes booting fast. Dinit boot time is indeed fast.... Chimera Linux (in a VM) boots in 4 seconds, Artix/dinit ( hard install)  in about 10 seconds, Artix/s6 (hard install) takes 17 seconds. Dinit is faster than s6..
 
 #### Conclusion ####
 Dinit is a suitable init system for home use. It boots fast, has simple commands, and in general leaves the user alone and does not intrude on other parts of the system. 
