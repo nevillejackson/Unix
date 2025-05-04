@@ -59,6 +59,9 @@ The subdirectory _chimera_ contains a review of Chimera Linux, Dec 2024 beta rel
 
 ## Dinit ##
 Thesubdirectory _dinit_ contains a brief description of the dinit init system as implemented in Artix Linux.
+ 
+## Distros ##
+The subdirectory _distros_ contains information comparing Unix and Linux distributions
 
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
