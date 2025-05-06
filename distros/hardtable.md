@@ -5,24 +5,24 @@
 |              | MX/Systemd         | MX/sysVinit         |
 |              | Peppermint/Debian  | Peppermind/Devuan   |
 |              | Solus              |                     |
-|              |                         |                    |
-| Novice       | Ubuntu & variants  |                     |
+|              |                    |                     |
+| Good second try | Ubuntu & variants  |                     |
 |              | Zorin              |                     |
 |              | Ubuntu with PPA    |                     |
 | |   |  |
-| Easy         | Debian             | Devuan              |
+| Some experience         | Debian             | Devuan              |
 |              | Fedora             | Antix               |
-|              | OpenSUSE slowroll  |                     |
-|              | OpenSUSE tumbleweed|                     |
-|              | OpenSUSE leap      |                     |
+|              | OpenSUSE leap      | Alpine              |
+|              | OpenSUSE tumbleweed| Artix               |
 |  |   | |
-| Difficult    | NixOS              | Artix               |
+| Difficult or experimental    | NixOS              | GUIX                |
 |              | Arch without AUR   | Chimera             |
 |              | Manjaro            | Void                |
 |              | Garuda             | Slackware           |
 |              | Arch with AUR      | Hyperbola           |
-|              |                    | GUIX                |
+|              | OpenSUSE slowroll  |                     |
 |  |   |  |
-| Requires dedication    | Gentoo/Systemd     | Gentoo/OpenRC       |
+| Requires  dedication    | Gentoo/Systemd     | Gentoo/OpenRC       |
+|              |                    |                     |
 |  |  | |
 | Pro          |                    | LFS                 |
