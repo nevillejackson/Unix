@@ -3,7 +3,7 @@
 | Beginner     | Mint               |                     |
 |              | LMDE               |                     |
 |              | MX/Systemd         | MX/sysVinit         |
-|              | Peppermint/Debian  | Peppermind/Devuan   |
+|              | Peppermint/Debian  | Peppermint/Devuan   |
 |              | Solus              |                     |
 |              |                    |                     |
 | Good second try | Ubuntu & variants  | Antix            |
