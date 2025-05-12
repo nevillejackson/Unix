@@ -6,14 +6,15 @@
 |              | Peppermint/Debian  | Peppermind/Devuan   |
 |              | Solus              |                     |
 |              |                    |                     |
-| Good second try | Ubuntu & variants  |                     |
+| Good second try | Ubuntu & variants  | Antix            |
+|              | Lite               |                     |
 |              | Zorin              |                     |
 |              | Ubuntu with PPA    |                     |
 | |   |  |
 | Some experience         | Debian             | Devuan              |
-|              | Fedora             | Antix               |
-|              | OpenSUSE leap      | Alpine              |
-|              | OpenSUSE tumbleweed| Artix               |
+|              | Fedora             | Alpine               |
+|              | OpenSUSE leap      | Artix              |
+|              | OpenSUSE tumbleweed|                     |
 |  |   | |
 | Difficult or experimental    | NixOS              | GUIX                |
 |              | Arch without AUR   | Chimera             |
