@@ -12,16 +12,18 @@
 |              | Ubuntu with PPA    |                     |
 | |   |  |
 | Some experience         | Debian             | Devuan              |
-|              | Fedora             | Alpine               |
-|              | OpenSUSE leap      | Artix              |
+|              | Fedora             | Alpine              |
+|              | OpenSUSE leap      | Artix               |
 |              | OpenSUSE tumbleweed|                     |
 |  |   | |
-| Difficult or experimental    | NixOS              | GUIX                |
-|              | Arch without AUR   | Chimera             |
-|              | Manjaro            | Void                |
-|              | Garuda             | Slackware           |
-|              | Arch with AUR      | Hyperbola           |
+| Difficult or experimental    | NixOS              | Void                |
+|              | Arch without AUR   | Chimear             |
+|              | Manjaro            | Hyperbola           |
+|              | Garuda             | GUIX                |
+|              | Arch with AUR      |                     |
 |              | OpenSUSE slowroll  |                     |
+|  |   |  |
+| More difficult |                  | Slackware           |
 |  |   |  |
 | Requires  dedication    | Gentoo/Systemd     | Gentoo/OpenRC       |
 |              |                    |                     |
