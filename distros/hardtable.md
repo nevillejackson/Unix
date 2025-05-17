@@ -4,10 +4,13 @@
 |              | LMDE               |                     |
 |              | MX/Systemd         | MX/sysVinit         |
 |              | Peppermint/Debian  | Peppermint/Devuan   |
-|              | Solus              |                     |
+| |  |  |
+| Easy         | Solus              |                     |
+|              | Lite               |                     |
+|              | Pop!OS             |                     |
+|              | Elementary         |                     |
 |              |                    |                     |
 | Good second try | Ubuntu & variants  | Antix            |
-|              | Lite               |                     |
 |              | Zorin              |                     |
 |              | Ubuntu with PPA    |                     |
 | |   |  |
@@ -17,7 +20,7 @@
 |              | OpenSUSE tumbleweed|                     |
 |  |   | |
 | Difficult or experimental    | NixOS              | Void                |
-|              | Arch without AUR   | Chimear             |
+|              | Arch without AUR   | Chimera             |
 |              | Manjaro            | Hyperbola           |
 |              | Garuda             | GUIX                |
 |              | Arch with AUR      |                     |
