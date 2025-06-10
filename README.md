@@ -66,6 +66,8 @@ The subdirectory _distros_ contains information comparing Unix and Linux distrib
 ## Init Diversity ##
 The subdirectory _initdiversity_ contains an evaluation of the Antix 2025 Init Diversity Release, particularly the dinit implementation.
 
+## Anydesk ##
+The subdirectory _anydesk_ contains an evaluation of using anydesk for accessing a remote unattended computer. It is an alternative to using ssh and does not require opening an ssh port.
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
 

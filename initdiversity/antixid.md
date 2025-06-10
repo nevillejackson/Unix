@@ -1,10 +1,14 @@
 #### Antix-23.2 init diversity 2025 remaster edition - includes dinit ####
-Our friend @ProwlerGr from the Antix init diversity group was kind enough top send us a reminder that there is a new release of their init diversity spin which now includes the `dinit` init system ( along with sysvinit, s6-rc, s6-66, OpenRC and runit).
+Our friend @ProwlerGr from the Antix init diversity group was kind enough to send us a reminder that there is a new release of their init diversity spin which now includes the `dinit` init system ( along with sysvinit, s6-rc, s6-66, OpenRC and runit).
 
 The announcement is here
+
 https://www.antixforum.com/forums/topic/antix-23-2-init-diversity-2025-remaster-edition/
+
 the .iso download is here
+
 https://archive.org/download/antiX-23.2_init-diversity_20250510/Current/
+
 and
 The changelog from the previous edition is
 ```
@@ -62,15 +66,15 @@ proper scripts to enable/start them.
 ##### Installation #####
 I downloaded the file `antiX-23.2_init-diversity_x64_20250525.iso`, about 3 minutes... they have a good fast download site.
  I installed it in a VM (virt-manager), using Generic Linux 2022, 8000Mb, 4CPU's, 50 Gb virtual disk.
-Virt-manager brings up the following screen wherre you choose which to install.
+Virt-manager brings up the following screen where you choose which to install.
 
 <p align="center">
 <img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-1.png?raw=true">
 </p>
 
-I chose the generic version ( highlighted), because I wanred an install. The others are for looking at live systems.
+I chose the generic version ( highlighted), because I wanted an install. The others are for looking at live systems.
 Look at the F1 to F7 options if you want to fiddle settings
-For example F1 will tel you that there is user `demo` with passwd `demo`, and the root passwd is `root`
+For example F1 will tell you that there is user `demo` with passwd `demo`, and the root passwd is `root`
 I took the defaults
 It then produces a live Antix screen with an `Installer` button
 
@@ -107,8 +111,7 @@ I choose the dinit option at the bottom
 and it boots to an antix Login Manager screen
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-6.png?
-raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-6.png?raw=true">
 </p>
 
 
@@ -118,8 +121,7 @@ I used F1 to toggle the Window manager to `rox-icewm` , which is what I always u
 Then login and I get
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-7.png?
-raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-7.png?raw=true">
 </p>
 
 The IceWM screen. It has a taskbar at bottom, two workspaces by default, a menu button in the corner or on clicking backgound menu, and some icons.
@@ -127,8 +129,7 @@ The IceWM screen. It has a taskbar at bottom, two workspaces by default, a menu 
 Lets start a terminal and see if we can find dinit?
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-8.png?
-raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-8.png?raw=true">
 </p>
 
 
@@ -138,10 +139,8 @@ Yes, there it is, process number 1 is called `dinit` rather than `init`.
 Dinit keeps all its system service config files in `/etc/dinit.d`. We can have a look
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-9.png?
-raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-9.png?raw=true">
 </p>
-
 
 These files are editable. The templates are in /usr/lib/dinit.
 There are not as many service files as in Artix/dinit, but more than are in Chimera/dinit. 
@@ -151,26 +150,24 @@ Dinit can also have user controlled services. The config files for user services
 Lets see what services are running
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-13.png?
-raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-13.png?raw=true">
 </p>
 
 
-There are no user services, but there are a basic sertt of usystem services. For each running service , there is a service file in `/etc/dinit.d`.
+There are no user services, but there are a basic set of system services. For each running service , there is a service file in `/etc/dinit.d`.
 
 There is no `sshd` so lets install it.
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-10.png?
-raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-10.png?raw=true">
 </p>
 
 
 It is installed... but there is no `sshd` server file, and it definitely is not running?
 
-Maybe I need to start it... so go to Control Centre -> System -> Choose Startup Services.... and it fails .... so there is no GUI service manager for dinit yet.There are for runit and sysVinit.
+Maybe I need to start it... so go to Control Centre -> System -> Choose Startup Services.... and it fails .... so there is no GUI service manager for dinit yet. There are for runit and sysVinit.
  
-What I need is a startup service file.... so  I will start with the simplest possibleservoce file
+What I need is a startup service file.... so  I will start with the simplest possible service file
 
 ```
 type            = process
@@ -181,7 +178,7 @@ depends-on      = ssh-keygen
 ```
 So that is all there is to a dinit service file... they are not really scripts.... more like a simple config file. 
 Copy that into /etc/dinit.d and see if I can start sshd with dinit commands
-.... I will probably need  assh-keygen service file  too. 
+.... I will probably need  a ssh-keygen service file  too. 
  
 ```
 type		= scripted
@@ -199,15 +196,13 @@ So it is started.  I actually had to reboot to get that to work?
 Now, if we list the services
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-14.png?
-raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-14.png?raw=true">
 </p>
 
-That is the end of `dinitctl list`.  There are mow 2 extra services, sshd and ssh-keygen. I can also dee the daemon running with `ps`
+That is the end of `dinitctl list`.  There are now 2 extra services, sshd and ssh-keygen. I can also dee the daemon running with `ps`
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-15.png?
-raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid2025-15.png?raw=true">
 </p>
 
 The above only starts the sshd service for the current session. If we want the `sshd` service to start at every boot, we use
@@ -246,11 +241,11 @@ https://itsfoss.community/t/the-dinit-init-system-in-artix-linux/12993
 
 ##### My assessment of the progress with dinit in init diversity spin #####
 
-I found that the dinit version of Antix-Init-Diversity-2025 works either from an install or as a live iso. It comes wit 31 services enabled, including important things like `udevd` and the networking daemon `connmand`. 
+I found that the dinit version of Antix-Init-Diversity-2025 works either from an install or as a live iso. It comes with 31 services enabled, including important things like `udevd` and the networking daemon `connmand`. 
 
-The implementation of dinit is not quite the same as in Artix, but the location of config files is the same. THis iss not surprising as we are comparing Debian with Arch there.
+The implementation of dinit is not quite the same as in Artix, but the location of config files is the same. This is not surprising as we are comparing Debian with Arch there.
 
-I tried starting a service which  was not present ( sshd).  It was installed but there was no service file for it. I had to write one. It was easy to setup an elementary service file, especially as I had Artix as a guide. The dinit commands to srart or enable a service worked. The command to list services worked. 
+I tried starting a service which  was not present ( sshd).  It was installed but there was no service file for it. I had to write one. It was easy to setup an elementary service file, especially as I had Artix as a guide. The dinit commands to start or enable a service worked. The command to list services worked. 
 
 From a progress point of view , the Init Diversity spin has implemented dinit and has service files for some 31 services, but other service packages ( like sshd) if installed will not install a service file. You have to write the service fiile(s) yourself. It is not difficult.  I guess before Antix release a dinit iso version they will attend to making service packages install service files when the binary is installed.
 
@@ -277,11 +272,11 @@ Dinit is one blob of C++ code, and nothing else. It cant grow tentacles and inva
  -  Dinit provides service supervision, ie it automatically restarts failed daemons
  -  Dinit allows users to setup services
 
-I see dinit as the simplest and best option for home computer users.
+I see dinit as the simplest and best init system option for home computer users.
 If you want to try dinit, use either the Antix Init Diversity spin 2025, or Artix/dinit. There is also Chimera, but it is a beta release.
 I am informed that Antix will be making an Antix/dinit iso release soon.
 
 ##### Acknowledgement #####
-Many thanks to @ProwlerGR  for keeping itsFOSS forum in the loop on this important progress. 
+Many thanks to @ProwlerGr  for keeping itsFOSS forum in the loop on this important progress. 
 
 

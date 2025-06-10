@@ -6,8 +6,7 @@ and click the box 'Enable Unattended Access'
 
 unattendedbox.png
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid
-2025-1.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/unattendedbox.png?raw=true">
 </p>
 
 
@@ -15,8 +14,7 @@ it will then offer a menu to set a password.
 
 unattendedsetpassword.png
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/initdiversity/antixid
-2025-1.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/unattendedsetpassword.png?raw=true">
 </p>
 
 
