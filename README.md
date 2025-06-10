@@ -63,6 +63,9 @@ Thesubdirectory _dinit_ contains a brief description of the dinit init system as
 ## Distros ##
 The subdirectory _distros_ contains information comparing Unix and Linux distributions
 
+## Init Diversity ##
+The subdirectory _initdiversity_ contains an evaluation of the Antix 2025 Init Diversity Release, particularly the dinit implementation.
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
 
