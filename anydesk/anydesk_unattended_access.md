@@ -37,14 +37,19 @@ In this tutorial, we’ll show how **Neville** (host in Australia) granted **Ros
     - Has **no `sudo` or root privileges**
     - Belongs to minimal groups (only their own)
 - **Anydesk Setup:**
-  - AnyDesk was enabled for **Unattended Access**
+  - AnyDesk was enabled for **Unattended Access**.
     Go to Settings -> Security and click the boxs 'Enable Unattended Access'
     <p align="center">
 <img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/unattendedbox.png?raw=true">
 </p>
 
   - Set a **strong password**
-  - Provided the following credentials to Rosika:
+  
+    <p align="center">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/unattendedsetpassword.png?raw=true">
+</p>
+
+  - Neville provided the following credentials to Rosika:
 
     1. AnyDesk ID
     2. Unattended access password
@@ -78,6 +83,25 @@ This ensures that the AnyDesk process running inside the Debian VM is sandboxed 
 
   ---------- Insert screenshots here: login prompt, successful session view, etc. ----------
   
+  <p align="center">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/2enter_target_address.png?raw=true">
+</p>
+
+  
+  <p align="center">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/2authorization_request.png?raw=true">
+</p>
+
+  <p align="center">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/2Nevilles_login_screen.png?raw=true">
+</p>
+
+<p align="center">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/2Nevillles_desktop.png?raw=true">
+</p>
+
+  
+  
 ### 4.  File Transfer with AnyDesk  
 
 
@@ -88,12 +112,23 @@ This ensures that the AnyDesk process running inside the Debian VM is sandboxed 
 
    ---------- Insert screenshot of the file transfer window ----------
    
+   <p align="center">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/2anydesk_data_transfer_button.png?raw=true">
+</p>
+<p align="center">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/2anydesk_data_transfer_interface.png?raw=true">
+</p>
+
+<p align="center">
+<img src="https://github.com/nevillejackson/Unix/blob/main/anydesk/2data_transfer_success.png?raw=true">
+</p>
+
 
 ### 5. Security Notes
 
 
-- No open ports or VPN needed
-- Remote user has no sudo/root privileges
+- No ssh ports or VPN needed.  Anydesk has its own ports.
+- Remote user has no sudo/root privileges, unless granted.
 - Clipboard sharing disabled unless manually started (e.g. via spice-vdagent)
 - No shared folders between VM and host
 - Firejail + KVM VM = Strong isolation for the Linux Lite host
