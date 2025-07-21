@@ -31,4 +31,4 @@
 | Requires  dedication    | Gentoo/Systemd     | Gentoo/OpenRC       |
 |              |                    |                     |
 |  |  | |
-| Pro          |      LFS           | LFS                 |
+| Very difficult  |   LFS           | LFS                 |
