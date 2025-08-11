@@ -5,7 +5,7 @@ I am going to do what I normally recommend , and prepare the target partition us
 The disk has a GPT partition table, and contains a 1Tb data partition , called 'Common', but I was able to find a spare 300Gb partition, so I erased it and made a 9.7Gb swap space and a 292Gb space for NetBSD.
 
 <p align="center">
-<img src="/common/Foss/netbsd2/netbsdhard.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/netbsdhard.png?raw=true">
 </p>
 
 
@@ -39,7 +39,7 @@ Now reboot from the USB drive
 The USB drive boots, and after a few preliminaries like setting language and keyboard, you get to say "Install to a hard disk", and it displays the disks to choose from
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdinst1.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdinst1.png?raw=true">
 </p>
 
 
@@ -49,7 +49,7 @@ Never mind, the disk I have prepared partitions on is wd2, so I highlight it, as
 Next we get to choose some partition options
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdinst2.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdinst2.png?raw=true">
 </p>
 
 
@@ -57,7 +57,7 @@ I choose to use existing GPT partitons, as highlighted
 Then I get a summary of the partitions it sees on wd2.
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdinst4.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdinst4.png?raw=true">
 </p>
 
 
@@ -66,14 +66,14 @@ It is not perfect. It sees the 299Gb partiton I made for NetBSD as Linux-ext2...
 What you do now is highlight the partitons you want to change , so I will highlight d: the 299Gb partiton for NetBSD.
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdinst5.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdinst5.png?raw=true">
 </p>
 
 
 and then you get a submenu
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdinst6.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdinst6.png?raw=true">
 </p>
 
 
@@ -83,7 +83,7 @@ NB. The picture shown Newfs: No ... I fixed that.
 Then I say OK , and go back to do the same for the 10Gb swap partition
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdinst7.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdinst7.png?raw=true">
 </p>
 
 
@@ -93,7 +93,7 @@ and
 Then I do the same for the EFI system partition
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdinstpartefi.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdinstpartefi.png?raw=true">
 </p>
 
 
@@ -102,7 +102,7 @@ It needs to be mounted to `/mnt/EFI/boot` (not `/boot/efi` like in most Linuxes)
 Here is the final setup
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdinstpartsfinal.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdinstpartsfinal.png?raw=true">
 </p>
 
 
@@ -113,7 +113,7 @@ Now I tell it to go ahead and write NetBSD to those partions and it `fsck`'s the
 It goes ahead and writes all of what it calls 'sets' ( .tar.gz files ) to the root filesystem, then it asks if I want to configure?
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdinstconfigure.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdinstconfigure.png?raw=true">
 </p>
 
 
@@ -186,7 +186,7 @@ It says nothing
 So I reboot and see if I get an entry in the grub screen.
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdmxgrub.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdmxgrub.png?raw=true">
 </p>
 
 Success!  
@@ -194,7 +194,7 @@ The NetBSD-bootloader option does not work.... I get the grub boot screen contro
 The NetBSD-kernel option works....I get a NetBSD login screen
 
 <p align="center">
-<img src="/common/Foss/netbsd2/nbsdlogin.png">
+<img src="https://github.com/nevillejackson/Unix/blob/main/netbsd2/nbsdlogin.png?raw=true">
 </p>
 
 
