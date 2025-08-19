@@ -99,7 +99,7 @@ mount -t ext2fs /dev/dk17 /mnt/share
   I had no trouble sharing text files , or images. 
 The issue with sharing is, it is rather limited. I cant realistically copy my large ext4 data filesystem into the share filesystem. It is only suitable for shareing a few small files.
 
-That is not a complete solution to using NetBSD alongside Linux, but it is a starta.
+That is not a complete solution to using NetBSD alongside Linux, but it is a start.
 
 
 
