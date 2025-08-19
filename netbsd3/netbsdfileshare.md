@@ -1,7 +1,7 @@
 ### Filesystems in NetBSD - sharing with Linux ###
 
 NetBSD has native support for FFS, ZFS, EXT2FS, NTFS, MSDOSFS, CD9600, and UDF filesystems.
-Linux has native support for ext2, ext3, ext4, Btrfs, NTFS, exFAT, and FAT32 filesystems.
+Linux has native support for ext2, ext3, ext4, Btrfs, NTFS,  and FAT32 filesystems.
 The only overlaps between NetBSD and Linux are
  - EXT2FS ( ext2)
  - MSDOSFS (FAT32)
