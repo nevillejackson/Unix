@@ -68,6 +68,11 @@ The subdirectory _initdiversity_ contains an evaluation of the Antix 2025 Init D
 
 ## Anydesk ##
 The subdirectory _anydesk_ contains an evaluation of using anydesk for accessing a remote unattended computer. It is an alternative to using ssh and does not require opening an ssh port.
+
+## NetBSD ##
+The subdirectories _netbsd_, _netbsd2_ and _netbsd3_ contain reports on installing and usng NetBSD in a multiboot computer alongside Linux.
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
+
 
