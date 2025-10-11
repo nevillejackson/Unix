@@ -45,7 +45,7 @@
 /*
 #define HAVE_tRNS  (info_ptr->valid & PNG_INFO_tRNS)
 */
-#define HAVE_tRNS  (valid & PNG_INFO_tRNS)
+#define HAVE_tRNS  (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
 #define DWIDE    86
 #define DHIGH    104
 #define PFX      (PWIDE-93)
@@ -1027,7 +1027,7 @@ int LoadPNG(fname, pinfo)
   int pass;
   int gray_to_rgb;
   size_t commentsize;
-  png_color palette[256];
+  png_colorp palette;
 
   fbasename = BaseName(fname);
 
@@ -1093,6 +1093,7 @@ int LoadPNG(fname, pinfo)
 */
   pinfo->w = pinfo->normw = width = png_get_image_width(png_ptr,info_ptr);
   pinfo->h = pinfo->normh = height = png_get_image_height(png_ptr, info_ptr); 
+  bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 
   if (pinfo->w <= 0 || pinfo->h <= 0) {
     SetISTR(ISTR_WARNING, "%s:  image dimensions out of range (%dx%d)",
@@ -1110,7 +1111,6 @@ int LoadPNG(fname, pinfo)
   channels = png_get_channels(png_ptr, info_ptr);
   sprintf(pinfo->fullInfo, "PNG, %d bit ",
           bit_depth * channels);
-
 
 /*
   switch(info_ptr->color_type) {
@@ -1162,11 +1162,14 @@ int LoadPNG(fname, pinfo)
 /*
   if (info_ptr->valid & PNG_INFO_gAMA)
 */
-  if (valid & PNG_INFO_gAMA)
+  if (png_get_valid(png_ptr, info_ptr, PNG_INFO_gAMA)) {
 /*
     png_set_gamma(png_ptr, Display_Gamma, info_ptr->gamma);
 */
-    png_set_gamma(png_ptr, Display_Gamma, vgamma);
+    double gAMA;
+    png_get_gAMA(png_ptr, info_ptr, &gAMA);
+    png_set_gamma(png_ptr, Display_Gamma, gAMA);
+  }
 /*
  *else
  *  png_set_gamma(png_ptr, Display_Gamma, 0.45);
@@ -1178,7 +1181,6 @@ int LoadPNG(fname, pinfo)
 /*
     if (info_ptr->bit_depth == 16) {
 */
-    bit_depth = png_get_bit_depth(png_ptr,info_ptr);
     if (bit_depth == 16) {
       my_background.red   = imagebgR;
       my_background.green = imagebgG;
@@ -1194,7 +1196,8 @@ int LoadPNG(fname, pinfo)
     png_set_background(png_ptr, &my_background, PNG_BACKGROUND_GAMMA_SCREEN,
                        0, Display_Gamma);
 */
-   png_set_bKGD(png_ptr, info_ptr, &my_background);
+    png_set_background(png_ptr, &my_background, PNG_BACKGROUND_GAMMA_SCREEN,
+                       0, Display_Gamma);
 /*
     if ((info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA ||
          (info_ptr->color_type == PNG_COLOR_TYPE_GRAY && HAVE_tRNS)) &&
@@ -1211,12 +1214,15 @@ int LoadPNG(fname, pinfo)
 /*
     if (info_ptr->valid & PNG_INFO_bKGD) {
 */
-    if (valid & PNG_INFO_bKGD) {
+    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_bKGD)) {
 /*
       png_set_background(png_ptr, &info_ptr->background,
                          PNG_BACKGROUND_GAMMA_FILE, 1, 1.0);
 */
-     png_set_bKGD(png_ptr, info_ptr, &my_background);
+      png_color_16p image_background;
+      png_get_bKGD(png_ptr, info_ptr, &image_background);
+      png_set_background(png_ptr, image_background,
+                         PNG_BACKGROUND_GAMMA_FILE, 1, 1.0);
     } else {
       my_background.red = my_background.green = my_background.blue =
         my_background.gray = 0;
@@ -1224,7 +1230,8 @@ int LoadPNG(fname, pinfo)
       png_set_background(png_ptr, &my_background, PNG_BACKGROUND_GAMMA_SCREEN,
                          0, Display_Gamma);
 */
-      png_set_bKGD(png_ptr, info_ptr, &my_background);
+      png_set_background(png_ptr, &my_background, PNG_BACKGROUND_GAMMA_SCREEN,
+                         0, Display_Gamma);
     }
   }
 
@@ -1239,9 +1246,7 @@ int LoadPNG(fname, pinfo)
       info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
 */
   if (colorType == PNG_COLOR_TYPE_GRAY ||
-      colorType == PNG_COLOR_TYPE_GRAY_ALPHA)
-
-  {
+      colorType == PNG_COLOR_TYPE_GRAY_ALPHA) {
 /*
     if (info_ptr->bit_depth == 1)
 */
@@ -1261,9 +1266,7 @@ int LoadPNG(fname, pinfo)
      info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA || gray_to_rgb)
 */
   if (colorType == PNG_COLOR_TYPE_RGB ||
-      colorType == PNG_COLOR_TYPE_RGB_ALPHA || gray_to_rgb)
-
-  {
+      colorType == PNG_COLOR_TYPE_RGB_ALPHA || gray_to_rgb) {
     linesize = 3 * pinfo->w;
     if (linesize/3 < pinfo->w) {   /* know pinfo->w > 0 (see above) */
       SetISTR(ISTR_WARNING, "%s:  image dimensions too large (%dx%d)",
@@ -1280,7 +1283,7 @@ int LoadPNG(fname, pinfo)
     if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY ||
        info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
 */
-if (colorType == PNG_COLOR_TYPE_GRAY ||
+    if (colorType == PNG_COLOR_TYPE_GRAY ||
        colorType == PNG_COLOR_TYPE_GRAY_ALPHA) {
       for (i = 0; i < 256; i++)
         pinfo->r[i] = pinfo->g[i] = pinfo->b[i] = i;
@@ -1332,6 +1335,7 @@ if (colorType == PNG_COLOR_TYPE_GRAY ||
 /*
   if (info_ptr->num_text > 0) {
 */
+  png_get_text(png_ptr, info_ptr, &text, &num_text);
   if (num_text > 0) {
     commentsize = 1;
 
@@ -1357,7 +1361,7 @@ if (colorType == PNG_COLOR_TYPE_GRAY ||
       for (i = 0; i < num_text; i++) {
 /*
         strcat(pinfo->comment, info_ptr->text[i].key);
-/* 
+*/
         strcat(pinfo->comment, text[i].key);
         strcat(pinfo->comment, "::");
 /*
@@ -1372,7 +1376,6 @@ if (colorType == PNG_COLOR_TYPE_GRAY ||
   png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
 
   fclose(fp);
-
   return 1;
 }
 
