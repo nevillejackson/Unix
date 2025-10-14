@@ -48,7 +48,7 @@ The flag `-apic` means noapic. It is necessary because of a bug in the NetBSD ve
 
 With that in place we can look into making a disk or a partition available to a qemu guest. 
 
-##### Passing a physical disk or partition to a qemu guest #####
+#### Passing a physical disk or partition to a qemu guest ####
 This has to be done in the qemu command line. It can not be added dynamically to a running guest. 
 
 I have an ext4 partiton called `common` which contains data. It is on the partiton known as /dev/dk7 to NetBSD. To pass that partition to a qemu guest I modify the qemu command as follows
@@ -81,7 +81,7 @@ And I can read files.
 
 What I need to do now is export this mounted filesystem back to the host
 
-##### Setting up NFS to export a filesystem from guest to host #####
+#### Setting up NFS to export a filesystem from guest to host ####
 This will require networking between host and guest. 
 First of all I have to make the Antix guest an NFS server
 ```
@@ -131,7 +131,7 @@ mount -t nfs antixvm:/mnt/common /mnt/common
 Given the network fix, I can now `cd /mnt/common` and can see my data 
 directories and operate on files.
 
-##### Networking a qemu guest to a NetBSD host #####
+#### Networking a qemu guest to a NetBSD host ####
 Now, fix the networking. 
 For NFS to operate with the qemu guest as an NFS server, and the NetBSD host as client , I only need a very simple network link between host and guest. Therefore I will use a `tap` interface, rather than `user` or `bridge`.
 
@@ -183,7 +183,7 @@ ping 192.168.0.57 from the guest ( that is my hosts IP on the modem port)
 
 I also cant ping google.com.au ... there is no dns server accessible to the guest. That does not matter.
 
-##### Final issues #####
+#### Final issues ####
 Given the network setup above, the guest exports my `common` directory using NFS, and the host can mount it with
 ```
 mount -t nfs 10.0.2.15:/mnt/common /mnt/common
@@ -197,10 +197,10 @@ and I see my files.
 I can read files as either root or nevj, but I can only write files as nevj, not as root. 
 I assume that might be some sort of NFS security feature. 
 
-##### Where to now  #####
+#### Where to now  ####
 I have shown that a VM NFS server  will work.  I now need to automate the steps.  
 Are there any suggestions for automating this?
 
 
-##### Acknowledgement #####
+#### Acknowledgement ####
 I am grateful for assistence from @JoelA with `qemu` and `tap` interfaces.
