@@ -61,26 +61,33 @@ Visidata uses file extensions to identify file types. If the file extension is m
 With that comand I get a terminal window like this
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/vd1.png?ra
-w=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/vd1.png?raw=true">
 </p>
 
 
 Lets say I want to edit the data value '36.4' in the bottom row.
 I move to that row, and across to the last column...
 
-.... vd2.png
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/vd2.png?raw=true">
+</p>
+
 
 Then I enter 'e', the new value, then enter..... done. 
 
-..... vd3.png
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/vd3.png?raw=true">
+</p>
 
 
-Visidata doe not write on the current file. To save use `Ctrl s filename` ... give the saved file a new name
+VisiData does not write on the current file. To save use `Ctrl s filename` ... give the saved file a new name
 ```
 Then to quit `q`
 Both files will be there.
 I can move around between cells with arrow keys ( or with vi's h,j,k,l keys)
+
+```
+
 
 #### Make a new table and enter some data ####
 I can start am empty table with
@@ -89,7 +96,10 @@ vd new.vd
 ```
 I get one cell
 
-..... vd4.png
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/vd4.png?raw=true">
+</p>
+
 
 Lets say I have some rainfall data .... 2 columns ... Date and Rainfall in mm.
 I need to rename the first column, so  '^' , and I get the opportunity to type in 'Date' as its heading.  I need to set the column type to 'data' so '@'.
@@ -97,7 +107,10 @@ Then I need to add a column , so 'za' and it lets m name it 'Rainfall', and I ca
 
 Now it looks like this
 
-..... vd5.png
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/vd5.png?raw=true">
+</p>
+
 
 Now, how can I add some rows of data?
 
@@ -114,7 +127,10 @@ makes 5 blank rows, then
 I can move to the first column, second row , press 'e', and enter 22/10/25 for Date and 15.0 for Rainfall.
 When I start editing it changes the table to
 
-.... vd6.png
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/vd6.png?raw=true">
+</p>
+
 
 and I cant see how to get back to the normal table?
 That is a failure. 
@@ -129,7 +145,10 @@ vd --csv-delimiter=" " dpcc.csv
 ```
 reads it OK, but it adds a column of row numbers at column 1 and gets the headers out of wack. I fix that by adding an extra header to the file. Then it looks like
 
-..... dpcc.png
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/dpcc.png?raw=true">
+</p>
+
 
 That is correct now. 
 Lets see what we can do with these data
@@ -146,6 +165,10 @@ Here are the steps
 and I get
 
 .... dpccgraph.png
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/dpccgraph.png?raw=true">
+</p>
+
 
 OK, there is a relationship of dpcc with fibre diameter, but not with wool weight. I am not impressed with either
  - the strange set of key commands
@@ -161,6 +184,10 @@ df | vd
 gives
 
 .... vdpipe.png
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/visidata/vdpipe.png?raw=true">
+</p>
+
 
 That is what I meant by "it fits in with the inter-usability of Linux utilities".It is designed to work at the terminal.
 
