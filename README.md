@@ -72,6 +72,9 @@ The subdirectory _anydesk_ contains an evaluation of using anydesk for accessing
 ## NetBSD ##
 The subdirectories _netbsd_, _netbsd2_ and _netbsd3_ _netbsd4_ contain reports on installing and usng NetBSD in a multiboot computer alongside Linux.
 
+## VisiData ##
+The suvdirectory _visidata_ contains an evaluatio of VisiData, the 'vd' utility for viewing data files.
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
 
