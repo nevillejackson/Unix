@@ -37,12 +37,14 @@ Processing triggers for man-db (2.11.2-2) ...
 ```
 
 If you really must have the latest version, the Github site is here
+
 https://github.com/saulpw/visidata
 
 
 #### Getting started ####
 
 We might mention the cheat sheet here
+
 https://jsvine.github.io/visidata-cheat-sheet/en/
 
 I have a little .csv test file
