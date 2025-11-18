@@ -75,6 +75,9 @@ The subdirectories _netbsd_, _netbsd2_ and _netbsd3_ _netbsd4_ contain reports o
 ## VisiData ##
 The suvdirectory _visidata_ contains an evaluatio of VisiData, the 'vd' utility for viewing data files.
 
+## antiX ##
+The subdirectory _antiX_ contains a review of antiX25 beta1 release
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
 
