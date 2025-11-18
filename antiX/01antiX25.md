@@ -19,24 +19,21 @@ It is 2.1GB. I checked the md5sum.
 It boots in  virt-manager . You see a screen as follows
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX25.png?raw
-=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX25.png?raw=true">
 </p>
 
 
 then follows a screen offering choices of init system
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX251.png?raw
-=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX251.png?raw=true">
 </p>
 
 
 I first chose 'normal boot', and it boots to the following screen
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX252.png?raw
-=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX252.png?raw=true">
 </p>
 
 
@@ -47,8 +44,7 @@ That is live antiX.
 It installs smoothly. On reboot I get  a grub screen,
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX25grub.png?raw
-=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX25grub.png?raw=true">
 </p>
 
 
@@ -57,8 +53,7 @@ the top line of the grun menu automatically boots whatever `/sbin/init` points t
 and then login manager screen
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX253.png?raw
-=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX253.png?raw=true">
 </p>
 
 
@@ -70,8 +65,7 @@ The `/etc/` directory contains config files for all 4 init systems, and /sbin co
 If I go to antiX Control Centre -> Choose Startup Services  I get the 'Runit Service Manager' 
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX254.png?raw
-=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX254.png?raw=true">
 </p>
 
 
@@ -79,8 +73,7 @@ and you can see there are 10 services running.
 If you wanted 'runit' , that `Normal Boot` install would be OK, but you can switch it to a different init system simply by altering a pointer
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX255.png?raw
-=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX255.png?raw=true">
 </p>
 
 
@@ -94,10 +87,8 @@ Lets now see what happens if you choose a specific init system.
  On reboot, I see that process No 1 is /sbin/init and that /sbin/init is a pointer to dinit. So it is running dinit. Strange , I expected process No 1 to be 'dinit', but it shows the pointer?
 Lets try one of the commands
 
-.... antix256.png
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX256.png?raw
-=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/antiX256.png?raw=true">
 </p>
 
 
