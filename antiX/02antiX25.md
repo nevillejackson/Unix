@@ -8,12 +8,12 @@ All init systems require one or more files ( called service files) which describ
 
 In old fashioned init systems such as `sysVinit` service files typically came with the package that installed the service. So one simply installed the package and the service was started ( ie made to run)  and enabled ( ie made to start at every boot). 
 
-That is only partly true for the 4 more modern init systems available in `antiX25`. Some packages ( eg sshd, cupsd, connmand, bluetoothd,...) have been provided ( preinstalled not with their packages) ,  but others ( eg vsftpd, nfsd, ...) are not present, and the user is required to write  service file(s) before attempting to start the service daemon. 
+That is only partly true for the 4 more modern init systems available in `antiX25` beta release. Some packages ( eg sshd, cupsd, connmand, bluetoothd,...) have been provided ( preinstalled not with their packages) ,  but others ( eg vsftpd, nfsd, ...) are not present, and the user is required to write  service file(s) before attempting to start the service daemon. 
 
 Here we are going to look at the simplest case.... how to start and stop a daemon in each of the 4 init systems, when the service files are present.
 
 ##### Runit service managenment #####
-We will use sshd as an example, the package is installed, but sshd is not running at boot
+We will use sshd as an example, the package is installed, but sshd is not running at boot.
 One needs to find the name of the service ( it is not necessarily the same as the name of the daemon). Look in /etc/sv....we see `ssh` not `sshd` ... that is the service name. One can check with `cat ssh/run` ... you will see the run script....yes the script starts `sshd`.
 
 Next one needs to check in `/etc/runit/runsvdir/current` to see if the ssh service is currently controlled by runit. It is not. Another way to check is to use the Control Centre -> Runit Service Manager GUI. It does not list `ssh`, but it can be used to add it.
@@ -47,8 +47,8 @@ To enable ( ie make it start at boot)
 ```
 ln -s /etc/sv/ssh /etc/runit/runsvdir/default/
 ```
-Yes runit uses links to enable services. Once a service is linked, it will automatically start immediatelt,  it will always start at boot, and if it stops it will be restarted. That is called 'supervision' of services. Runit has supervision.
-What we did `adding` a servie with the GUI is equivalent to making the above symlink.
+Yes runit uses links to enable services. Once a service is linked, it will automatically start immediately,  it will always start at boot, and if it stops it will be restarted. That is called 'supervision' of services. Runit has supervision.
+What we did `adding` a service with the GUI is equivalent to making the above symlink.
 
 That is all there is to it. The biggest headache with runit is that every distro puts its service files in different locations. There is no standard layout. 
 
@@ -70,7 +70,9 @@ The s6-rc GUI is not in Control Center, it is in Applications -> Preferences -> 
 </p>
 
 
-In this case sshd-log and sshd-srv ar in the GUI .... we dont need to add them. ```
+In this case sshd-log and sshd-srv are in the GUI .... we dont need to add them. 
+
+```
  ps ax | grep sshd
   259 ?        S      0:00 s6-supervise sshd-log
   274 ?        S      0:00 s6-supervise sshd-srv
