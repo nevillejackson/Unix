@@ -88,7 +88,7 @@ s6-rc -d change sshd
 ```
 the 'u' and 'd' stand for up and down.
 
-Enabling a service in s6-rc is more complicated.  You have to add it to a "runlevel" bundle. A bundle is a group of services. THere is a bundle called 'default' which is useful for adding services which we wish to satart at boot time. To add sshd to it 
+Enabling a service in s6-rc is more complicated.  You have to add it to a "runlevel" bundle. A bundle is a group of services. There is a bundle called 'default' which is useful for adding services which we wish to satart at boot time. To add sshd to it 
 ```
 s6-rc-bundle add default sshd
 ```
@@ -107,8 +107,8 @@ and you dont recompile , so after a boot the service will be back.
 I am not sure how much of that can be done in the GUI. It seems to have add, restart, and stop buttons.
 
 ##### s6-66 service management #####
-s6-66 is S6 with theoriginal service manager replace by 66.
-We shall again use sshd as an example. The package in installed. The service files are in /etc/66 (admin added system files) and /usr/share/66/service (supplied systm files) and ~/.66 (user service files). The service is running and it is a system service.... if it was a user service the service files would be in ~/.66.
+s6-66 is S6 with the original service manager replaced by 66.
+We shall again use sshd as an example. The package in installed. The service files are in /etc/66 (admin added system files) and /usr/share/66/service (supplied system files) like sshd and ~/.66 (user service files). The service is running and it is a system service.... if it was a user service the service files would be in ~/.66.
 
 ```
 $ ps ax | grep sshd
@@ -283,9 +283,9 @@ Status gives a mountain of information.
 
 There is a lot more than that to s6-66. The concept of user-controlled services is new to me and I do not yet have a grasp of why one would need user-controlled daemons.  The way to use trees to manage a large set of services in a server computer something I have not mastered. 
 
-Beware reading older web-sites on 66 . 66 is evolving and the command syntax has changed. Older sites may have 66-start `<servicename>`, but the modern form is `66 start <servicename>` .... ie it isnow like git... 66 is the command and start is a subcommand. 
+Beware reading older web-sites on 66 . 66 is evolving and the command syntax has changed. Older sites may have 66-start `<servicename>`, but the modern form is `66 start <servicename>` .... ie it is now like git... 66 is the command and start is a subcommand. 
 
-We were fortunate to get some contributions and assistance on this forum from thedeveloper of 66, @oberun (Eric Vidal). See this topic
+We were fortunate to get some contributions and assistance on this forum from the developer of 66, @oberun (Eric Vidal). See this topic
 
 https://itsfoss.community/t/s6-init-system-with-s6-66-service-manager-in-antix-init-diversity-spin/11984
 
@@ -293,11 +293,12 @@ https://itsfoss.community/t/s6-init-system-with-s6-66-service-manager-in-antix-i
 
 https://web.obarun.org/
 
-s6-66 is definitely easier to use than s6-rc, and it does not sacrifice any of the sophisticated service mamnagement abilities. S6 is definitely a competitior with systemd. Their capabilities are similar.
+s6-66 is definitely easier to use than s6-rc, and it does not sacrifice any of the sophisticated service management abilities. S6 is definitely a competitior with systemd. Their capabilities are similar.
 
 
 
-####e Dinit service management #####
+##### Dinit service management ######
+
 Dinit is different to runit and S6. Dinit does not have separate supervising and logging processes for each daemon. Those functions are performed, for all daemons by a single process called `dinit` which also acts as process no 1 ( the init process). What you see running is
 ```
 $ ps ax
@@ -342,11 +343,11 @@ To enable a service so it will start at boot
 dinitctl enable sshd
 ```
 
-That is all. Dinit is simple , but not without capability. It can bundle services, like s6-66, it allows users to setup services, it provides servce supervision, it does parallel startup of services., but not without capability. It can bundle services (like in s6-66), it allows users to setup services, it provides servce supervision, it does parallel startup of services.
+That is all. Dinit is simple , but not without capability. It can bundle services, like s6-66, it allows users to setup services, it provides service supervision, it does parallel startup of services. 
 
 
 ##### Discussion #####
-I have tried to illustrate the simple task of starting and stopping services in each of the 4 init systems, and, I have tried to add a few explanatory comments along the way.
+I have tried to illustrate the simple task of starting and stopping services in each of the 4 init systems, and, I have added a few explanatory comments along the way.
 
 The result is a messy article, but I hope it will help people to see that init systems are nothing to be afraid of. 
 
