@@ -26,9 +26,8 @@ Next one needs to check in `/etc/runit/runsvdir/current` to see if the ssh servi
 
 then it appears in the list
 
-....  runitserviceadded.png
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/runiterviceadded.png?raw=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/runitserviceadded.png?raw=true">
 </p>
 
 
