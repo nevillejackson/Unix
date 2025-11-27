@@ -63,7 +63,7 @@ Notable items on the 'Maintenance' submenu are
 The ISO Snapshot will make an .iso file of your live running system. It has 2 menu screens
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/isosnapsot.png?raw=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/isosnapshot.png?raw=true">
 </p>
 
 
