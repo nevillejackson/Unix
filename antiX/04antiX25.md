@@ -17,7 +17,7 @@ Here is a brief look at the features that impress me
  - File Manager ... zzzFM
  - Browser ... Firefox
  - Toolbar Icon Manager
- - IceWM Manager
+ - IceWM Window Manager
  - 3 workspaces.
 
 #### Apps in the Menus ####
@@ -108,4 +108,4 @@ https://antixlinux.com/download/
 
 there are 'full', 'base', 'core', and 'net' downloads available, in 64 and 32 bit.  It does not support other architectures ( eg arm).
 
-
+There is more to antiX than init systems.  It is worth exploring.
