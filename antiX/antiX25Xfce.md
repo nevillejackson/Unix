@@ -10,7 +10,7 @@ AntiX offers a number of Window Managers, the best , in my opinion, being IceWM 
  - LXDE
  - LXQT
 
-I am going to try first with Xfce, becauset hat is my familiar desktop.
+I am going to try first with Xfce, because that is my familiar desktop.
 
 The instructions, kindly researched for me by @Rosika, are 
 ```
