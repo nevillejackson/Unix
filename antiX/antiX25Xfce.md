@@ -10,7 +10,7 @@ AntiX offers a number of Window Managers, the best , in my opinion, being IceWM 
  - LXDE
  - LXQT
 
-I am going to try first with Xfce, becaus ethat is my familiar desktop.
+I am going to try first with Xfce, becauset hat is my familiar desktop.
 
 The instructions, kindly researched for me by @Rosika, are 
 ```
@@ -135,7 +135,7 @@ Error: Sub-process /usr/bin/dpkg returned an error code (1)
 root@antixdinit:/home/nevj# 
 ```
 Same again, errors but I think it installed lightdm
-During the install I had to answer a question.... whether to use slimski or lightdm.  I chose lightdm
+During the install I had to answer a question.... whether to use slimski or lightdm. Slimski is the antiX modified version of slim.  I chose lightdm
 
 <p align="center">
 <img  src="https://github.com/nevillejackson/Unix/blob/main/antiX/lightdm.png?raw=true">
@@ -171,13 +171,20 @@ I 'ticked' Xfce and said OK.  I simply got the same xfce screen again.
 So, open a terminal window and see what is going on. .... First thing, connmand is not running
 
 ```
-junk.connman
-junk.connman.dinit
+$ ps ax | grep conn
+ 2558 pts/0    S+     0:00 grep conn
+
+root@antixdinit:/home/nevj/Desktop# dinitctl status connmand
+Service: connmand
+    State: STARTING
+    Activation: explicitly started
+    Process ID: 2925
+
 ```
 
 It runs and stops immediately. 
 Without connmand I have no communication with the host. 
-So, serarch with google for the error message
+So, search with google for the error message
 ```
 https://www.antixforum.com/forums/topic/unable-to-create-an-interface-to-connman-on-the-system-bus/
 https://www.antixforum.com/forums/topic/connman-cant-connect-to-wifi/
@@ -185,7 +192,7 @@ https://www.antixforum.com/forums/topic/i-get-a-cmst-error-everytime-i-boot-into
 https://www.antixforum.com/forums/topic/cmst-critical-error/
 https://antixlinux.com/connman-not-connecting/
 ```
-It seems amtiX has been plagued with this connman issue for years, and in my case it IS a connman issue, not an Xfce issue, but it only appears when Xfce is running.... if I use IceWM there is no issue, connman works. 
+It seems antiX has been plagued with this connman issue for years, and in my case it IS a connman issue, not an Xfce issue, but it only appears when Xfce is running.... if I use IceWM there is no issue, connman works. 
 
 Lets try some of the recommended fixes
  - a start of connmand does not work ... it just stops again
@@ -193,7 +200,7 @@ Lets try some of the recommended fixes
    `#PreferredTechnologies = `
    Replace this with
    `PreferredTechnologies = ethernet,wifi`
- Then `dinitctl start connmand` and it hangs for a minute and interface eth0 coes up, then it times out and eth0 goes down again.  
+ Then `dinitctl start connmand` and it hangs for a minute and interface eth0 comes up, then it times out and eth0 goes down again.  
  - /etc/connman/main.conf has
    `#OnlineCheckMode = one-shot`  and that is the default
    replace with
@@ -207,7 +214,6 @@ dinitctl disable connmand
 ```
 and then we can either use `ceni` or we can edit the file `/etc/network/interfaces` by hand. I did the latter
 ```
-[nevj@trinity ~]$ cat junk.ceni
 root@antixdinit:/etc/network# cat interfaces
 # interfaces(5) file used by ifup(8) and ifdown(8)
 # Include files from /etc/network/interfaces.d:
