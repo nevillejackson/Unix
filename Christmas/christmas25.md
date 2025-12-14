@@ -31,7 +31,6 @@ We still have an educational divide and a poverty gap. We still have environment
 
 The gifts from the Magi have today become an integral part of our Christmas cellebrations
 
-... christmas6.png
 
 <p align="center">
 <img  src="https://github.com/nevillejackson/Unix/blob/main/Christmas/christmas6.png?raw=true">
