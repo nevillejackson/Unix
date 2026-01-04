@@ -78,6 +78,9 @@ The suvdirectory _visidata_ contains an evaluatio of VisiData, the 'vd' utility 
 ## antiX ##
 The subdirectory _antiX_ contains a review of antiX25 beta1 release
 
+## CLI backup ##
+The subdirectory _cliback_ contains a tutorial on using CLI utilities for backup and restore of a Linux system
+
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
 
