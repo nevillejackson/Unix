@@ -4,7 +4,9 @@ There is something about mountains near the sea. They evoke feelings that are a 
 
 There is a whole spectrum of cultural recognition of this effect. For example, the Irish song "Mountains of Mourne", sung here by Don McLean
 
-https://www.google.com/search?q=+mountains+of+mourne&client=firefox-b-d&hs=JOaU&sca_esv=02d96f4dae5a5963&channel=entpr&sxsrf=ANbL-n64NmJGhE8eYDTjtERYs63zyx5ZYg%3A1769675701330&ei=tRt7afmwE-3f2roPxIPKgQ4&ved=0ahUKEwi5363cq7CSAxXtr1YBHcSBMuAQ4dUDCBE&uact=5&oq=+mountains+of+mourne&gs_lp=Egxnd3Mtd2l6LXNlcnAiFCBtb3VudGFpbnMgb2YgbW91cm5lMhAQIxjwBRiABBgnGMkCGIoFMgoQLhiABBhDGIoFMgoQABiABBhDGIoFMgoQABiABBhDGIoFMgoQABiABBhDGIoFMgoQLhiABBhDGIoFMgoQABiABBhDGIoFMgoQABiABBgUGIcCMgUQLhiABDIFEAAYgAQyGRAuGIAEGEMYigUYlwUY3AQY3gQY4ATYAQFI4WJQpQlYwUZwAXgBkAEAmAGyAqAB-R2qAQgwLjQuMTIuMbgBA8gBAPgBAZgCD6ACgBrCAg0QIxjwBRiwAxgnGMkCwgIKEAAYsAMY1gQYR8ICDRAAGIAEGLADGEMYigXCAg0QLhiABBiwAxhDGIoFwgIOEAAYsAMY5AIY1gTYAQHCAhkQLhiABBiwAxhDGMcBGMgDGIoFGK8B2AEBwgITEC4YgAQYsAMYQxjIAxiKBdgBAcICBxAjGLECGCfCAg0QIxjwBRixAhgnGMkCwgIGEAAYBxgewgINEAAYgAQYFBiHAhjJA8ICCxAAGIAEGJIDGIoFwgIIEAAYgAQYyQOYAwCIBgGQBhO6BgYIARABGAmSBwgxLjIuMTEuMaAHj9QBsgcIMC4yLjExLjG4B-4ZwgcGMi0yLjEzyAeZAYAIAA&sclient=gws-wiz-serp#fpstate=ive&vld=cid:a4acc529,vid:I4M_0Bvk10Q,st:0
+https://www.youtube.com/watch?v=I4M_0Bvk10Q
+
+
 
 Look past the Lyrics.... it is a simple poem about a young Irish gentleman in London being dazzled by the urban culture and conveying it to his Lady back in County Down, Ireland.  Look at the pictures in the video. This is typical
 
