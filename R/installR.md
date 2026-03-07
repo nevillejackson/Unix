@@ -3,7 +3,7 @@
 In fixed release distros I always install R from source, because the distro packages are never up to date and they often do not include important libraries such as `libopenblas`. Rolling release distros usually have R up to date. 
 
 I am putting this on the forum because, although very few forum members may be interested in R,  
-it is a typical examle of the steps involved in installing a C program from source in Linux. R acrtually uses Fortran , as well as C.
+it is a typical example of the steps involved in installing a C program from source in Linux. R actually uses Fortran , as well as C.
 
 #### Download ####
 The sources are here
@@ -140,7 +140,7 @@ Processing triggers for install-info (7.1.1-1+b1) ...
 root@trinity:/etc/alternatives# 
 ```
 Not sure what those DISPLAY issues are? But it installed it. 
-I already have Latex and Tex installed ,  or therr would hav ebeen more packages.
+I already have Latex and Tex installed ,  or there would have been more packages.
 
 
 So now , view my config.out file again and find the next error
@@ -204,7 +204,7 @@ Processing triggers for man-db (2.13.1-1) ...
 
 So now I have to re-run `./configure` and find the next problem.
 `./configure >&config.out2`
-We shall not go through all thedetail again. 
+We shall not go through all the detail again. 
 Here is a list of missing packages I had to install
 ```
 texinfo		fonts-inconsolata	texlive-fonts-extra
@@ -246,7 +246,7 @@ R is now configured for x86_64-pc-linux-gnu
   Recommended packages:        yes
 ```
 So it still needs cairo and ICU, if I want those capabilities, and it is using shared BLAS... I need OpenBLAS.... so I need more libraries and I have to rerun `./configure` with some optional parameters.
- First the libraries
+ First install the libraries
 ```
 [libjpeg-dev	libtiff-dev]	already installed
 libcairo2-dev
@@ -388,5 +388,5 @@ unpack
 make
 ```
 but, as you have seen here there can be complicating side issues.
-There are other build systems ( eg CMake) but the above is tyoical of GNU software.
+There are other build systems ( eg CMake) but the above is typical of GNU software.
 
