@@ -82,7 +82,10 @@ The subdirectory _antiX_ contains a review of antiX25 beta1 release
 The subdirectory _cliback_ contains a tutorial on using CLI utilities for backup and restore of a Linux system
 
 ## R install example ##
-The subridectory _R_ contains an example of an install of R from source code using openblas libraries.
+The subdirectory _R_ contains an example of an install of R from source code using openblas libraries.
+
+## antiX26 ##
+The subdirectory antiX26 contains documentation of adding various DE's to antiX26, the making of a spin .iso, and some things to do to antiX26 after installation.
 
 ## What does this repository hope to achieve ##
 A bringing together of papers on various issues arising among users of the Unix operating system, encompassing both Linux and BSD implementations.
