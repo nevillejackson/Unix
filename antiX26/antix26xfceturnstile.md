@@ -134,7 +134,7 @@ If the delay is really inadequate, it may drop you back to the Login Manager scr
 The above is a known issue with slimski. If it restarts while the xserver is still running it will start in preview mode.
 
 The THIRD FIX is to make my own Exit icon which uses the antiX `desktop-session-exit` script which is found in /usr/local/bin.
-Add-Menu-Item -> setup the sdd-desktop popup with Item Location set to Desktop Shortcut.  Set Item name to 'Exit antiX'. Set Item Commant to '/usr/local/bin/desktop-session-exit'. Set File Name to 'desktop-session-exit'.
+Add-Menu-Item -> setup the add-desktop popup with Item Location set to Desktop Shortcut.  Set Item name to 'Exit antiX'. Set Item Commant to '/usr/local/bin/desktop-session-exit'. Set File Name to 'desktop-session-exit'.
 
 This third option is the best. It allows anyone to Logout, Reboot, or Shutdown without permissions issues. 
 
