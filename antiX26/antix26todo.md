@@ -16,7 +16,7 @@ cd /etc/dinit.d
 vi chrony
 [add the following lines]
 type = process
-command = /usr/sbin/chronyd -d
+command = /sbin/chronyd -d
 depends-on = loginready
 logfile = /var/log/chrony-dinit.log
 ```

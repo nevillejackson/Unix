@@ -1,0 +1,6 @@
+ Ram usage reported by Conky immediately after booting, in a 4GB VM
+
+antiX26 with zzz-IceWM			230 - 240 MB
+antiX26 with xfce and turnstile		520 - 530 MB
+antiX26 with xfce and consolekit	500 - 510 MB
+antiX26 with trinity and turnstile	440 - 445 MB
