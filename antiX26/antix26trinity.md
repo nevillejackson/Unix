@@ -42,14 +42,14 @@ I stayed with the default en_US
 One can choose TDE using F1 key, and Trinity the starts. It looks like this
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/tree/main/antiX26/tde1.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/antiX26/tde1.png?raw=true">
 </p>
 
 a welcome popup, and Conky is inherited from antiX.
  One can go on throught the help screens, and one eventually arrives at 
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/tree/main/antiX26/tde4.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/antiX26/tde4.png?raw=true">
 </p>
 
 
@@ -108,7 +108,7 @@ When you look at the content of a file with Dolphin, it brings up a window calle
  6. To Exit, one can use the dropdown menu on background, or the Menu icon in the panel.  It gives the following choices 
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/tree/main/antiX26/tde5.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/antiX26/tde5.png?raw=true">
 </p>
 
 
