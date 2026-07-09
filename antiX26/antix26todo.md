@@ -1,4 +1,4 @@
-### Things to do in antiX26 (not xfce related) ###
+### Things to do in antiX26 (not DE related) ###
 
 
  1. Setup Network Time Protocol
