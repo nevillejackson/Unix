@@ -34,3 +34,7 @@ Ram usage at idle as reported by Conky in a 4Mb VM
 
 
 Please report any issues.
+
+Note: 
+ - Use the `Install AntiX` Icon if you wish to install from this .iso.  There are other Icons called `Custom Antix Install` ... ignore them ... they are filesystems
+ - Use the `Exit AntiX` Icon to shutdown or reboot. 
