@@ -38,3 +38,6 @@ Please report any issues.
 Note: 
  - Use the `Install AntiX` Icon if you wish to install from this .iso.  There are other Icons called `Custom Antix Install` ... ignore them ... they are filesystems
  - Use the `Exit AntiX` Icon to shutdown or reboot. 
+ - The live iso uses the same `demo:demo` and `root:root` logins as the official antiX26
+ - The iso defaults to the `dinit` init system, but you can choose any init system in the grub menu, as with the official antiX26
+ - The full 13 WM's that come with the official antiX26  are available in addition to Trinity.
