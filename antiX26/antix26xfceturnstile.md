@@ -119,11 +119,16 @@ depends-on = seatd
 ```
 Then write the wrapper program my-slimski-wrapper.sh
 ```
+cd /usr/local.bin
+vi my-slimski-wrapper.sh
+[edit in the following lins]
 #!/bin/sh
-sleep 8
+sleep 6
 exec /usr/bin/slimski -nodaemon -z -i
+[make it executable]
+chmod 755 my-slimski-wrapper.sh
 ```
-So slimski waits 8 seconds when started or restarted by dinit.
+So slimski waits 6 seconds when started or restarted by dinit.
 Similar modifications are needed for other init systems.
 
 Now any user can halt or reboot on the slimski screen.
