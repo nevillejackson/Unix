@@ -24,6 +24,10 @@ It looks like this
 <img src="https://github.com/nevillejackson/Unix/blob/main/antiX26/luminastartup.png?raw=true">
 </p>
 
+I have made an .iso file , and it is available at sourceforge
+
+https://sourceforge.net/projects/antix26-with-a-de/files/
+
 
 My .iso defaults to the dinit init system, but all 5 init systems are available, as in official antiX26.
 
