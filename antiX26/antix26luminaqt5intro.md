@@ -21,7 +21,7 @@ I decided that a configurable desktop with a small footprint might be useful in 
 It looks like this
 
 <p align="center">
-<img src="https://github.com/nevillejackson/Unix/blob/main/antiX26/luminastaryup.png?raw=true">
+<img src="https://github.com/nevillejackson/Unix/blob/main/antiX26/luminastartup.png?raw=true">
 </p>
 
 
