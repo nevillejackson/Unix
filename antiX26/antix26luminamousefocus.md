@@ -32,4 +32,4 @@ The Lumina desktop will start, all open windows will be preserved, and the Focus
 
 I expect that there may be other Lumina configurations than MouseFocus, which may be similarly affected. This workaround should address those too. 
 
-I am unsure if earlier versions of Lumina are affected by this issue, but I suspect so. It has b=nothing to do with antiX ... it is a Lumina issue.
+I am unsure if earlier versions of Lumina are affected by this issue, but I suspect so. It has nothing to do with antiX ... it is a Lumina issue.
