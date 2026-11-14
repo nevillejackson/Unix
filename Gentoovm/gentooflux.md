@@ -203,7 +203,6 @@ So I set out to build it , in a VM with Gentoo and the dinit int system as my ba
 
 Here is what it looks like
 
-....     fluxbox.png
 <p align="center">
 <img  src="https://github.com/nevillejackson/Unix/blob/main/gentoovm/fluxbox.png?raw=true">
 </p>
