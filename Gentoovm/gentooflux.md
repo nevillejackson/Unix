@@ -30,7 +30,7 @@ To just run fluxbox, I dont need all the X11 libraries and tools, or Qt. I do ne
 Starting with a minimal Gentoo + dinit + vi. Adding dinit and vi to Gentoo is trivial. It looks like this
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/gentoovm/gentooconsole2.png?raw=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/Gentoovm/gentooconsole2.png?raw=true">
 </p>
 
 
@@ -127,7 +127,7 @@ startflux
 It looks like this
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/gentoovm/rawflux.png?raw=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/Gentoovm/rawflux.png?raw=true">
 </p>
 
 We get a raw `fluxbox` screen with a black background, a lower panel with a workspace switcher, and dropdown menus from which I can start an Xterm. Fluxbox can look better than that .... it needs some configuring.
@@ -177,7 +177,7 @@ chmod 755 ~/.fluxbox/startup
 My minimal raw Fluxbox WM now looks like this
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/gentoovm/gentoofluxbox2.png?raw=true"> 
+<img  src="https://github.com/nevillejackson/Unix/blob/main/Gentoovm/gentoofluxbox2.png?raw=true"> 
 </p>
 
 In Virt-manager  it may need the following settings
