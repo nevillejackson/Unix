@@ -26,8 +26,16 @@ That left me with one option ... a minimal version of original X11.
 
 
 ##### Installing a minimal X11 in Gentoo ####
-To just run fluxbox, I dont need all the widget libraries, or GTK or Qt. 
-Starting with a minimal Gentoo + dinit + vi. Adding dinit and vi to Gentoo is trivial. I then do the following
+To just run fluxbox, I dont need all the X11 libraries and tools, or Qt. I do need GTK+ and Mesa 
+Starting with a minimal Gentoo + dinit + vi. Adding dinit and vi to Gentoo is trivial. It looks like this
+
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/gentoovm/gentooconsole2.png?raw=true">
+</p>
+
+
+A console with a login prompt.
+ I then do the following
 
 
  1. Configure global flags so compiler knows what to include or exclude
@@ -56,15 +64,23 @@ For Mesa (enables standard Vulkan/OpenGL software rasterizers and links them to 
 ```
 echo "media-libs/mesa vulkan video_cards_lavapipe libseat" > /etc/portage/package.use/mesa
 ```
-I need `mesa`  because it supplies the graphics driver.  With Gentoo I can compile it with only the drivers needed for a VM.
+I need `mesa`  because it supplies the  virtual graphics driver 'virgl'.  With Gentoo I can compile it with only the drivers needed for a VM.
  
+ For xterm ( compile with Truetype fonts)
+```
+echo "x11-terms/xterm truetype" > /etc/portage/package.use/xterm
+```
+
  3. Install software
 We need a display engine, a window manager, and some minimal utilities
 ```
 emerge --ask x11-base/xorg-server x11-apps/xinit x11-wm/fluxbox x11-terms/xterm media-gfx/feh sys-auth/seatd
+emerge --ask x11-apps/xset
 ```
 Compiling the xorg-server drags in mesa. 
 Feh is to help fluxbox with background config.
+xinit is needed to start Fluxbox
+xset is needed to setup fonts
 
  4. Configure /etc/groups
 My user account needs extra permissions 
@@ -75,37 +91,44 @@ gpasswd -a nevj input
 gpasswd -a nevj tty
 ```
 
-Fix /etc/hosts file for xauth
+ 5. Fix /etc/hosts file for xauth
+
 ```
 127.0.0.1       localhost your-hostname-here
 ::1             localhost your-hostname-here
 ```
 the localhost entry needs to explicitely mention the hostname
 
- 5. Start seatd
+ 6. Start seatd
 Seatd is needeed in place of elogind
 ```
 sudo dinitctl start seatd
 sudo dinitctl enable seatd
 ```
 
- 6. Make a starup alias
+ 7. Make a starup alias
 Add to ~/.bashrc
 ```
 # Instructs Xorg components to route through seatd
 export LIBSEAT_BACKEND="seatd"
 
-# The bulletproof start command
-alias startflux='startx $(which fluxbox) -- vt1 -keeptty'
+# Start command
+alias startflux='startx $(which startfluxbox) -- vt1 -keeptty'
 ```
 The arguments to startx force Xorg to use the exact workspace that seatd has already authorised.
 
 Run source ~/.bashrc to refresh the terminal session
 
 We are now ready to launch fluxbox from the console
+May need to reboot first.
 ```
 startflux
 ```
+It looks like this
+
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/gentoovm/rawflux.png?raw=true">
+</p>
 
 We get a raw `fluxbox` screen with a black background, a lower panel with a workspace switcher, and dropdown menus from which I can start an Xterm. Fluxbox can look better than that .... it needs some configuring.
 
@@ -145,6 +168,23 @@ There are variious ways of setting the screen background to either a color or an
 fbsetroot -gradient vertical -from "#330000" -to "#050000"
 exec fluxbox
 ```
+Startup needs to be executable
+```
+chmod 755 ~/.fluxbox/startup
+```
+
+
+My minimal raw Fluxbox WM now looks like this
+
+<p align="center">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/gentoovm/gentoofluxbox2.png?raw=true"> 
+</p>
+
+In Virt-manager  it may need the following settings
+ - Video Virtio ( not QXL) 
+ - Display Spice set Spice Server, None, OpenGL
+
+That is not quite  sufficient for my purpose. I need copy/paste to work.
 
 ##### Copy/paste between VM and host #####
 To copy/paste between a Virt-Manager VM and its host , one needs to install s`spice-vdagent` in the guest. That is done in Gentoo as follows
@@ -197,23 +237,17 @@ and copy/paste will work to and from the host.
 
 
 ##### Why did I do this? #####
-I have always wanted a workspace that was like my old Freebsd 2.x .... an Xserver and a window system, but no DE or other messy parts of X11 like GTK or Qt.  All I wanted her was a couple of floating Xterm windows. I can work happily on such a primitive system.
+I have always wanted a workspace that was like my old Freebsd 2.x .... an Xserver and a window system, but no DE or other messy parts of X11.  All I wanted her was a couple of floating Xterm windows. I can work happily on such a primitive system.
 
-So I set out to build it , in a VM with Gentoo and the dinit int system as my base.  I found I could use only the xserver part of X11, plus mesa to get some drivers, plus Fluxbox window manager to get some Xterm windows. 
+So I set out to build it , in a VM with Gentoo and the dinit init system as my base.  I found I could use only the xserver part of X11, plus mesa to get some drivers, plus Fluxbox window manager to get some Xterm windows. 
 
-Here is what it looks like
-
-<p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/gentoovm/fluxbox.png?raw=true">
-</p>
-
-
-So I end up with a VM worksystem that 
+ I end up with a VM worksystem that 
  - boots in 3 seconds
  - runs with 376 MB of ram ( as a console)
  - runs with 441MB of ram ( with fluxbox)
  - has floating Xterm windows 
  - has 4 switchable workspaces
+ - uses 28Gb for the qcow2 VM file
 
 For a pure programming job, it is nice to be able to isolate in my mini-VM, away from all the bloat of a DE ... and it is a nostalgia trip. 
 
@@ -225,3 +259,4 @@ After finishing my mini-wm-vm project, and making the writeup, the first thing I
 
 I did use some AI ... in debugging gentoo USE flags, and in finding out how to configure Fluxbox... but the writing is entirel my human scrawl. 
 
+If anyone wanted to have such a build, but were reluctant to use Gentoo, One could get almost the same thing by installing antiX26 and choosin the Fluxbox WM.  Fluxbox would still need to be configured, but the other steps could be avoided.
