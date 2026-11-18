@@ -30,7 +30,7 @@ To just run fluxbox, I dont need all the X11 libraries and tools, or Qt. I do ne
 Starting with a minimal Gentoo + dinit + vi. Adding dinit and vi to Gentoo is trivial. It looks like this
 
 <p align="center">
-<img  src="https://github.com/nevillejackson/Unix/blob/main/Gentoovm/gentooconsole2.png?raw=true">
+<img  src="https://github.com/nevillejackson/Unix/blob/main/Gentoovm/gentoofluxconsole2.png?raw=true">
 </p>
 
 
